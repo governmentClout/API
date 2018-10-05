@@ -44,47 +44,11 @@ routers._users.post = (data,callback)=>{
 		dob &&
 		tosAgreement){
 
-		_db.read('users',phone,(err,data)=>{
+		/*TODO  */
 
-			if(err){
-
-				let hashedPassword = helpers.hash(password);
-
-				if(hashedPassword){
-
-						let userObject = {
-							'firstName' : firstName,
-							'lastName' : lastName,
-							'phone' : phone,
-							'hashedPassword' : hashedPassword,
-							'tosAgreement' : true
-						}
-
-				_data.create('users',phone,userObject,(err)=>{
-
-					if(!err){
-						callback(200, {'Success':'User created'});
-					}else{
-						console.log(err);
-						callback(500,{'Error':'Could not created user'})
-					}
-
-				});
-
-				}else{
-					callback(500, {'Error':'Password Hash Failed'});
-				}
-
-				
-
-			}else{
-				
-				callback(400, {'Error':'User with that phone number already exists'})
-			}
-		})
 
 	}else{
-		console.log('firstname : ' + firstName + ' lastname ' + lastName + ' phone ' + phone + ' password ' + password + ' agreement ' + tosAgreement);
+		
 		callback(400,{'Error':'Missing required data'});
 	}
 };
