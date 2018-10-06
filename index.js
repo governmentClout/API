@@ -3,6 +3,7 @@ Setting Up the server and Routes for the API
 */
 
 const http = require('http');
+const https = require('https');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
 const config = require('./lib/config');
@@ -24,6 +25,23 @@ httpServer.listen(config.httpPort, ()=>{
 
 });
 
+// const httpsServerOptions = {
+// 	'key': fs.readFileSync('./https/key.pem'),
+// 	'cert': fs.readFileSync('./https/cert.pem')
+// };
+
+
+// const httpsServer = https.createServer(httpsServerOptions, (req,res)=>{
+
+// 	unifiedServer(req,res);
+
+// });
+
+// httpsServer.listen(config.httpsPort, ()=>{
+
+// 	console.log('Server Started on port ' + config.httpsPort);
+
+// });
 
 
 var unifiedServer = (req,res)=>{
