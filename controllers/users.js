@@ -4,12 +4,17 @@ User Controller: All user based activities
 
 const _db = require('../lib/db');
 const helpers = require('../lib/helpers');
-const routers = require('../lib/routers');
-
-const users = {};
 
 
-routers.users = (data,callback)=>{
+let handlers = {};
+
+
+handlers.notFound = (data,callback)=>{
+	callback(404);
+}
+
+
+handlers.action = (data,callback)=>{
 	
 	let acceptableMethods = ['post','get','put','delete'];
 
@@ -25,8 +30,10 @@ routers.users = (data,callback)=>{
 }
 
 
+handlers._users = {};
 
-routers._users.post = (data,callback)=>{
+
+handlers._users.post = (data,callback)=>{
 
 	let firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : false;
 	let lastName = typeof(data.payload.lastName) == 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName.trim() : false;
@@ -45,7 +52,8 @@ routers._users.post = (data,callback)=>{
 		tosAgreement){
 
 		/*TODO  */
-
+	
+		callback(200);
 
 	}else{
 		
@@ -53,3 +61,4 @@ routers._users.post = (data,callback)=>{
 	}
 };
 
+module.exports = handlers;

@@ -3,14 +3,13 @@ Setting Up the server and Routes for the API
 */
 
 const http = require('http');
-const https = require('https');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
 const config = require('./lib/config');
 const fs = require('fs');
-const routers = require('./lib/routers');
+const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
-const _db = require('./lib/db');
+const dbconnect = require('./lib/db_connect');
 
 
 const httpServer = http.createServer((req,res)=>{
@@ -24,25 +23,6 @@ httpServer.listen(config.httpPort, ()=>{
 	console.log('Server Started on port ' + config.httpPort);
 
 });
-
-// const httpsServerOptions = {
-// 	'key': fs.readFileSync('./https/key.pem'),
-// 	'cert': fs.readFileSync('./https/cert.pem')
-// };
-
-
-// const httpsServer = https.createServer(httpsServerOptions, (req,res)=>{
-
-// 	unifiedServer(req,res);
-
-// });
-
-// httpsServer.listen(config.httpsPort, ()=>{
-
-// 	console.log('Server Started on port ' + config.httpsPort);
-
-// });
-
 
 var unifiedServer = (req,res)=>{
 	
@@ -65,7 +45,7 @@ var unifiedServer = (req,res)=>{
 
 		buffer += decoder.end();
 
-		let chosenHandler = typeof(route[trimmedPath]) !== 'undefined' ? route[trimmedPath] : routers.notFound;
+		let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
 		
 		let data = {
 			'trimmedPath' : trimmedPath,
@@ -99,9 +79,9 @@ ROUTES
 
 
 
-let routes = {
-	'users' : routers.users,
-	'tokens': routers.tokens
+let router = {
+	'users' : handlers.users,
+	'tokens': handlers.tokens
 };
 
 
