@@ -45,6 +45,8 @@ var unifiedServer = (req,res)=>{
 
 		buffer += decoder.end();
 
+		// console.log('buffer 1' + helpers.parseJsonToObject(buffer));
+
 		let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
 		
 		let data = {
