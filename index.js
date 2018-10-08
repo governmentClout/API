@@ -83,6 +83,8 @@ ROUTES
 
 let router = {
 	'users' : handlers.users,
+	'login' : handlers.login,
+	'profiles' : handlers.profiles,
 	'tokens': handlers.tokens
 };
 
