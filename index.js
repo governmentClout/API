@@ -34,6 +34,10 @@ var unifiedServer = (req,res)=>{
 	    'Access-Control-Allow-Origin': '*',
 	    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT',
 	    'Access-Control-Max-Age': 2592000, 
+	    'Content-Type' 'text/plain charset=UTF-8',
+	    'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type',
+	    'Content-Type' 'application/json charset=UTF-8',
+	    'Content-Control-Request-Headers' 'content-type'
 	  };
 
 	  if (req.method === 'OPTIONS') {
