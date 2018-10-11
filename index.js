@@ -27,14 +27,22 @@ httpServer.listen(config.httpPort, ()=>{
 
 var unifiedServer = (req,res)=>{	
 
-	res.writeHead("Access-Control-Allow-Origin","*");
-	res.writeHead("Access-Control-Allow-Headers","DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
-	res.writeHead("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
-	res.writeHead("Content-Type","text/plain charset=UTF-8");
-	res.writeHead("Content-Type","application/json charset=UTF-8");
-	res.writeHead("Content-Control-Request-Headers","content-type");
-	res.writeHead("Access-Control-Max-Age",2592000);
 
+
+	  // const head = {
+	  //   'Access-Control-Allow-Origin': '*',
+	  //   'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT',
+	  //   'Access-Control-Max-Age': 2592000, 
+	  //   'Content-Type' : 'text/plain charset=UTF-8',
+	  //   'Access-Control-Allow-Headers' : ',content-type',
+	  //   'Content-Type' : 'application/json charset=UTF-8',
+	  //   'Content-Control-Request-Headers' : 'content-type'
+	  // };
+
+	 
+
+	  	// res.writeHead(405, head);
+  		// res.end(`${req.method} is not allowed for the request.`);
 	
 	const parsedUrl = url.parse(req.url,true);
 	
@@ -74,9 +82,16 @@ var unifiedServer = (req,res)=>{
 
 			let payloadString = JSON.stringify(payload);
 
-			res.setHeader('Content-Type','application/json');
-			res.writeHead(statusCode);
-			res.end(payloadString);
+				res.setHeader("Access-Control-Allow-Origin","*");
+				res.setHeader("Access-Control-Allow-Headers","DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
+				res.setHeader("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
+				res.setHeader("Content-Type","application/json");
+				res.setHeader("Content-Control-Request-Headers","content-type");
+				res.setHeader("Access-Control-Max-Age",2592000);
+
+				res.setHeader('Content-Type','application/json');
+				res.writeHead(statusCode);
+				res.end(payloadString);
 
 			console.log(trimmedPath,statusCode);
 		});
