@@ -10,7 +10,7 @@ const fs = require('fs');
 const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 const dbconnect = require('./lib/db_connect');
-const cors = require('cors');
+// const cors = require('cors');
 
 
 const httpServer = http.createServer((req,res)=>{
@@ -27,33 +27,14 @@ httpServer.listen(config.httpPort, ()=>{
 
 var unifiedServer = (req,res)=>{	
 
-	// req.writeHeader("Access-Control-Allow-Origin","*");
-	// req.writeHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+	// res.writeHead("Access-Control-Allow-Origin","*");
+	// res.writeHead("Access-Control-Allow-Headers","DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
+	// res.writeHead("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
+	// res.writeHead("Content-Type","text/plain charset=UTF-8");
+	// res.writeHead("Content-Type","application/json charset=UTF-8");
+	// res.writeHead("Content-Control-Request-Headers","content-type");
+	// res.writeHead("Access-Control-Max-Age",2592000);
 
-	  const head = {
-	    'Access-Control-Allow-Origin': '*',
-	    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT',
-	    'Access-Control-Max-Age': 2592000, 
-	    'Content-Type' : 'text/plain charset=UTF-8',
-	    'Access-Control-Allow-Headers' : 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,content-type',
-	    'Content-Type' : 'application/json charset=UTF-8',
-	    'Content-Control-Request-Headers' : 'content-type'
-	  };
-
-	  if (req.method === 'OPTIONS') {
-	    res.writeHead(204, head);
-	    res.end();
-	    return;
-	  }
-
-	  if (['GET', 'POST', 'PUT'].indexOf(req.method) > -1) {
-	    res.writeHead(200, head);
-	    res.end('Hello World');
-	    return;
-	  }
-
-	  	res.writeHead(405, head);
-  		res.end(`${req.method} is not allowed for the request.`);
 	
 	const parsedUrl = url.parse(req.url,true);
 	
