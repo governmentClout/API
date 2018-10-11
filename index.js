@@ -25,9 +25,6 @@ httpServer.listen(config.httpPort, ()=>{
 });
 
 var unifiedServer = (req,res)=>{
-
-	res.header("Access-Control-Allow-Origin", "*");
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	
 	const parsedUrl = url.parse(req.url,true);
 	
