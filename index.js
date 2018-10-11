@@ -27,13 +27,13 @@ httpServer.listen(config.httpPort, ()=>{
 
 var unifiedServer = (req,res)=>{	
 
-	// res.writeHead("Access-Control-Allow-Origin","*");
-	// res.writeHead("Access-Control-Allow-Headers","DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
-	// res.writeHead("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
-	// res.writeHead("Content-Type","text/plain charset=UTF-8");
-	// res.writeHead("Content-Type","application/json charset=UTF-8");
-	// res.writeHead("Content-Control-Request-Headers","content-type");
-	// res.writeHead("Access-Control-Max-Age",2592000);
+	res.writeHead("Access-Control-Allow-Origin","*");
+	res.writeHead("Access-Control-Allow-Headers","DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
+	res.writeHead("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
+	res.writeHead("Content-Type","text/plain charset=UTF-8");
+	res.writeHead("Content-Type","application/json charset=UTF-8");
+	res.writeHead("Content-Control-Request-Headers","content-type");
+	res.writeHead("Access-Control-Max-Age",2592000);
 
 	
 	const parsedUrl = url.parse(req.url,true);
