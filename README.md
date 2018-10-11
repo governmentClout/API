@@ -9,11 +9,11 @@ To get the API server running on your local follow these steps:
 
 1. Clone the repo
 2. `cd` into the directory
-3. go into lib/config.js and enter your database details
-4. create your database
-5. run `node index.js`
+3. go into lib/config.js and enter your database details (just your login details, do not change database name)
+4. run `node index.js`
 
-Done!
+The codebase is wired to create database, and setup all tables itself.
+
 
 You are now ready to test each endpoint based on the documentation here: developers.staybusy.ng
 
