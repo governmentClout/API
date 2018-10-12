@@ -10,7 +10,7 @@ const fs = require('fs');
 const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 const dbconnect = require('./lib/db_connect');
-const cors = require('cors');
+// const cors = require('cors');
 
 
 const httpServer = http.createServer((req,res)=>{
@@ -26,23 +26,6 @@ httpServer.listen(config.httpPort, ()=>{
 });
 
 var unifiedServer = (req,res)=>{	
-
-
-
-	  // const head = {
-	  //   'Access-Control-Allow-Origin': '*',
-	  //   'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT',
-	  //   'Access-Control-Max-Age': 2592000, 
-	  //   'Content-Type' : 'text/plain charset=UTF-8',
-	  //   'Access-Control-Allow-Headers' : ',content-type',
-	  //   'Content-Type' : 'application/json charset=UTF-8',
-	  //   'Content-Control-Request-Headers' : 'content-type'
-	  // };
-
-	 
-
-	  	// res.writeHead(405, head);
-  		// res.end(`${req.method} is not allowed for the request.`);
 	
 	const parsedUrl = url.parse(req.url,true);
 	
@@ -63,7 +46,6 @@ var unifiedServer = (req,res)=>{
 
 		buffer += decoder.end();
 
-		// console.log('buffer 1' + helpers.parseJsonToObject(buffer));
 
 		let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
 		
@@ -76,21 +58,25 @@ var unifiedServer = (req,res)=>{
 		}
 
 		chosenHandler(data, (statusCode,payload)=>{
-			console.log('status code ' + statusCode);
+	
 			statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 			payload = typeof(payload) == 'object' ? payload : {};
 
 			let payloadString = JSON.stringify(payload);
 
-				res.writeHead("Access-Control-Allow-Origin","*");
-				res.writeHead("Access-Control-Allow-Headers","Accept,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
-				res.writeHead("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
-				res.writeHead("Content-Type","application/json");
-				res.writeHead("Content-Control-Request-Headers","content-type");
-				res.writeHead("Access-Control-Max-Age",2592000);
 
-				res.writeHead('Content-Type','application/json');
+				res.setHeader("Access-Control-Allow-Origin","*");
+			
+				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type");
+				res.setHeader("Access-Control-Allow-Headers","Content-Type");
+				res.setHeader("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT, DELETE");
+				res.setHeader("Content-Type","application/json");
+				res.setHeader("Content-Control-Request-Headers","content-type");
+				res.setHeader("Access-Control-Max-Age",2592000);
+				
+
 				res.writeHead(statusCode);
+
 				res.end(payloadString);
 
 			console.log(trimmedPath,statusCode);
