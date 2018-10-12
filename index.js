@@ -76,20 +76,20 @@ var unifiedServer = (req,res)=>{
 		}
 
 		chosenHandler(data, (statusCode,payload)=>{
-
+			console.log('status code ' + statusCode);
 			statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 			payload = typeof(payload) == 'object' ? payload : {};
 
 			let payloadString = JSON.stringify(payload);
 
-				res.setHeader("Access-Control-Allow-Origin","*");
-				res.setHeader("Access-Control-Allow-Headers","DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
-				res.setHeader("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
-				res.setHeader("Content-Type","application/json");
-				res.setHeader("Content-Control-Request-Headers","content-type");
-				res.setHeader("Access-Control-Max-Age",2592000);
+				res.writeHead("Access-Control-Allow-Origin","*");
+				res.writeHead("Access-Control-Allow-Headers","Accept,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type");
+				res.writeHead("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT,DELETE");
+				res.writeHead("Content-Type","application/json");
+				res.writeHead("Content-Control-Request-Headers","content-type");
+				res.writeHead("Access-Control-Max-Age",2592000);
 
-				res.setHeader('Content-Type','application/json');
+				res.writeHead('Content-Type','application/json');
 				res.writeHead(statusCode);
 				res.end(payloadString);
 
