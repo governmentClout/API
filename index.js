@@ -58,7 +58,7 @@ var unifiedServer = (req,res)=>{
 		}
 
 		chosenHandler(data, (statusCode,payload)=>{
-	
+			
 			statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
 			payload = typeof(payload) == 'object' ? payload : {};
 
@@ -66,7 +66,6 @@ var unifiedServer = (req,res)=>{
 
 
 				res.setHeader("Access-Control-Allow-Origin","*");
-			
 				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type");
 				res.setHeader("Access-Control-Allow-Headers","Content-Type");
 				res.setHeader("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT, DELETE");
@@ -80,6 +79,7 @@ var unifiedServer = (req,res)=>{
 				res.end(payloadString);
 
 			console.log(trimmedPath,statusCode);
+
 		});
 
 
