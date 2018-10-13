@@ -78,7 +78,6 @@ var unifiedServer = (req,res)=>{
 
 				res.end(payloadString);
 
-			console.log(trimmedPath,statusCode);
 
 		});
 
@@ -95,7 +94,8 @@ ROUTES
 let router = {
 	'users' : handlers.users,
 	'login' : handlers.login,
-	'profiles' : handlers.profiles
+	'profiles' : handlers.profiles,
+	'posts' : handlers.posts
 };
 
 
