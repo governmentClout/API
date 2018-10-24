@@ -25,16 +25,21 @@ httpServer.listen(config.httpPort, ()=>{
 
 });
 
-var unifiedServer = (req,res)=>{	
+var unifiedServer = (req,res)=>{
+
 	
 	const parsedUrl = url.parse(req.url,true);
-	
 	const path = parsedUrl.pathname; 
 	const trimmedPath = path.replace(/^\/+|\/+$/g,'');
-	const method = req.method.toLowerCase();
+	const separatedUrl = trimmedPath.split('/');
+	const route = separatedUrl[0];
+	const param = separatedUrl[1];
 	const queryStringObject = parsedUrl.query;
+
+	const method = req.method.toLowerCase();
 	const headers = req.headers;
 	const decoder = new stringDecoder('utf-8');
+
 
 	let buffer = '';
 
@@ -47,10 +52,11 @@ var unifiedServer = (req,res)=>{
 		buffer += decoder.end();
 
 
-		let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+		let chosenHandler = typeof(router[route]) !== 'undefined' ? router[route] : handlers.notFound;
 		
 		let data = {
-			'trimmedPath' : trimmedPath,
+			'trimmedPath' : route,
+			'param': param,
 			'queryStringObject' : queryStringObject,
 			'method': method,
 			'headers': headers,
