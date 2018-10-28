@@ -34,12 +34,14 @@ var unifiedServer = (req,res)=>{
 	const separatedUrl = trimmedPath.split('/');
 	const route = separatedUrl[0];
 	const param = separatedUrl[1];
+
 	const queryStringObject = parsedUrl.query;
 
 	const method = req.method.toLowerCase();
 	const headers = req.headers;
 	const decoder = new stringDecoder('utf-8');
 
+	console.log('method ' + method);
 
 	let buffer = '';
 
@@ -62,6 +64,8 @@ var unifiedServer = (req,res)=>{
 			'headers': headers,
 			'payload': helpers.parseJsonToObject(buffer)
 		}
+
+
 
 		chosenHandler(data, (statusCode,payload)=>{
 			
