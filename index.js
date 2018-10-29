@@ -34,12 +34,12 @@ var unifiedServer = (req,res)=>{
 	const separatedUrl = trimmedPath.split('/');
 	const route = separatedUrl[0];
 	const param = separatedUrl[1];
+
 	const queryStringObject = parsedUrl.query;
 
 	const method = req.method.toLowerCase();
 	const headers = req.headers;
 	const decoder = new stringDecoder('utf-8');
-
 
 	let buffer = '';
 
@@ -63,6 +63,8 @@ var unifiedServer = (req,res)=>{
 			'payload': helpers.parseJsonToObject(buffer)
 		}
 
+
+
 		chosenHandler(data, (statusCode,payload)=>{
 			
 			statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
@@ -72,10 +74,10 @@ var unifiedServer = (req,res)=>{
 
 
 				res.setHeader("Access-Control-Allow-Origin","*");
-				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type");
-				res.setHeader("Access-Control-Allow-Headers","Content-Type");
-				res.setHeader("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT, DELETE");
-				res.setHeader("Content-Type","application/json");
+				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type,uuid,token");
+				res.setHeader("Access-Control-Allow-Headers","Content-Type,uuid,token");
+				res.setHeader("Access-Control-Allow-Methods","options, post, get, put, delete");
+				res.setHeader("Content-Type","application/json, multipart/form-data, application/x-www-form-urlencoded");
 				res.setHeader("Content-Control-Request-Headers","content-type");
 				res.setHeader("Access-Control-Max-Age",2592000);
 				
