@@ -41,8 +41,6 @@ var unifiedServer = (req,res)=>{
 	const headers = req.headers;
 	const decoder = new stringDecoder('utf-8');
 
-	console.log('method ' + method);
-
 	let buffer = '';
 
 	req.on('data', (data)=>{
@@ -78,8 +76,8 @@ var unifiedServer = (req,res)=>{
 				res.setHeader("Access-Control-Allow-Origin","*");
 				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type");
 				res.setHeader("Access-Control-Allow-Headers","Content-Type");
-				res.setHeader("Access-Control-Allow-Methods","OPTIONS, POST, GET, PUT, DELETE");
-				res.setHeader("Content-Type","application/json","multipart/form-data","application/x-www-form-urlencoded");
+				res.setHeader("Access-Control-Allow-Methods","options, post, get, put, delete");
+				res.setHeader("Content-Type","application/json, multipart/form-data, application/x-www-form-urlencoded");
 				res.setHeader("Content-Control-Request-Headers","content-type");
 				res.setHeader("Access-Control-Max-Age",2592000);
 				
