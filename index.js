@@ -74,8 +74,8 @@ var unifiedServer = (req,res)=>{
 
 
 				res.setHeader("Access-Control-Allow-Origin","*");
-				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type");
-				res.setHeader("Access-Control-Allow-Headers","Content-Type");
+				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type,uuid,token");
+				res.setHeader("Access-Control-Allow-Headers","Content-Type,uuid,token");
 				res.setHeader("Access-Control-Allow-Methods","options, post, get, put, delete");
 				res.setHeader("Content-Type","application/json, multipart/form-data, application/x-www-form-urlencoded");
 				res.setHeader("Content-Control-Request-Headers","content-type");
