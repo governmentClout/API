@@ -23,7 +23,7 @@ posts.options = (data,callback)=>{
 	
 }
 
-posts.post = (data,callback)=>{
+posts.post = (data,callback)=>{ 
 	//create a new post
 
 	let tokenHeader = data.headers.token;
@@ -95,21 +95,25 @@ posts.get = (data,callback)=>{
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
-	if(data && 
+
+	if( 
 		token && 
-		uuidHeader &&
-		post 
+		uuidHeader  
 		){
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
 		
 		con.query(headerChecker,(err,results)=>{
-			// console.log(results[0].token);
+			// console.log(results);
 			if(!err && 
 				results && 
 				results[0].token.length > 0){
 
-				let postQuery = "SELECT * FROM posts WHERE uuid='" +post+"'";
+				let postQuery = "SELECT * FROM posts";
+
+				if(post){
+					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'";
+				}
 			// console.log('uuid ' + uuidHeader);
 				con.query(postQuery,(err,result)=>{
 					
