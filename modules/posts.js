@@ -282,4 +282,4 @@ posts.delete = (data,callback)=>{
 }
 
 
-module.exports = profiles;
+module.exports = posts;
