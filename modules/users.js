@@ -200,8 +200,8 @@ users.post = (data,callback)=>{
 
 users.get = (data,callback) => {
 
-	let token = data.headers.token;
-	let uuid = data.headers.uuid;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let query = data.queryStringObject;
 	
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;

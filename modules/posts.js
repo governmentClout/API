@@ -137,7 +137,16 @@ posts.get = (data,callback)=>{
 
 	}else{
 
-		callback(400,{'Error':'Missing Required Fields'});
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+
+		callback(400,{'Error':errorObject});
 	}
 }
 
@@ -220,7 +229,7 @@ posts.delete = (data,callback)=>{
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	// console.log('uuidQuery',data.queryStringObject.uuid);
 
-	if(data && 
+	if( 
 		token && 
 		uuidHeader &&
 		post 
@@ -281,7 +290,19 @@ posts.delete = (data,callback)=>{
 
 	}else{
 
-		callback(400,{'Error':'Missing Required Fields'});
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+		if(!post){
+			errorObject.push('Post uuid not valid');
+		}
+
+		callback(400,{'Error':errorObject});
 	}
 }
 
