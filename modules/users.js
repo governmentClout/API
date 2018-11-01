@@ -18,7 +18,7 @@ const con = mysql.createConnection({
 
 
 let users = {};
-let errorObject = {};
+
 
 users.options = (data,callback)=>{
 
@@ -37,6 +37,7 @@ users.post = (data,callback)=>{
 	let tosAgreement = typeof(data.payload.tosAgreement) == 'boolean' && data.payload.tosAgreement == true ? 1 : false;
 	let provider = typeof(data.payload.provider) == 'string' && (data.payload.provider == 'email' || data.payload.provider == 'facebook' || data.payload.provider == 'twitter' || data.payload.provider == 'linkedin' || data.payload.provider == 'google'  ) ? data.payload.provider : false;
 	let uuid = uuidV1();
+	let proceed = false;
 	
 	if(provider == 'email'){
 
@@ -45,17 +46,36 @@ users.post = (data,callback)=>{
 		email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
 	 	dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
 
+	}else{
+
+		phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length >= 10 ? data.payload.phone.trim() : false;
+		email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
+	 	dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
+
+	}
+
+	if(provider && tosAgreement){
+
+		if(provider == 'email'){
+
+			if(password && phone && email && password && dob){
+				proceed = true;
+			}
+
+		}else if(
+				provider == 'twitter' || 
+				provider == 'facebook' ||
+				provder == 'linkedin' ||
+				provider == 'google'
+				){
+
+				proceed = true;
+
+			}
+
 	}
 	
-	if(
-		phone && 
-		email && 
-		dob && 
-		password && 
-		tosAgreement &&
-		provider
-
-		){
+	if(proceed){
 		
 		const checkPhone = "SELECT * FROM users WHERE phone='" + phone + "'";
 		
@@ -70,8 +90,11 @@ users.post = (data,callback)=>{
 
 				   				if(!err && result.length == 0){
 
-				   					let hashedPassword = helpers.hash(password);
-					
+				   					let hashedPassword = 'none';
+
+				   					if(provider == 'email'){
+				   						 hashedPassword = helpers.hash(password);
+				   					}	
 					
 									if(hashedPassword){
 
@@ -103,7 +126,7 @@ users.post = (data,callback)=>{
 
 										   	}else{
 										   		console.log(err);
-										   		callback(400, {'Error':'User Not created'});
+										   		callback(400, {'Error':'User Not created, mysql error ---> check server log'});
 										   		// callback(500, {'Error':'Table creation failed, its possible this table already exists'});
 										   	}
 
@@ -133,10 +156,9 @@ users.post = (data,callback)=>{
 				   	}
 
 				  });
-
-
 			
 		}else{
+
 			let errorObject = [];
 			let errorMessage = [];
 			let acceptedProviders = ['email','facebook','twitter','linkedin','google'];
@@ -145,29 +167,31 @@ users.post = (data,callback)=>{
 
 				errorObject.push('Provider is missing or invalid format');
 
-			}else if( !acceptedProviders.indexOf(initialProvider) > -1 ){
+			}
+
+			if( acceptedProviders.indexOf(provider) == -1 ){
 					errorMessage.push('Provider ' + initialProvider + ' is not allowed, try: email | facebook | twitter | linkedin | google');
 			}
 
-			if(!phone){
+			if(!phone && provider == "email"){
 				errorObject.push('Phone number is missing or invalid format');
 				
 			}
-			if(!email){
+			if(!email && provider == "email"){
 				errorObject.push('Email is missing or invalid format');
 			}
-			if(!dob){
+			if(!dob && provider == "email"){
 				errorObject.push('DOB is missing or invalid format');
 			}
-			if(!password){
+			if(!password && provider == "email"){
 				errorObject.push('Password is missing or invalid format');
 			}
 			if(!tosAgreement){
-				errorObject.push('tosAgreement is missing or invalid format');
+				errorObject.push('tosAgreement cannot be ' + tosAgreement);
 			}
-			
 
 				console.log('Player does already exist');
+
 				callback(400, {'Error': errorObject, 'Message': errorMessage});
 			}
 
@@ -179,9 +203,6 @@ users.get = (data,callback) => {
 	let token = data.headers.token;
 	let uuid = data.headers.uuid;
 	let query = data.queryStringObject;
-
-	//accepted query
-	// [with_comments,with_posts,with_]
 	
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
