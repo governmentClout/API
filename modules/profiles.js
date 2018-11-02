@@ -112,7 +112,27 @@ profiles.post = (data,callback)=>{
 						
 
 					}else{
-						callback(400,{'Error':'Missing required Parameter'});
+						let errorObject = [];
+						if(!nationality){
+							errorObject.push('Nationality is missing or invalid format');
+						}
+						if(!state){
+							errorObject.push('State is missing or invalid format');
+						}
+						if(!lga){
+							errorObject.push('lga is missing or invalide format');
+						}
+						if(!firstName){
+							errorObject.push('firstName is missing or invalide format');
+						}
+						if(!lastName){
+							errorObject.push('lastName is mising or invalide format');
+						}
+						if(!photo){
+							errorObject.push('Photo is missing or invalid format');
+						}
+
+						callback(400,{'Error':errorObject});
 					}
 
 			}else{
@@ -141,7 +161,7 @@ profiles.get = (data,callback)=>{
 	if(data && 
 		token && 
 		uuidHeader &&
-		uuidQuery == uuidHeader
+		uuidQuery
 		){
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
@@ -152,12 +172,10 @@ profiles.get = (data,callback)=>{
 				results && 
 				results[0].token.length > 0){
 
-				console.log('yes now');
-
-				let profile = "SELECT nationality,state,lga,firstName,lastName,photo,created_at,updated_at FROM profiles WHERE uuid='" + uuidHeader + "'";
+				let profile = "SELECT nationality,state,lga,firstName,lastName,photo,created_at,updated_at FROM profiles WHERE uuid='" + uuidQuery + "'";
 			// console.log('uuid ' + uuidHeader);
 				con.query(profile,(err,result)=>{
-					console.log(result);
+					
 					if(!err && result[0]){
 						callback(200,{'profile':result});
 					}else{
@@ -173,7 +191,17 @@ profiles.get = (data,callback)=>{
 		});
 
 	}else{
-		callback(400,{'Error':'Missing Required Fields'});
+		let errorObject = [];
+		if(!token){
+			errorObject.push('Token Header is required');
+		}
+		if(!uuidHeader){
+			errorObjet.push('UUID header is required');
+		}
+		if(!uuidQuery){
+			errorObject.push('Query uuid is required');
+		}
+		callback(400,{'Error':errorObject});
 	}
 
 	// callback(200,{'Success':'You have hit profile get endpoint'});
