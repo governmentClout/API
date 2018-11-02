@@ -105,7 +105,8 @@ let router = {
 	'profiles' : handlers.profiles,
 	'posts' : handlers.posts,
 	'comments' : handlers.comments,
-	'reactions' : handlers.reactions
+	'reactions' : handlers.reactions,
+	'shares' : handlers.shares
 };
 
 

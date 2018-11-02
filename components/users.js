@@ -1,6 +1,6 @@
 
 
-const _db = require('./../lib/db');
+const _db = require('./../lib/migrations');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
