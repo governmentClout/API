@@ -55,7 +55,7 @@ reactions.get = (data,callback)=>{
 							if(!err && result.length>0){
 								//user already liked this post
 								callback(500,{'Error':'User already liked this post'});
-								
+
 							}else{
 
 								let sql = "INSERT INTO reactions (uuid,post) VALUES('"+uuid+"','" + post+"')";
@@ -102,7 +102,7 @@ reactions.delete = (data,callback)=>{
 	let reaction = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
-	// console.log('uuidQuery',data.queryStringObject.uuid);
+
 
 	if(
 		data && 
@@ -161,7 +161,7 @@ reactions.delete = (data,callback)=>{
 
 	}else{
 
-		callback(400,{'Error':'Missing Required Fields'});
+		callback(400,{'Error':'Missing Header Fields'});
 	}
 }
 

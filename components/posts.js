@@ -10,7 +10,8 @@ const con = mysql.createConnection({
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -94,6 +95,8 @@ posts.get = (data,callback)=>{
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
+	let queryObject = data.queryStringObject;
+
 
 	if( 
 		token && 
@@ -108,17 +111,56 @@ posts.get = (data,callback)=>{
 				results && 
 				results[0].token.length > 0){
 
+
 				let postQuery = "SELECT * FROM posts";
 
 				if(post){
-					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'";
-				}
-			// console.log('uuid ' + uuidHeader);
-				con.query(postQuery,(err,result)=>{
-					
-					if(!err && result[0]){
 
-						callback(200,{'post':result});
+					// if(queryObject.with_comments != undefined){
+					// 	let commentsQuery = "; SELECT count* FROM comments WHERE ref='" + post + "'";
+					// }
+					// if(queryObject.with_reactions != undefined){
+					// 	let commentsQuery = "; SELECT * FROM reactions WHERE ref='" + post + "'";
+					// }
+
+					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'";
+
+				}
+			 
+				con.query(postQuery,(err,results,fields)=>{
+					
+					if(!err && results){
+
+						 let compressedResult = [];
+
+						if(post){
+
+							compressedResult = [].concat.apply([], results);
+						
+						}else{
+
+							
+							for(let i=0; i < results.length; i++){
+
+								let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
+								
+								let g = con.query(update,(err,resultants,fields)=>{
+
+									return ()=>{
+										callback(resultants);
+									}
+									
+								});
+
+								compressedResult.push(g);
+
+							}
+
+							console.log(compressedResult);
+
+						}
+						
+						
 
 					}else{
 						console.log(err);

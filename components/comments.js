@@ -5,6 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 
+
 const con = mysql.createConnection({
 
   host: config.db_host,
@@ -200,4 +201,4 @@ comments.delete = (data,callback)=>{
 }
 
 
-module.exports = profiles;
+module.exports = comments;
