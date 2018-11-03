@@ -106,7 +106,8 @@ let router = {
 	'posts' : handlers.posts,
 	'comments' : handlers.comments,
 	'reactions' : handlers.reactions,
-	'shares' : handlers.shares
+	'shares' : handlers.shares,
+	'tests':handlers.tests
 };
 
 

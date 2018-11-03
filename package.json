@@ -1,0 +1,34 @@
+{
+  "name": "gclout_api",
+  "version": "1.0.0",
+  "description": "API for gclout",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "mysql": "^2.16.0",
+    "node-mysql-wrapper": "^2.9.3",
+    "randomstring": "^1.1.5",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/governmentClout/API.git"
+  },
+  "keywords": [
+    "gclout",
+    "social",
+    "government"
+  ],
+  "author": "Seyi Onifade",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/governmentClout/API/issues"
+  },
+  "homepage": "https://github.com/governmentClout/API#readme"
+}

@@ -5,6 +5,8 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 
+
+
 const con = mysql.createConnection({
 
   host: config.db_host,
@@ -15,7 +17,13 @@ const con = mysql.createConnection({
 
 });
 
+
+// var wrapper = require('node-mysql-wrapper'); 
+// var db = wrapper.wrap(connection);
+
+
 let posts = {};
+
 
 posts.options = (data,callback)=>{
 
@@ -136,31 +144,34 @@ posts.get = (data,callback)=>{
 						if(post){
 
 							compressedResult = [].concat.apply([], results);
+
 						
-						}else{
+						}
+						else{
 
-							
-							for(let i=0; i < results.length; i++){
+							compressedResult = results;
 
-								let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
+							// for(let i=0; i < results.length; i++){
+
+							// 	let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
 								
-								let g = con.query(update,(err,resultants,fields)=>{
+							// 	let g = con.query(update,(err,resultants,fields)=>{
 
-									return ()=>{
-										callback(resultants);
-									}
+							// 		return ()=>{
+							// 			callback(resultants);
+							// 		}
 									
-								});
+							// 	});
 
-								compressedResult.push(g);
+							// 	compressedResult.push(g);
 
-							}
+							// }
 
-							console.log(compressedResult);
+							// console.log(compressedResult);
 
 						}
 						
-						
+						callback(200,{'posts':compressedResult});
 
 					}else{
 						console.log(err);
