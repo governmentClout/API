@@ -1,6 +1,4 @@
 
-
-const _db = require('./../lib/db');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
@@ -48,22 +46,39 @@ reactions.get = (data,callback)=>{
 				){
 
 					if(post){
+						//check if user already liked post
 
-						let sql = "INSERT INTO reactions (uuid,post) VALUES('"+uuid+"','" + post+"')";
+						let checkLike = "SELECT * from reactions WHERE uuid='" + uuid + "' AND post='"+post+"'";
 
-						con.query(sql,(err,result)=>{
+						con.query(checkLike,(err,result)=>{
 
-							if(!err && result){
-
-								callback(200,{'Success':'Post Liked'});
+							if(!err && result.length>0){
+								//user already liked this post
+								callback(500,{'Error':'User already liked this post'});
 
 							}else{
-								console.log(err);
-								callback(500,{'Error':'Operation Failed'});
+
+								let sql = "INSERT INTO reactions (uuid,post) VALUES('"+uuid+"','" + post+"')";
+
+								con.query(sql,(err,result)=>{
+
+									if(!err && result){
+
+										callback(200,{'Success':'Post Liked'});
+
+									}else{
+										
+										callback(500,{'Error':'Operation Failed'});
+
+									}
+
+								});
 
 							}
 
 						});
+
+						
 
 					}else{
 						callback(405,{'Error':'Missing Required Parameter'});
@@ -87,7 +102,7 @@ reactions.delete = (data,callback)=>{
 	let reaction = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
-	// console.log('uuidQuery',data.queryStringObject.uuid);
+
 
 	if(
 		data && 
@@ -146,7 +161,7 @@ reactions.delete = (data,callback)=>{
 
 	}else{
 
-		callback(400,{'Error':'Missing Required Fields'});
+		callback(400,{'Error':'Missing Header Fields'});
 	}
 }
 

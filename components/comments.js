@@ -1,10 +1,10 @@
 
-const _db = require('./../lib/db');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
+
 
 const con = mysql.createConnection({
 
@@ -201,4 +201,4 @@ comments.delete = (data,callback)=>{
 }
 
 
-module.exports = profiles;
+module.exports = comments;

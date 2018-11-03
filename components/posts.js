@@ -1,27 +1,45 @@
 
-const _db = require('./../lib/db');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 
+
+
 const con = mysql.createConnection({
 
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
+
+// var wrapper = require('node-mysql-wrapper'); 
+// var db = wrapper.wrap(connection);
+
+
 let posts = {};
+let resultObject = [];
 
 posts.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
+
+
+
+posts.queryPost = (result)=>{
+
+	resultObject.push(result);
+
+}
+
+
 
 posts.post = (data,callback)=>{ 
 	//create a new post
@@ -95,6 +113,8 @@ posts.get = (data,callback)=>{
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
+	let queryObject = data.queryStringObject;
+
 
 	if( 
 		token && 
@@ -109,17 +129,66 @@ posts.get = (data,callback)=>{
 				results && 
 				results[0].token.length > 0){
 
-				let postQuery = "SELECT * FROM posts";
+
+				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id ";
 
 				if(post){
-					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'";
-				}
-			// console.log('uuid ' + uuidHeader);
-				con.query(postQuery,(err,result)=>{
-					
-					if(!err && result[0]){
 
-						callback(200,{'post':result});
+					
+					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'";
+
+				}
+			 
+				con.query(postQuery,(err,results,fields)=>{
+					
+					if(!err && results){
+
+						 let compressedResult = [];
+
+						// if(post){
+							//clean it better
+							compressedResult = [].concat.apply([], results);
+							callback(200,{'posts':compressedResult});
+						
+						// }
+						// else{
+
+						// 	posts.queryPost(results);
+
+						// 	for(let i=0; i < results.length; i++){
+						// 		console.log(i);
+
+						// 		// let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
+						// 		function getParrotMessage(callback) {
+						// 			console.log('inside parrot');
+						// 			getWord(results[i].uuid, function (err, result) {
+						// 				console.log('inside getword');
+						// 		        if(err || !result.length) return callback('error or no results');
+						// 		        // since result is array of objects [{word: 'someword'},{word: 'someword2'}] let's remap it
+						// 		        result = result.map(obj => obj.word);
+						// 		        // result should now look like ['someword','someword2']
+						// 		        // return it
+						// 		        callback(null, result);
+
+						// 		    });
+						// 		}
+
+								// con.query(update,(err,resultants,fields)=>{
+
+								// 	posts.queryPost(resultants);
+									
+								// });
+
+							// }
+							// getParrotMessage(function(err, words){
+							//     callback(200,{'Result':words});
+
+							// });
+							
+
+						// });
+						
+						
 
 					}else{
 						console.log(err);
@@ -149,6 +218,19 @@ posts.get = (data,callback)=>{
 		callback(400,{'Error':errorObject});
 	}
 }
+
+ getWord = (post, callback) => {
+    con.query("SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'", (err, rows)=> {
+        
+        if(err) return callback(err);
+        console.log('error => ');
+        console.log(err);
+        console.log('rows => ');
+        console.log(rows);
+        callback(null, rows);
+
+    });
+};
 
 posts.put = (data,callback)=>{
 
