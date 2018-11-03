@@ -23,13 +23,23 @@ const con = mysql.createConnection({
 
 
 let posts = {};
-
+let resultObject = [];
 
 posts.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
+
+
+
+posts.queryPost = (result)=>{
+
+	resultObject.push(result);
+
+}
+
+
 
 posts.post = (data,callback)=>{ 
 	//create a new post
@@ -120,17 +130,11 @@ posts.get = (data,callback)=>{
 				results[0].token.length > 0){
 
 
-				let postQuery = "SELECT * FROM posts";
+				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares FROM posts LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid GROUP BY posts.id,comments.ref,reactions.post, shares.post";
 
 				if(post){
 
-					// if(queryObject.with_comments != undefined){
-					// 	let commentsQuery = "; SELECT count* FROM comments WHERE ref='" + post + "'";
-					// }
-					// if(queryObject.with_reactions != undefined){
-					// 	let commentsQuery = "; SELECT * FROM reactions WHERE ref='" + post + "'";
-					// }
-
+					
 					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'";
 
 				}
@@ -141,37 +145,50 @@ posts.get = (data,callback)=>{
 
 						 let compressedResult = [];
 
-						if(post){
-
+						// if(post){
+							//clean it better
 							compressedResult = [].concat.apply([], results);
-
+							callback(200,{'posts':compressedResult});
 						
-						}
-						else{
+						// }
+						// else{
 
-							compressedResult = results;
+						// 	posts.queryPost(results);
 
-							// for(let i=0; i < results.length; i++){
+						// 	for(let i=0; i < results.length; i++){
+						// 		console.log(i);
 
-							// 	let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
-								
-							// 	let g = con.query(update,(err,resultants,fields)=>{
+						// 		// let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
+						// 		function getParrotMessage(callback) {
+						// 			console.log('inside parrot');
+						// 			getWord(results[i].uuid, function (err, result) {
+						// 				console.log('inside getword');
+						// 		        if(err || !result.length) return callback('error or no results');
+						// 		        // since result is array of objects [{word: 'someword'},{word: 'someword2'}] let's remap it
+						// 		        result = result.map(obj => obj.word);
+						// 		        // result should now look like ['someword','someword2']
+						// 		        // return it
+						// 		        callback(null, result);
 
-							// 		return ()=>{
-							// 			callback(resultants);
-							// 		}
+						// 		    });
+						// 		}
+
+								// con.query(update,(err,resultants,fields)=>{
+
+								// 	posts.queryPost(resultants);
 									
-							// 	});
-
-							// 	compressedResult.push(g);
+								// });
 
 							// }
+							// getParrotMessage(function(err, words){
+							//     callback(200,{'Result':words});
 
-							// console.log(compressedResult);
+							// });
+							
 
-						}
+						// });
 						
-						callback(200,{'posts':compressedResult});
+						
 
 					}else{
 						console.log(err);
@@ -201,6 +218,19 @@ posts.get = (data,callback)=>{
 		callback(400,{'Error':errorObject});
 	}
 }
+
+ getWord = (post, callback) => {
+    con.query("SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'", (err, rows)=> {
+        
+        if(err) return callback(err);
+        console.log('error => ');
+        console.log(err);
+        console.log('rows => ');
+        console.log(rows);
+        callback(null, rows);
+
+    });
+};
 
 posts.put = (data,callback)=>{
 

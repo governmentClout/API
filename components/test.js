@@ -1,13 +1,10 @@
-
-const helpers = require('./../lib/helpers');
-const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
-const mysql = require('mysql');
-const tokens = require('./../lib/tokenization');
-const wrapper = require('node-mysql-wrapper'); 
+const mysql = require('mysql'); 
+
+const dbhelper = require('./../lib/db_helper');
 
 
-const con = mysql.createConnection({
+let con = mysql.createConnection({
 
   host: config.db_host,
   user: config.db_username,
@@ -18,19 +15,13 @@ const con = mysql.createConnection({
 
 
 
-let db = wrapper.wrap(con);
-
-
-let usersTable = db.table("users"); 
-
-
 const tests = {};
 
 tests.get = (callback)=>{
 
-	usersTable.find({mail:"= xyluz@ymail.com"},function(results){
- 		console.log(result);
-	});
+	let u = dbhelper.checkToken('decca9fd-b867-4089-bac7-0ebe1ad3d5f2')
+	
+	console.log(u);
 
 }
 
