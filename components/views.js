@@ -4,9 +4,6 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 
-
-
-
 const con = mysql.createConnection({
 
   host: config.db_host,

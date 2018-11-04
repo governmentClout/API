@@ -97,8 +97,6 @@ var unifiedServer = (req,res)=>{
 ROUTES
 */
 
-
-
 let router = {
 	'users' : handlers.users,
 	'login' : handlers.login,
