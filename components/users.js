@@ -219,10 +219,14 @@ users.get = (data,callback) => {
 
 				){
 
-				let check = "SELECT users.*  users ";
+				let check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid";
+
+				// let check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid WHERE users.uuid='"+param+"'";
 
 				if(param){
-					check = "SELECT * FROM users WHERE uuid='" + param + "'";
+					// check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid='"+param+"'";
+
+					check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid WHERE users.uuid='"+param+"'";
 				}
 		
 
