@@ -29,7 +29,8 @@ profiles.post = (data,callback)=>{
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid;
 
-	let nationality = typeof(data.payload.nationality) == 'string' && data.payload.nationality.trim().length >= 3 ? data.payload.nationality.trim() : false;
+	let nationality_origin = typeof(data.payload.nationality_origin) == 'string' && data.payload.nationality_origin.trim().length >= 3 ? data.payload.nationality_origin.trim() : false;
+	let nationality_residence = typeof(data.payload.nationality_residence) == 'string' && data.payload.nationality_residence.trim().length >= 3 ? data.payload.nationality_residence.trim() : false;
 	let state = typeof(data.payload.state) == 'string' && data.payload.state.trim().length >= 2 ? data.payload.state.trim() : false;
 	let lga = typeof(data.payload.lga) == 'string' && data.payload.lga.trim().length >= 2 ? data.payload.lga.trim() : false;
 	let firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : false;

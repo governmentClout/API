@@ -129,19 +129,18 @@ posts.get = (data,callback)=>{
 				results[0].token.length > 0){
 
 
-				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id ";
+				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, COUNT(views.uuid) as views, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN views ON views.post=posts.uuid LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id ";
 
 			if(queryObject && queryObject.user){
 
-					postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid WHERE posts.user='"+queryObject.user+"' GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id";
+					postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, COUNT(views.uuid) as views, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN views ON views.post=posts.uuid LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid WHERE posts.user='"+queryObject.user+"' GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id";
 
 			
 				}
 
 				if(post){
-
 					
-					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'";
+					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "';SELECT count(*) as views FROM views WHERE post='" +post+ "'";
 
 				}
 			 
