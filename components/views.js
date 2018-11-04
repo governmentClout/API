@@ -133,15 +133,4 @@ views.get = (data,callback)=>{
 }
 
 
-views.delete = (data,callback)=>{
-
-	callback(200,{'success':'you have hit views delete endpoint'})
-
-}
-
-
-
-
-
-
 module.exports = views;

@@ -25,7 +25,7 @@ shares.options = (data,callback)=>{
 	
 }
 
-shares.get = (data,callback)=>{
+shares.post = (data,callback)=>{
 
 	let token = data.headers.token;
 	let user = data.headers.uuid;
@@ -89,7 +89,61 @@ shares.get = (data,callback)=>{
 
 }
 
+shares.get = (data,callback)=>{
 
+	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+
+	if(user && token && post){
+
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+
+		con.query(verifyToken, (err,result)=>{
+
+			if(
+				!err && 
+				result[0] && 
+				result[0].token == token 
+				){
+
+				let sqlViewCount = "SELECT count(*) AS shares FROM shares WHERE post='" +post+ "'";
+				con.query(sqlViewCount,(err,result)=>{
+
+					if(!err && result){
+
+						callback(200,result);
+
+					}else{
+
+						callback(400,{'Error':err});
+
+					}
+
+				});
+
+			}else{
+				console.log(err)
+				callback(400,{'Error':'Token/UUID Mismatch or expired'});
+			}
+
+		});
+
+	}else{
+		let errorObject = [];
+		if(!token){
+			errorObject.push('Token is invalid');
+		}
+
+		if(!user){
+			errorObject.push('User UUID invalid');
+		}
+		if(!post){
+			errorObject.push('Post uuid invalid');		
+		}
+		callback(400,{'Error':errorObject});
+	}
+}
 
 
 module.exports = shares;
