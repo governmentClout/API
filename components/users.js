@@ -219,7 +219,7 @@ users.get = (data,callback) => {
 
 				){
 
-				let check = "SELECT * FROM users";
+				let check = "SELECT users.*  users ";
 
 				if(param){
 					check = "SELECT * FROM users WHERE uuid='" + param + "'";

@@ -32,8 +32,8 @@ var unifiedServer = (req,res)=>{
 	const path = parsedUrl.pathname; 
 	const trimmedPath = path.replace(/^\/+|\/+$/g,'');
 	const separatedUrl = trimmedPath.split('/');
-	const route = separatedUrl[0];
-	const param = separatedUrl[1];
+	const route = separatedUrl[0]; //take our the first element from the array
+	const param = separatedUrl[1]; //send the rest
 
 	const queryStringObject = parsedUrl.query;
 
@@ -107,6 +107,7 @@ let router = {
 	'comments' : handlers.comments,
 	'reactions' : handlers.reactions,
 	'shares' : handlers.shares,
+	'views': handlers.views,
 	'tests':handlers.tests
 };
 

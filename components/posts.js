@@ -114,8 +114,7 @@ posts.get = (data,callback)=>{
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
 	let queryObject = data.queryStringObject;
-
-
+	
 	if( 
 		token && 
 		uuidHeader  
@@ -130,7 +129,14 @@ posts.get = (data,callback)=>{
 				results[0].token.length > 0){
 
 
-				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id ";
+				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id ";
+
+			if(queryObject && queryObject.user){
+
+					postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details FROM posts LEFT JOIN users ON users.uuid=posts.user LEFT JOIN shares ON shares.post=posts.uuid LEFT JOIN reactions ON reactions.post=posts.uuid LEFT JOIN comments ON comments.ref=posts.uuid WHERE posts.user='"+queryObject.user+"' GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id";
+
+			
+				}
 
 				if(post){
 
@@ -145,49 +151,9 @@ posts.get = (data,callback)=>{
 
 						 let compressedResult = [];
 
-						// if(post){
-							//clean it better
-							compressedResult = [].concat.apply([], results);
-							callback(200,{'posts':compressedResult});
 						
-						// }
-						// else{
-
-						// 	posts.queryPost(results);
-
-						// 	for(let i=0; i < results.length; i++){
-						// 		console.log(i);
-
-						// 		// let update = "SELECT count(*) as reactions FROM reactions WHERE post='"+results[i].uuid+"'; SELECT count(*) as comments FROM comments WHERE ref='"+results[i].uuid+"'; SELECT count(*) as shares FROM shares WHERE post='" +results[i].uuid+ "'";
-						// 		function getParrotMessage(callback) {
-						// 			console.log('inside parrot');
-						// 			getWord(results[i].uuid, function (err, result) {
-						// 				console.log('inside getword');
-						// 		        if(err || !result.length) return callback('error or no results');
-						// 		        // since result is array of objects [{word: 'someword'},{word: 'someword2'}] let's remap it
-						// 		        result = result.map(obj => obj.word);
-						// 		        // result should now look like ['someword','someword2']
-						// 		        // return it
-						// 		        callback(null, result);
-
-						// 		    });
-						// 		}
-
-								// con.query(update,(err,resultants,fields)=>{
-
-								// 	posts.queryPost(resultants);
-									
-								// });
-
-							// }
-							// getParrotMessage(function(err, words){
-							//     callback(200,{'Result':words});
-
-							// });
-							
-
-						// });
-						
+						compressedResult = [].concat.apply([], results);
+						callback(200,{'posts':[].concat.apply([], results)});
 						
 
 					}else{
