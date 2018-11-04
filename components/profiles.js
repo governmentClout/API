@@ -55,7 +55,8 @@ profiles.post = (data,callback)=>{
 				){
 
 				if(
-					nationality &&
+					nationality_origin &&
+					nationality_residence &&
 					state &&
 					lga &&
 					firstName &&
@@ -81,7 +82,7 @@ profiles.post = (data,callback)=>{
 										result.length < 1
 										){
 
-										let sql = "INSERT INTO profiles (uuid, nationality, state, lga, firstName, lastName, photo) VALUES ( '" + uuid + "','" +nationality+ "', '" + state + "' , '" + lga +"' ,'"+firstName +"', '" + lastName + "','" + photo +"' )";
+										let sql = "INSERT INTO profiles (uuid, nationality_residence, nationality_origin, state, lga, firstName, lastName, photo) VALUES ( '" + uuid + "','" +nationality_residence+ "', '" +nationality_origin+ "','" + state + "' , '" + lga +"' ,'"+firstName +"', '" + lastName + "','" + photo +"' )";
 
 										con.query(sql,  (err,result) => {
 
@@ -211,7 +212,7 @@ profiles.put = (data,callback)=>{
 	
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid;
-	let uuid = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let uuid = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 
 	if(token && uuid){
@@ -245,7 +246,8 @@ profiles.put = (data,callback)=>{
 									if(!err && 
 										result.length > 0
 										){
-										let nationality = typeof(data.payload.nationality) == 'string' && data.payload.nationality.trim().length >= 3 ? data.payload.nationality.trim() : result[0].nationality;
+										let nationality_residence = typeof(data.payload.nationality_residence) == 'string' && data.payload.nationality_residence.trim().length >= 3 ? data.payload.nationality_residence.trim() : result[0].nationality_residence;
+										let nationality_origin = typeof(data.payload.nationality_origin) == 'string' && data.payload.nationality_origin.trim().length >= 3 ? data.payload.nationality_origin.trim() : result[0].nationality_origin;
 										let state = typeof(data.payload.state) == 'string' && data.payload.state.trim().length >= 2 ? data.payload.state.trim() : result[0].state;
 										let lga = typeof(data.payload.lga) == 'string' && data.payload.lga.trim().length >= 2 ? data.payload.lga.trim() : result[0].lga;
 										let firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : result[0].firstName;
@@ -256,7 +258,7 @@ profiles.put = (data,callback)=>{
 										let updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 									
 
-										let sql = "UPDATE profiles SET nationality='" + nationality + "', state ='"+state+"', lga ='"+lga+"', firstName='"+firstName+"', lastName='"+lastName+"',photo='"+ photo +"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +uuid+ "'"; 
+										let sql = "UPDATE profiles SET nationality_residence='" + nationality_residence + "', nationality_origin='" + nationality_origin + "', state ='"+state+"', lga ='"+lga+"', firstName='"+firstName+"', lastName='"+lastName+"',photo='"+ photo +"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +uuid+ "'"; 
 
 										con.query(sql,  (err,result) => {
 

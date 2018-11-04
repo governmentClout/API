@@ -27,7 +27,7 @@ views.post = (data,callback)=>{
 	let uuid = uuidV1();
 	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
-	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : false;
 
 	if(user && token && post){
 

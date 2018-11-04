@@ -108,6 +108,7 @@ let router = {
 	'views': handlers.views,
 	'friends': handlers.friends,
 	'executives':handlers.executives,
+	'trends':handlers.trends,
 	'tests':handlers.tests
 };
 

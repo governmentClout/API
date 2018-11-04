@@ -29,7 +29,7 @@ shares.post = (data,callback)=>{
 
 	let token = data.headers.token;
 	let user = data.headers.uuid;
-	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : false;
 	let uuid = uuidV1();
 
 	if( token && user ){

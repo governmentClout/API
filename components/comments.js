@@ -84,14 +84,14 @@ comments.post = (data,callback)=>{
 
 comments.get = (data,callback)=>{
 	
-	let comment = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let ref = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	
 	if(data && 
 		token && 
 		uuidHeader &&
-		comment 
+		ref 
 		){
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
@@ -104,7 +104,7 @@ comments.get = (data,callback)=>{
 				results[0].token == token
 				){
 
-				let commentQuery = "SELECT comment,user,uuid,created_at,updated_at FROM comments WHERE uuid='" + comment + "'";
+				let commentQuery = "SELECT comment,user,uuid,created_at,updated_at FROM comments WHERE ref='" + ref + "'";
 			// console.log('uuid ' + uuidHeader);
 				con.query(commentQuery,(err,result)=>{
 					

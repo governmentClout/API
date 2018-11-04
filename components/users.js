@@ -219,14 +219,11 @@ users.get = (data,callback) => {
 
 				){
 
-				let check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid";
-
-				// let check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid WHERE users.uuid='"+param+"'";
+				let check = "SELECT users.*,JSON_OBJECT('nationality_residence',profiles.nationality_residence,'nationality_origin',profiles.nationality_origin,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid";
 
 				if(param){
-					// check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid='"+param+"'";
-
-					check = "SELECT users.*,JSON_OBJECT('nationality',profiles.nationality,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid WHERE users.uuid='"+param+"'";
+					
+					check = "SELECT users.*,JSON_OBJECT('nationality_residence',profiles.nationality_residence,'nationality_origin',profiles.nationality_origin,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid WHERE users.uuid='"+param+"'";
 				}
 		
 
@@ -238,7 +235,7 @@ users.get = (data,callback) => {
 
 					   	}else{
 					   		console.log(err);
-					   		callback(500,{'Error':'Could not fetch users'});
+					   		callback(500,{'Error':'sql server error, could not fetch users'});
 
 					   	}
 
