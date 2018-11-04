@@ -108,6 +108,8 @@ let router = {
 	'reactions' : handlers.reactions,
 	'shares' : handlers.shares,
 	'views': handlers.views,
+	'friends': handlers.friends,
+	'executives':handlers.executives,
 	'tests':handlers.tests
 };
 
