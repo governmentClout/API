@@ -29,6 +29,7 @@ reactions.post = (data,callback)=>{
 	let user = data.headers.uuid;
 	let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : false;
 	let uuid = uuidV1();
+	console.log('here 111');
 
 	if( token && user ){
 
@@ -59,13 +60,13 @@ reactions.post = (data,callback)=>{
 								let sql = "INSERT INTO reactions (uuid,post,user) VALUES('"+uuid+"','" + post+"','"+user+"')";
 
 								con.query(sql,(err,result)=>{
-
+									console.log(result);
 									if(!err && result){
 
 										callback(200,{'Success':'Post Liked'});
 
 									}else{
-										
+										console.log(err);
 										callback(500,{'Error':'Operation Failed'});
 
 									}
