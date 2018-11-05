@@ -80,7 +80,6 @@ var unifiedServer = (req,res)=>{
 				res.setHeader("Content-Type","application/json, multipart/form-data, application/x-www-form-urlencoded");
 				res.setHeader("Content-Control-Request-Headers","content-type");
 				res.setHeader("Access-Control-Max-Age",2592000);
-				
 
 				res.writeHead(statusCode);
 
