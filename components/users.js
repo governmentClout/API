@@ -39,49 +39,22 @@ users.post = (data,callback)=>{
 	let uuid = uuidV1();
 	let proceed = false;
 	
-	if(provider == 'email'){
-
-		password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
-		phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length >= 10 ? data.payload.phone.trim() : false;
-		email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
-	 	dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
-
-	}else{
-
-		phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length >= 10 ? data.payload.phone.trim() : false;
-		email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
-	 	dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
-
-	}
-
-	if(provider && tosAgreement){
+	if(provider){
 
 		if(provider == 'email'){
 
-			if(password && phone && email && password && dob){
-				proceed = true;
-			}
+		let password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
+		let phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length >= 10 ? data.payload.phone.trim() : false;
+		let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
+	 	let dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
 
-		}else if(
-				provider == 'twitter' || 
-				provider == 'facebook' ||
-				provder == 'linkedin' ||
-				provider == 'google'
-				){
+	 	if(tosAgreement && password && email && phone && dob){
 
-				proceed = true;
-
-			}
-
-	}
-	
-	if(proceed){
-		
-		const checkPhone = "SELECT * FROM users WHERE phone='" + phone + "'";
+	 		const checkPhone = "SELECT * FROM users WHERE phone='" + phone + "'";
 		
 
-		con.query(checkPhone,  (err,result) => {
-
+			con.query(checkPhone,  (err,result) => {
+				
 				   	if(!err && result.length == 0){
 
 				   		const checkEmail = "SELECT * FROM users WHERE email='" + email + "'";
@@ -90,11 +63,8 @@ users.post = (data,callback)=>{
 
 				   				if(!err && result.length == 0){
 
-				   					let hashedPassword = 'none';
-
-				   					if(provider == 'email'){
-				   						 hashedPassword = helpers.hash(password);
-				   					}	
+				   					let hashedPassword = helpers.hash(password);
+				   					
 					
 									if(hashedPassword){
 
@@ -134,6 +104,7 @@ users.post = (data,callback)=>{
 							
 
 										}else{
+											console.log(err);
 											callback(500, {'Error':'Password Hash Failed'});
 										}
 
@@ -143,23 +114,20 @@ users.post = (data,callback)=>{
 				   					callback(400, {'Error':'User Not created, Email already in use'});
 				   				
 				   				}
+				   			});
 
+				   		}else{
 
-				   		});
+					   		console.log(err);
+					   		callback(400, {'Error':'User Not created, Phone number already in use'});
 				   		
-					
+				   		}
 
-				   	}else{
-				   		console.log(err);
-				   		callback(400, {'Error':'User Not created, Phone number already in use'});
-				   		
-				   	}
+				   	});
 
-				  });
-			
-		}else{
+	 	}else{
 
-			let errorObject = [];
+	 		let errorObject = [];
 			let errorMessage = [];
 			let acceptedProviders = ['email','facebook','twitter','linkedin','google'];
 
@@ -190,13 +158,204 @@ users.post = (data,callback)=>{
 				errorObject.push('tosAgreement cannot be ' + tosAgreement);
 			}
 
-				console.log('Player does already exist');
-
 				callback(400, {'Error': errorObject, 'Message': errorMessage});
-			}
+		
+
+	 	}
+	 }
+
+	 else if(
+	 	provider == "twitter" || 
+	 	provider == "facebook" || 
+	 	provider == "linkedin" || 
+	 	provider == "google" 
+
+	 	){
+
+	 	if(tosAgreement){
+
+		let phone = typeof(data.payload.phone) == 'string' && data.payload.phone.trim().length > 0 ? data.payload.phone.trim() : '';
+		let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length > 0 ? data.payload.email.trim() : '';
+	 	let dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : '';
+
+	 	let testPhone = "SELECT * FROM users WHERE phone='" + phone "' AND phone !='' ";
+
+	 	con.query(testPhone,(err,result)=>{
+
+	 		if(!err && result.length == 0){
+
+	 			let testEmail = "SELECT * FROM user WHERE email='" +email+ "' AND email !=''";
+
+	 			con.query(testEmail,(err,result)=>{
+
+	 				if(!err && result.length == 0){
+
+	 					let insertUser = "INSERT INTO users (uuid,phone, email, dob, password, tosAgreement, provider) VALUES ( '" + uuid + "','" +phone+ "', '" + email + "' , '" + dob +"' ,'"+hashedPassword +"', '" + tosAgreement + "','" + provider +"' )";
+
+	 					con.query(insertUser,(err,result)=>{
+
+	 						if(!err && result.length > 0){
+
+	 							let userToken = tokens.generate(uuid);
+
+								let tokenInsert = "INSERT INTO tokens (uuid,token) VALUES ('" + uuid +"','" + userToken + "')";
+
+								con.query(tokenInsert,(err,result)=>{
+
+						   			if(!err){
+
+						   				callback(200, {'Token':userToken, 'uuid':uuid});
+
+						   			}else{
+
+						   				callback(500, {'Error':'User registration failed, token generation failed'});
+
+						   			}
+
+						   		});
+
+	 						}else{
+	 							callback(500,{'Error':'Server error (i.e. xyluz did something wrong fault)'});
+	 						}
+
+	 					});
+
+	 				}else{	
+	 					callback(400,{'Error':'Email already in use'});
+	 				}
+
+	 			});
+
+	 		}else{
+	 			callback(400,{'Error':'Phone already in use'});
+	 		}
+
+	 	});
+
+
+	 	}else{
+	 		callback(400,{'Error':'tosAgreement must be true'});
+	 	}
+
+	 }else{
+
+	 	let errorObject = [];
+		let errorMessage = [];
+		let acceptedProviders = ['email','facebook','twitter','linkedin','google'];
+
+		if(!provider){
+
+			errorObject.push('Provider is missing or invalid format');
+
+		}
+
+		if( acceptedProviders.indexOf(provider) == -1 ){
+				errorMessage.push('Provider ' + initialProvider + ' is not allowed, try: email | facebook | twitter | linkedin | google');
+		}
+
+		callback(400, {'Error': errorObject, 'Message': errorMessage});
+
+	 }
+
+	}else{
+
+		callback(400, {'Error': 'Provider is required'});
+
+	}
+
+	
+
+	
+	
+	// if(proceed){
+		
+	// 	const checkPhone = "SELECT * FROM users WHERE phone='" + phone + "'";
+		
+
+	// 	con.query(checkPhone,  (err,result) => {
+	// 			console.log(result);
+	// 			   	if(!err && result.length == 0){
+
+	// 			   		const checkEmail = "SELECT * FROM users WHERE email='" + email + "'";
+
+	// 			   		con.query(checkEmail,  (err,result) => {
+
+	// 			   				if(!err && result.length == 0){
+
+	// 			   					let hashedPassword = 'none';
+
+	// 			   					if(provider == 'email'){
+	// 			   						 hashedPassword = helpers.hash(password);
+	// 			   					}	
+					
+	// 								if(hashedPassword){
+
+	// 									let sql = "INSERT INTO users (uuid,phone, email, dob, password, tosAgreement, provider) VALUES ( '" + uuid + "','" +phone+ "', '" + email + "' , '" + dob +"' ,'"+hashedPassword +"', '" + tosAgreement + "','" + provider +"' )";
+
+	// 									// const createUser = con.query(sql);
+
+	// 									con.query(sql,  (err,result) => {
+
+	// 									   	if(!err){
+	// 									   		let userToken = tokens.generate(uuid);
+
+	// 									   		let tokenInsert = "INSERT INTO tokens (uuid,token) VALUES ('" + uuid +"','" + userToken + "')"
+										   		
+	// 									   		con.query(tokenInsert,(err,result)=>{
+
+	// 									   			if(!err){
+
+	// 									   				callback(200, {'Token':userToken, 'uuid':uuid});
+
+	// 									   			}else{
+
+	// 									   				callback(500, {'Error':'User registration failed, token generation failed'});
+
+	// 									   			}
+
+	// 									   		});
+
+
+	// 									   	}else{
+	// 									   		console.log(err);
+	// 									   		callback(400, {'Error':'User Not created, mysql error ---> check server log'});
+	// 									   		// callback(500, {'Error':'Table creation failed, its possible this table already exists'});
+	// 									   	}
+
+	// 									  });
+							
+
+	// 									}else{
+	// 										callback(500, {'Error':'Password Hash Failed'});
+	// 									}
+
+	// 			   				}else{
+
+	// 			   					console.log(err);
+	// 			   					callback(400, {'Error':'User Not created, Email already in use'});
+				   				
+	// 			   				}
+
+
+	// 			   		});
+				   		
+					
+
+	// 			   	}else{
+	// 			   		console.log(err);
+	// 			   		callback(400, {'Error':'User Not created, Phone number already in use'});
+				   		
+	// 			   	}
+
+	// 			  });
+			
+	// 	}else{
+
+			
 
 
 }
+
 
 users.get = (data,callback) => {
 
