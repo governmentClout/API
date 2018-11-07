@@ -178,24 +178,24 @@ users.post = (data,callback)=>{
 		let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length > 0 ? data.payload.email.trim() : '';
 	 	let dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : '';
 
-	 	let testPhone = "SELECT * FROM users WHERE phone='" + phone "' AND phone !='' ";
+	 	let testPhone = "SELECT * FROM users WHERE phone='" + phone + "' AND phone !='' AND phone != 'false' ";
 
-	 	con.query(testPhone,(err,result)=>{
+	 	con.query(testPhone,(err,resultPhone)=>{
 
-	 		if(!err && result.length == 0){
+	 		if(!err && resultPhone.length == 0){
 
-	 			let testEmail = "SELECT * FROM user WHERE email='" +email+ "' AND email !=''";
+	 			let testEmail = "SELECT * FROM users WHERE email='" +email+ "' AND email !='' AND email != 'false'";
+	 			
+	 			con.query(testEmail,(err,resultEmail)=>{
+	 				
+	 				if(!err && resultEmail.length == 0){
 
-	 			con.query(testEmail,(err,result)=>{
-
-	 				if(!err && result.length == 0){
-
-	 					let insertUser = "INSERT INTO users (uuid,phone, email, dob, password, tosAgreement, provider) VALUES ( '" + uuid + "','" +phone+ "', '" + email + "' , '" + dob +"' ,'"+hashedPassword +"', '" + tosAgreement + "','" + provider +"' )";
+	 					let insertUser = "INSERT INTO users (uuid,phone, email, dob, password, tosAgreement, provider) VALUES ( '" + uuid + "','" +phone+ "', '" + email + "' , '" + dob +"' ,'NULL', '" + tosAgreement + "','" + provider +"' )";
 
 	 					con.query(insertUser,(err,result)=>{
-
-	 						if(!err && result.length > 0){
-
+	 						
+	 						if(!err){
+	 							
 	 							let userToken = tokens.generate(uuid);
 
 								let tokenInsert = "INSERT INTO tokens (uuid,token) VALUES ('" + uuid +"','" + userToken + "')";
