@@ -24,12 +24,13 @@ login.options = (data,callback)=>{
 }
 
 login.post = (data,callback)=>{
-
+console.log('poinst 1');
 //check token
 	let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
 	let password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
 
 	if(email && password){
+console.log('poinst 2');
 
 		let hashedPassword = helpers.hash(password);
 
@@ -37,6 +38,7 @@ login.post = (data,callback)=>{
 		
 
 		con.query(login,  (err,result) => {
+console.log('poinst 3');
 
 			if(!err && result.length > 0){
 
@@ -45,8 +47,9 @@ login.post = (data,callback)=>{
 				let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
 				
 				con.query(verifyToken, (err,tokenResult)=>{
+console.log('poinst 4');
 
-					// console.log('Token: ' + tokenResult);
+					console.log('Token: ' + tokenResult);
 
 					if(
 						!err && 
@@ -54,7 +57,7 @@ login.post = (data,callback)=>{
 						tokenResult.length > 0 
 					){
 						
-					let finalReqult = Object.assign(...result, ...tokenResult);
+					let finalReqult = Object.assign(...result, ...tokenResult[0],...tokenResult[1]);
 						callback(200,{'user':finalReqult});
 
 					}else{
