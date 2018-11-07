@@ -16,10 +16,10 @@ const con = mysql.createConnection({
 });
 
 
-let petitons = {};
+let polls = {};
 
 
-petitons.options = (data,callback)=>{
+polls.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
@@ -27,4 +27,4 @@ petitons.options = (data,callback)=>{
 
 
 
-module.exports = users;
+module.exports = polls;

@@ -10,7 +10,8 @@ const con = mysql.createConnection({
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -41,7 +42,7 @@ login.post = (data,callback)=>{
 
 				// console.log('fields ' + fields);
 
-				let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1";
+				let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
 				
 				con.query(verifyToken, (err,tokenResult)=>{
 

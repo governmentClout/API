@@ -5,7 +5,6 @@ const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
-const tokens = require('./../lib/tokenization');
 
 const con = mysql.createConnection({
 
@@ -17,10 +16,10 @@ const con = mysql.createConnection({
 });
 
 
-let petitons = {};
+let conversations = {};
 
 
-petitons.options = (data,callback)=>{
+conversations.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
@@ -28,5 +27,4 @@ petitons.options = (data,callback)=>{
 
 
 
-module.exports = petitons;
-
+module.exports = conversations;
