@@ -124,7 +124,7 @@ posts.get = (data,callback)=>{
 				results[0].token.length > 0){
 
 
-				let postQuery = " ";
+				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, COUNT(views.uuid) as views, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details, JSON_OBJECT('comment_by',c.user) as comment_by, JSON_OBJECT('reaction_by',r.user) as reaction_by FROM posts LEFT JOIN reactions r ON (r.post=posts.uuid) LEFT JOIN comments c ON (c.ref=posts.user) LEFT JOIN users ON (users.uuid=posts.user) LEFT JOIN views ON (views.post=posts.uuid) LEFT JOIN shares ON (shares.post=posts.uuid) LEFT JOIN reactions ON (reactions.post=posts.uuid) LEFT JOIN comments ON (comments.ref=posts.uuid) GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id,r.user,c.id";
 
 			if(queryObject && queryObject.user){
 
