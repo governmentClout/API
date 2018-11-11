@@ -108,7 +108,11 @@ let router = {
 	'friends': handlers.friends,
 	'executives':handlers.executives,
 	'trends':handlers.trends,
-	'tests':handlers.tests
+	'tests':handlers.tests,
+	'articles': handlers.articles,
+	'polls': handlers.polls,
+	'petitions':handlers.petitions,
+	'settings':handlers.settings
 };
 
 

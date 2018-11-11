@@ -16,26 +16,17 @@ const con = mysql.createConnection({
 });
 
 
-let conversations = {};
+let recommentations = {};
 
 
-conversations.options = (data,callback)=>{
+recommentations.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
-conversations.post = (data,callback)=>{
-	//send message
-	//
-}
 
-conversations.get = (data,callback)=>{
-	//send message
-	//
-}
-
-conversations.delete = (data,callback)=>{
+recommentations.get = (data,callback)=>{
 	//send message
 	//
 }
@@ -44,4 +35,5 @@ conversations.delete = (data,callback)=>{
 
 
 
-module.exports = conversations;
+
+module.exports = recommentationss;

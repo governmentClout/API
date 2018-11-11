@@ -1,6 +1,4 @@
 
-
-const _db = require('./../lib/migrations');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
@@ -16,32 +14,19 @@ const con = mysql.createConnection({
 });
 
 
-let conversations = {};
+search = {};
 
-
-conversations.options = (data,callback)=>{
+search.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
-conversations.post = (data,callback)=>{
-	//send message
-	//
-}
+search.get = (data,callback)=>{
 
-conversations.get = (data,callback)=>{
-	//send message
-	//
-}
-
-conversations.delete = (data,callback)=>{
-	//send message
-	//
+	callback(200,{'You have hit the trends get endpoint'});
+	
 }
 
 
-
-
-
-module.exports = conversations;
+module.exports = settings;
