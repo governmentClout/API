@@ -27,16 +27,6 @@ posts.options = (data,callback)=>{
 	
 }
 
-
-
-posts.queryPost = (result)=>{
-
-	resultObject.push(result);
-
-}
-
-
-
 posts.post = (data,callback)=>{ 
 	//create a new post
 

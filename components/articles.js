@@ -18,10 +18,10 @@ const con = mysql.createPool({
 
 });
 
-let posts = {};
+let articles = {};
 let resultObject = [];
 
-posts.options = (data,callback)=>{
+articles.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
@@ -29,24 +29,17 @@ posts.options = (data,callback)=>{
 
 
 
-posts.queryPost = (result)=>{
-
-	resultObject.push(result);
-
-}
-
-
-
-posts.post = (data,callback)=>{ 
+articles.post = (data,callback)=>{ 
 	//create a new post
 
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid;
 
-	let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : false;
+	let article = typeof(data.payload.article) == 'string' && data.payload.article.trim().length > 0 ? data.payload.article.trim() : false;
+	let title = typeof(data.payload.article_title) == 'string' && data.payload.article_title.trim().length > 0 ? data.payload.article_title.trim() : false;
 	let location = typeof(data.payload.location) == 'string' && data.payload.location.trim().length > 0 ? data.payload.location.trim() : 'unspecified';
 	let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? data.payload.attachment : null;
-	let post_type = typeof(data.payload.post_type) == 'object' && data.payload.attachment.post_type > 0  ? data.payload.post_type : 'post';
+	let post_type = typeof(data.payload.post_type) == 'object' && data.payload.attachment.post_type > 0  ? data.payload.post_type : 'article';
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let uuid = uuidV1();
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
@@ -64,23 +57,23 @@ posts.post = (data,callback)=>{
 
 				){
 
-					if(post){
+					if(article && article_title){
 
 						if(attachment){
 							attachment = JSON.stringify(attachment);
 						}
 
-						let sql = "INSERT INTO posts (post,location,attachment,uuid,user,post_type) VALUES('"+post+"','" + location+"','"+attachment+"','"+uuid+"','"+user+"','"+post_type+"')";
+						let sql = "INSERT INTO articles (title,post,location,attachment,uuid,user,post_type) VALUES('"+article_title+"','"+post+"','" + location+"','"+attachment+"','"+uuid+"','"+user+"','"+post_type+"')";
 
 						con.query(sql,(err,result)=>{
 
 							if(!err && result){
 
-								callback(200,{'Success':'Post Created'});
+								callback(200,{'Success':'Article Created'});
 
 							}else{
 								console.log(err);
-								callback(500,{'Error':'Post not created, something went wrong'});
+								callback(500,{'Error':'Article not created, something went wrong'});
 
 							}
 
@@ -107,7 +100,7 @@ posts.get = (data,callback)=>{
 	// let post_type = typeof(data.queryStringObject.post) == 'string' && data.queryStringObject.post.trim().length > 0 ? data.queryStringObject.post.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
-	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let article = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 
@@ -135,7 +128,7 @@ posts.get = (data,callback)=>{
 
 					async.waterfall([
 					    function(callback) {
-					    	let sql = "SELECT * FROM posts";
+					    	let sql = "SELECT * FROM articles";
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
@@ -154,7 +147,7 @@ posts.get = (data,callback)=>{
 					    	 		
 					    	 		let post = arg[i];
 					    	 		
-						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
+						            finalresult.splice(i,0,{'article':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
 						            
 
 						            if( 0 === --pending ) {
@@ -180,7 +173,7 @@ posts.get = (data,callback)=>{
 
 					async.waterfall([
 					    function(callback) {
-					    	let sql = "SELECT * FROM posts WHERE user='"+queryObject.user+"'";
+					    	let sql = "SELECT * FROM articles WHERE user='"+queryObject.user+"'";
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
@@ -199,7 +192,7 @@ posts.get = (data,callback)=>{
 					    	 		
 					    	 		let post = arg[i];
 					    	 		
-						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
+						            finalresult.splice(i,0,{'article':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
 						            
 
 						            if( 0 === --pending ) {
@@ -223,13 +216,13 @@ posts.get = (data,callback)=>{
 
 			
 
-				if(post){
+				if(article){
 
 					let finalresult = [];
 
 					async.waterfall([
 					    function(callback) {
-					    	let sql = "SELECT * FROM posts WHERE uuid='"+post+"'";
+					    	let sql = "SELECT * FROM articles WHERE uuid='"+article+"'";
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
@@ -248,7 +241,7 @@ posts.get = (data,callback)=>{
 					    	 		
 					    	 		let post = arg[i];
 					    	 		
-						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
+						            finalresult.splice(i,0,{'article':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
 						            
 
 						            if( 0 === --pending ) {
@@ -301,7 +294,7 @@ posts.put = (data,callback)=>{
 	let uuidHeader = data.headers.uuid;
 	// let uuid = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
-	let postuuid = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let articleuuid = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	// console.log(data);
 	if(token && postuuid){
 
@@ -316,7 +309,7 @@ posts.put = (data,callback)=>{
 
 				){
 				// console.log('post content ' + post);
-					let checkPost = "SELECT * FROM posts WHERE uuid='" + postuuid + "'";
+					let checkPost = "SELECT * FROM articles WHERE uuid='" + articleuuid + "'";
 
 					con.query(checkPost, (err,result)=>{
 						// console.log(result);
@@ -326,32 +319,32 @@ posts.put = (data,callback)=>{
 
 							){
 							
-							let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : result[0].post;
-							let post_type = typeof(data.payload.post_type) == 'string' && data.payload.post_type.trim().length > 0 ? data.payload.post_type.trim() : result[0].post;
+							let article = typeof(data.payload.article) == 'string' && data.payload.article.trim().length > 0 ? data.payload.article.trim() : result[0].article;
+							let post_type = typeof(data.payload.post_type) == 'string' && data.payload.post_type.trim().length > 0 ? data.payload.post_type.trim() : result[0].post_type;
 							let location = typeof(data.payload.location) == 'string' && data.payload.location.trim().length > 0 ? data.payload.location.trim() : result[0].location;
 							let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? JSON.stringify(data.payload.attachment) : result[0].attachment;
 
 							let updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 						
 
-							let sql = "UPDATE posts SET post='" + post + "', location ='"+location+"', attachment ='"+attachment+"',post_type='"+post_type+"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +postuuid+ "'"; 
+							let sql = "UPDATE articles SET article='" + article + "', location ='"+location+"', attachment ='"+attachment+"',post_type='"+post_type+"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +articleuuid+ "'"; 
 
 							con.query(sql,  (err,result) => {
 
 							   	if(!err){
 							   		console.log(result);
-							   		callback(200, {'Success':'Post Update Done'});
+							   		callback(200, {'Success':'Artile Update Done'});
 
 							   	}else{
 							   		console.log(err);
-							   		callback(400, {'Error':'Post Update Failed'});
+							   		callback(400, {'Error':'Article Update Failed'});
 							   		// callback(500, {'Error':'Table creation failed, its possible this table already exists'});
 							   	}
 
 					 		});
 
 						}else{
-							callback(404,{'Error':'Post not found'});
+							callback(404,{'Error':'Article not found'});
 						}
 					});
 
@@ -369,7 +362,7 @@ posts.put = (data,callback)=>{
 
 posts.delete = (data,callback)=>{
 	//get a user profile
-	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let article = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	// console.log('uuidQuery',data.queryStringObject.uuid);
@@ -391,37 +384,37 @@ posts.delete = (data,callback)=>{
 
 				){
 
-				let postQuery = "SELECT * FROM posts WHERE uuid='" + post + "'";
+				let postQuery = "SELECT * FROM articles WHERE uuid='" + article + "'";
 			
 				con.query(postQuery, (err,result)=>{
 
 					if(!err && result[0]){
 
-						let deletePost = "DELETE FROM posts WHERE uuid='"+post+"'";
+						let deletePost = "DELETE FROM articles WHERE uuid='"+post+"'";
 
 						con.query(deletePost,(err,result)=>{
 
 							if(!err){
-								let deleteComments = "DELETE FROM comments WHERE ref='"+post+"'";
+								let deleteComments = "DELETE FROM comments WHERE ref='"+articles+"'";
 								//delete all comments on this
 								con.query(deleteComments,(err,result)=>{
 									if(err){
-										callback(200,{'Success':'Post and all associated comments deleted'});
+										callback(200,{'Success':'Articles and all associated comments deleted'});
 									}else{
-										callback(500,{'Error':'Post comments not deleted, something went wrong'});
+										callback(500,{'Error':'Articles comments not deleted, something went wrong'});
 									}
 								})
 								
 							}else{
 								console.log(err);
-								callback(500,{'Error':'Post not deleted, something went wrong'});
+								callback(500,{'Error':'Article not deleted, something went wrong'});
 							}
 
 						});
 
 					}else{
 						console.log(err);
-						callback(404,{'Error':'Post not found'});
+						callback(404,{'Error':'Article not found'});
 					}
 
 				})
@@ -444,7 +437,7 @@ posts.delete = (data,callback)=>{
 			errorObject.push('uuid in the header not found');
 		}
 		if(!post){
-			errorObject.push('Post uuid not valid');
+			errorObject.push('Article uuid not valid');
 		}
 
 		callback(400,{'Error':errorObject});
