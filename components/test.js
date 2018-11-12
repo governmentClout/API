@@ -47,81 +47,43 @@ tests.get = (data,callback)=>{
 	    function(callback) {
 	    	let sql = "SELECT * FROM posts";
 	    	con.query(sql,(err,result)=>{
-	    		console.log('state 1');
-
-	    		// finalResult[]
+	    		
 					callback(null,result);
 				});
 	    	
-	     //    callback(null, 'one', 'two');
+	    
 	    },
 	    function(arg, callback) {
-	    	console.log('state 2');
+	    	
 	    	let result = [];
 	    	var pending = arg.length;
 
 	    	for(let i=0; i<arg.length; i++) {
 	    		// console.log(arg[i].uuid);
 	    	 con.query("SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
-
-	    	 		// console.log(compile);
 	    	 		
 	    	 		let post = arg[i];
-	    	 		// console.log(post);
-
-		            finalresult.splice(i,0,[post,compile]);
-
-		            // console.log('finalresult  ==> ');
-		            // console.log(i);
-		           	// console.log(finalresult);
+	    	 		
+		            finalresult.splice(i,0,{'post':post,'comments':compile[0],'reactions':compile[1],'shares':compile[2],'views':compile[3]});
+		            
 
 		            if( 0 === --pending ) {
 
-		            	// console.log('aftercomment===>');
-		            	// console.log(comments);
 		               	callback(null, finalresult);
+
 		            }
 
 		        });
 	    	}
 
 	        
-	    },
-	    function(complete, callback) {
-	        // arg1 now equals 'three'
-
-	        console.log('state 3');
-	        // console.log(comments);
-	        callback(null, complete);
 	    }
 	], function (err, result) {
 		
 		callback(200,result);
 	});
 
-	// async.waterfall([
-	// 	(callback)=>{
-	// 		let sql = "SELECT * FROM posts";
-	// 		con.query(sql,(err,result)=>{
-	// 			callback(result);
-	// 		});
-	// 	},
-	// 	(data,callback)=>{
-	// 		let sql2 = "SELECT * FROM comments WHERE post='"+result.uuid+"'";
-	// 		con.query(sql2,(err,result2)=>{
-	// 			callback(result2);
-	// 		});
-	// 	},
-	// 	(data,callback)=>{
-	// 		let sql3 = "SELECT * FROM users WHERE uuid='"+data.user+"'";
-	// 		con.query(sql3,(err,result3)=>{
-	// 			callback(result3)
-	// 		});
-	// 	}
-	    
-	// ], function (err, result) {
-	//     callback(200,result);
-	// });
+	
 
 }
 

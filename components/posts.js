@@ -4,10 +4,11 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
+const async = require('async');
 
 
 
-const con = mysql.createConnection({
+const con = mysql.createPool({
 
   host: config.db_host,
   user: config.db_username,
@@ -108,58 +109,164 @@ posts.get = (data,callback)=>{
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
-	let queryObject = data.queryStringObject;
+	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
+
+// console.log(data);
 	
 	if( 
 		token && 
 		uuidHeader  
 		){
+		
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
 		
+		
 		con.query(headerChecker,(err,results)=>{
-			// console.log(results);
+			
 			if(!err && 
 				results && 
 				results[0].token.length > 0){
 
+				if( !queryObject && !post ){
 
-				let postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, COUNT(views.uuid) as views, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details, JSON_OBJECT('comment_by',c.user) as comment_by, JSON_OBJECT('reaction_by',r.user) as reaction_by FROM posts LEFT JOIN reactions r ON (r.post=posts.uuid) LEFT JOIN comments c ON (c.ref=posts.user) LEFT JOIN users ON (users.uuid=posts.user) LEFT JOIN views ON (views.post=posts.uuid) LEFT JOIN shares ON (shares.post=posts.uuid) LEFT JOIN reactions ON (reactions.post=posts.uuid) LEFT JOIN comments ON (comments.ref=posts.uuid) GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id,r.user,c.id";
+					console.log('here');
+					let finalresult = [];
+
+					async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM posts";
+					    	con.query(sql,(err,result)=>{
+					    		
+									callback(null,result);
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		// console.log(arg[i].uuid);
+					    	 con.query("SELECT profiles.*,users.* FROM profiles LEFT JOIN users ON (profiles.uuid=users.uuid);SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
+					    	 		
+					    	 		let post = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,result);
+					});
+				}
 
 			if(queryObject && queryObject.user){
+				
+				let finalresult = [];
 
-					postQuery = "SELECT posts.*, COUNT(comments.uuid) as comments, COUNT(reactions.uuid) as reactions, COUNT(shares.uuid) as shares, COUNT(views.uuid) as views, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) as user_details, JSON_OBJECT('comment_by',c.user) as comment_by, JSON_OBJECT('reaction_by',r.user) as reaction_by FROM posts LEFT JOIN reactions r ON (r.post=posts.uuid) LEFT JOIN comments c ON (c.ref=posts.user) LEFT JOIN users ON (users.uuid=posts.user) LEFT JOIN views ON (views.post=posts.uuid) LEFT JOIN shares ON (shares.post=posts.uuid) LEFT JOIN reactions ON (reactions.post=posts.uuid) LEFT JOIN comments ON (comments.ref=posts.uuid) WHERE posts.user='"+queryObject.user+"' GROUP BY posts.id,comments.ref,reactions.post, shares.post,users.id,r.user,c.id";
+					async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM posts WHERE user='"+queryObject.user+"'";
+					    	con.query(sql,(err,result)=>{
+					    		
+									callback(null,result);
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		// console.log(arg[i].uuid);
+					    	 con.query("SELECT profiles.*,users.* FROM profiles LEFT JOIN users ON (profiles.uuid=users.uuid);SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
+					    	 		
+					    	 		let post = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,result);
+					});
 
 			
 				}
 
-				// if(queryObject && queryObject.user)
+			
 
 				if(post){
-					
-					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT * FROM reactions WHERE post='"+post+"'; SELECT * FROM comments WHERE ref='"+post+"'; SELECT * FROM shares WHERE post='" +post+ "';SELECT * FROM views WHERE post='" +post+ "'";
 
+					let finalresult = [];
 
-					con.query(postQuery,(err,results,fields)=>{
-					
-					if(!err && result){
+					async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM posts WHERE uuid='"+post+"'";
+					    	con.query(sql,(err,result)=>{
+					    		
+									callback(null,result);
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
 
-						 let compressedResult = [];
+					    	for(let i=0; i<arg.length; i++) {
+					    		// console.log(arg[i].uuid);
+					    	  con.query("SELECT profiles.*,users.* FROM profiles LEFT JOIN users ON (profiles.uuid=users.uuid);SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
+					    	 		
+					    	 		let post = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
+						            
 
-						 // let user = "SELECT * from users WHERE uuid='"++"'; SELECT * FROM profiles WHERE uuid='"++"'";
+						            if( 0 === --pending ) {
 
-						 
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
 						
-						compressedResult = [].concat.apply([], results);
-						callback(200,{'posts':[].concat.apply([], results)});
-						
-
-					}else{
-						console.log(err);
-						callback(404,{'Error':'Post not found'});
-					}
-
-				})
+						callback(200,result);
+					});
+				
 
 				}
 			 
@@ -187,18 +294,6 @@ posts.get = (data,callback)=>{
 	}
 }
 
- getWord = (post, callback) => {
-    con.query("SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "'", (err, rows)=> {
-        
-        if(err) return callback(err);
-        console.log('error => ');
-        console.log(err);
-        console.log('rows => ');
-        console.log(rows);
-        callback(null, rows);
-
-    });
-};
 
 posts.put = (data,callback)=>{
 
