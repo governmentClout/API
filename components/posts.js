@@ -137,16 +137,18 @@ posts.get = (data,callback)=>{
 
 				if(post){
 					
-					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT count(*) as reactions FROM reactions WHERE post='"+post+"'; SELECT count(*) as comments FROM comments WHERE ref='"+post+"'; SELECT count(*) as shares FROM shares WHERE post='" +post+ "';SELECT count(*) as views FROM views WHERE post='" +post+ "'";
+					postQuery =  "SELECT * FROM posts WHERE uuid='" +post+"'; SELECT * FROM reactions WHERE post='"+post+"'; SELECT * FROM comments WHERE ref='"+post+"'; SELECT * FROM shares WHERE post='" +post+ "';SELECT * FROM views WHERE post='" +post+ "'";
 
-				}
-			 
-				con.query(postQuery,(err,results,fields)=>{
+
+					con.query(postQuery,(err,results,fields)=>{
 					
-					if(!err && results){
+					if(!err && result){
 
 						 let compressedResult = [];
 
+						 // let user = "SELECT * from users WHERE uuid='"++"'; SELECT * FROM profiles WHERE uuid='"++"'";
+
+						 
 						
 						compressedResult = [].concat.apply([], results);
 						callback(200,{'posts':[].concat.apply([], results)});
@@ -158,6 +160,10 @@ posts.get = (data,callback)=>{
 					}
 
 				})
+
+				}
+			 
+				
 
 			}else{
 				console.log(err);

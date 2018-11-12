@@ -14,7 +14,7 @@ const con = mysql.createConnection({
 });
 
 
-trends = {};
+let trends = {};
 
 trends.options = (data,callback)=>{
 
@@ -24,7 +24,7 @@ trends.options = (data,callback)=>{
 
 trends.get = (data,callback)=>{
 
-	callback(200,{'You have hit the trends get endpoint'});
+	// callback(200, {'You have hit the trends get endpoint'} );
 	
 }
 

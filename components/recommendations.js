@@ -16,17 +16,17 @@ const con = mysql.createConnection({
 });
 
 
-let recommentations = {};
+let recommendations = {};
 
 
-recommentations.options = (data,callback)=>{
+recommendations.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
 
-recommentations.get = (data,callback)=>{
+recommendations.get = (data,callback)=>{
 	//send message
 	//
 }
@@ -36,4 +36,4 @@ recommentations.get = (data,callback)=>{
 
 
 
-module.exports = recommentationss;
+module.exports = recommendations;
