@@ -95,7 +95,7 @@ articles.post = (data,callback)=>{
 
 }
 
-posts.get = (data,callback)=>{
+articles.get = (data,callback)=>{
 	
 	// let post_type = typeof(data.queryStringObject.post) == 'string' && data.queryStringObject.post.trim().length > 0 ? data.queryStringObject.post.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
@@ -121,7 +121,7 @@ posts.get = (data,callback)=>{
 				results && 
 				results[0].token.length > 0){
 
-				if( !queryObject && !post ){
+				if( !queryObject && !article ){
 
 					console.log('here');
 					let finalresult = [];
@@ -131,7 +131,15 @@ posts.get = (data,callback)=>{
 					    	let sql = "SELECT * FROM articles";
 					    	con.query(sql,(err,result)=>{
 					    		
+					    		if(!err && result.length > 0){
+
 									callback(null,result);
+
+					    		}else{
+					    			console.log(err);
+					    			callback(500,err);
+					    		}
+
 								});
 					    	
 					    
@@ -140,6 +148,8 @@ posts.get = (data,callback)=>{
 					    	
 					    	let result = [];
 					    	var pending = arg.length;
+
+
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		// console.log(arg[i].uuid);
@@ -288,7 +298,7 @@ posts.get = (data,callback)=>{
 }
 
 
-posts.put = (data,callback)=>{
+articles.put = (data,callback)=>{
 
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid;
@@ -360,7 +370,7 @@ posts.put = (data,callback)=>{
 	}
 }
 
-posts.delete = (data,callback)=>{
+articles.delete = (data,callback)=>{
 	//get a user profile
 	let article = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
@@ -445,4 +455,4 @@ posts.delete = (data,callback)=>{
 }
 
 
-module.exports = posts;
+module.exports = articles;
