@@ -7,12 +7,13 @@ const tokens = require('./../lib/tokenization');
 
 
 
-const con = mysql.createConnection({
+const con = mysql.createPool({
 
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -27,7 +28,146 @@ friends.options = (data,callback)=>{
 
 friends.get = (data,callback)=>{
 	//get all friends list
-	//get all friend requests
+	//get all blocked
+	//get all pending
+	//get all ignored
+
+	let tokenHeader = data.headers.token;
+	let uuidHeader = data.headers.uuid; 
+	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
+	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+
+	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
+
+	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
+
+	//if uuidHeader === queryObject.user, then the person can perform every activity, otherwise, uuidHeader can only see friend list of the queryObject.user
+	//friends status: 0 - pending, 1 - ignored, 2 - accepted 3 - blocked.
+
+	if( 
+		token && 
+		uuidHeader 
+
+		){
+
+
+
+		if(queryObject && queryObject.user != uuidHeader){
+			//can only view friends list
+			//get friend list
+			if(param == 'friends'){
+
+				let finalresult = [];
+
+					async.waterfall([
+					    function(callback) {
+
+					    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=3";
+
+					    	con.query(sql,(err,result)=>{
+					    			
+					    			if(!err && result.length > 0){
+					    				callback(null,result);
+					    			}else{
+					    				callback(null,[]);
+					    			}
+									
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	if(arg.length > 0){
+
+					    		let result = [];
+						    	var pending = arg.length;
+
+						    	for(let i=0; i<arg.length; i++) {
+						    		// console.log(arg[i].uuid);
+						    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+						    	 		
+						    	 		
+							            finalresult.splice(i,0,result);
+							            
+
+							            if( 0 === --pending ) {
+
+							               	callback(null,finalresult);
+
+							            }
+
+							        });
+						    	}
+
+					    	}else{
+					    		callback(null, []);
+					    	}
+					    	
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,{'friends':result});
+
+					});
+
+				
+
+				con.query(sqlGetFriends,(err,result)=>{
+
+					if(!err && result){
+
+						callback(200,result);
+
+					}else{
+						console.log(err);
+						callhack(500,{'Error':err});
+					}
+
+				});
+
+			}else{
+				callback(403,{'Error':'Access Denied'});
+			}
+			
+
+		}
+
+		if(!queryObject || queryObject.user == uuidHeader){
+			//can do all things
+
+			if(param && param == 'friends'){
+				//get all friends
+			}
+
+			if(param && param == 'ignored'){
+				//get all ignored
+			}
+
+			if(param && param == 'blocked'){
+				//get all blocked
+			}
+			
+		}
+
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or has expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+
+		callback(400,{'Error':errorObject});
+
+	}
 
 	
 
