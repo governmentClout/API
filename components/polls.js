@@ -26,7 +26,135 @@ polls.options = (data,callback)=>{
 }
 
 polls.post = (data,callback)=>{
+
+	//create polls
+	//respond to polls
+	let tokenHeader = data.headers.token;
+	let uuidHeader = data.headers.uuid; 
+	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
+	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+
+	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
+	let sector = typeof(data.payload.sector) == 'string' && data.payload.sector.trim().length > 0 ? data.payload.sector.trim() : false;
+	let opinion = typeof(data.payload.opinion) == 'string' && data.payload.opinion.trim().length > 0 ? data.payload.opinion.trim() : false;
+	let poll = typeof(data.payload.poll) == 'string' && data.payload.poll.trim().length > 0 ? data.payload.poll.trim() : false;
+	let status = typeof(data.payload.status) == 'number' && data.payload.status != 0 ? data.payload.status : false;
+	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
+
+	let uuid = uuidV1();
+
+
+	if( 
+		token && 
+		uuidHeader 
+
+		){
+
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+
+		con.query(verifyToken, (err,result)=>{
+			
+			if(
+				!err && 
+				result[0] && 
+				result[0].token == token 
+
+				){
+
+				if( !param && opinion && sector ){
+
+					//create new poll
+					//user is the uuid of the creator
+				
+					let sqlCreatePoll = "INSERT INTO polls (uuid,sector,opinion,expire_at,response_limit,created_by) VALUES ('"+uuid+"','"+sector+"','"+opinion+"','"+expire_at+"','"+response_limit+"','" + uuid + "')";
+
+					con.query(sqlCreatePoll,(err,result)=>{
+
+						if(!err && result){
+
+							callback(200,{'Success':'Poll Created'});
+
+						}else{
+							console.log(err);
+							callback(500,{'Error':err});
+						}
+
+					});
+
+				}
+
+				if(param && param == 'response'){
+					// respond to a poll
+					//user is the uuid of the responder, poll is the poll
+					//check that user has not already responded
+					//response status: 1 - true/agree/yes 2 - no/disagree/false 3 - undecided
+
+					let checkResponse = "SELECT count(*) FROM polls_response WHERE user='"+user+"' and poll='" +poll+ "'";
+
+					con.query(checkResponse,(err,result)=>{
+
+						if(!err && result.length < 1){
+
+							
+							let sqlResponse = "INSERT polls_response (user,poll,status) VALUES ('"+user+"','"+poll+"','"+status+"')";
+
+							con.query(sqlResponse,(err,result)=>{
+
+								if(!err && result){
+
+									callback(200,{'Success':'response submitted'});
+
+								}else{
+									callback(500,{'Error':err});
+								}
+
+							});
+
+
+
+						}else{
+							callback(400,{'Error':'User already responded to poll'});
+						}
+
+					});
+
+				}
+
+			}else{
+				console.log(err);
+				callback(400,{'Error':'Token Mismatch or expired'});
+			
+			}
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or has expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+
+		callback(400,{'Error':errorObject});
+
+	}
 	
+}
+
+polls.get = (data,callback)=>{
+	callback(200,{'polls get endpoint'});
+
+}
+
+polls.put = (data,callback)=>{
+	callback(200,{'polls put endpoint'});
+
+}
+
+polls.delete = (data,callback)=>{
+	callback(200,{'polls delete endpoint'});
 }
 
 
