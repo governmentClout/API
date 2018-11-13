@@ -119,12 +119,12 @@ polls.post = (data,callback)=>{
 					});
 
 				}
-
 			}else{
 				console.log(err);
 				callback(400,{'Error':'Token Mismatch or expired'});
 			
 			}
+		});
 
 	}else{
 
@@ -144,19 +144,72 @@ polls.post = (data,callback)=>{
 }
 
 polls.get = (data,callback)=>{
-	callback(200,{'polls get endpoint'});
+	
+	let tokenHeader = data.headers.token;
+	let uuidHeader = data.headers.uuid; 
+	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
+	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
+
+	if( 
+		token && 
+		uuidHeader 
+
+		){
+
+
+			let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+
+			con.query(verifyToken, (err,result)=>{
+				
+				if(
+					!err && 
+					result[0] && 
+					result[0].token == token 
+
+					){
+
+					//get all polls
+					//get single users polls
+
+					if(param){
+						//get for specific user
+					}
+
+
+				}else{
+					console.log(err);
+					callback(400,{'Error':'Token Mismatch or expired'});
+				}
+			});
+			
+
+			
+
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or has expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+
+		callback(400,{'Error':errorObject});
+
+	}
 
 }
 
 polls.put = (data,callback)=>{
-	callback(200,{'polls put endpoint'});
 
 }
 
 polls.delete = (data,callback)=>{
-	callback(200,{'polls delete endpoint'});
+	
 }
-
-
 
 module.exports = polls;

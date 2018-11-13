@@ -50,328 +50,273 @@ friends.get = (data,callback)=>{
 
 		){
 
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
 
-
-		if(queryObject && queryObject.user != uuidHeader){
-			//can only view friends list
-			//get friend list
-			if(param == 'friends'){
-
-				let finalresult = [];
-
-					async.waterfall([
-					    function(callback) {
-
-					    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
-
-					    	con.query(sql,(err,result)=>{
-					    			
-					    			if(!err && result.length > 0){
-					    				callback(null,result);
-					    			}else{
-					    				callback(null,[]);
-					    			}
-									
-
-								});
-					    	
-					    
-					    },
-					    function(arg, callback) {
-					    	
-					    	if(arg.length > 0){
-
-					    		let result = [];
-						    	var pending = arg.length;
-
-						    	for(let i=0; i<arg.length; i++) {
-						    		// console.log(arg[i].uuid);
-						    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
-						    	 		
-						    	 		
-							            finalresult.splice(i,0,result);
-							            
-
-							            if( 0 === --pending ) {
-
-							               	callback(null,finalresult);
-
-							            }
-
-							        });
-						    	}
-
-					    	}else{
-					    		callback(null, []);
-					    	}
-					    	
-
-					        
-					    }
-					], function (err, result) {
-						
-						callback(200,{'friends':result});
-
-					});
-
-			}else{
-				callback(403,{'Error':'Access Denied'});
-			}
+		con.query(verifyToken, (err,result)=>{
 			
+			if(
+				!err && 
+				result[0] && 
+				result[0].token == token 
 
-		}
+				){
 
-		if(!queryObject || queryObject.user == uuidHeader){
-			//can do all things
 
-			if(param && param == 'friends'){
-				//get all friends
 
-				let finalresult = [];
+					if(param && param == 'friends'){
+					//get all friends
 
-					async.waterfall([
-					    function(callback) {
+					let finalresult = [];
 
-					    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
+						async.waterfall([
+						    function(callback) {
 
-					    	con.query(sql,(err,result)=>{
-					    			
-					    			if(!err && result.length > 0){
-					    				callback(null,result);
-					    			}else{
-					    				callback(null,[]);
-					    			}
-									
+						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
 
-								});
-					    	
-					    
-					    },
-					    function(arg, callback) {
-					    	
-					    	if(arg.length > 0){
+						    	con.query(sql,(err,result)=>{
+						    			
+						    			if(!err && result.length > 0){
+						    				callback(null,result);
+						    			}else{
+						    				callback(null,[]);
+						    			}
+										
 
-					    		let result = [];
-						    	var pending = arg.length;
+									});
+						    	
+						    
+						    },
+						    function(arg, callback) {
+						    	
+						    	if(arg.length > 0){
 
-						    	for(let i=0; i<arg.length; i++) {
-						    		// console.log(arg[i].uuid);
-						    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
-						    	 		
-						    	 		
-							            finalresult.splice(i,0,result);
-							            
+						    		let result = [];
+							    	var pending = arg.length;
 
-							            if( 0 === --pending ) {
+							    	for(let i=0; i<arg.length; i++) {
+							    		// console.log(arg[i].uuid);
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	 		
+							    	 		
+								            finalresult.splice(i,0,result);
+								            
 
-							               	callback(null,finalresult);
+								            if( 0 === --pending ) {
 
-							            }
+								               	callback(null,finalresult);
 
-							        });
+								            }
+
+								        });
+							    	}
+
+						    	}else{
+						    		callback(null, []);
 						    	}
+						    	
 
-					    	}else{
-					    		callback(null, []);
-					    	}
-					    	
+						        
+						    }
+						], function (err, result) {
+							
+							callback(200,{'friends':result});
 
-					        
-					    }
-					], function (err, result) {
-						
-						callback(200,{'friends':result});
-
-					});
+						});
 
 
-			}
+					}
 
-			if(param && param == 'ignored'){
-				//get all ignored
-				let finalresult = [];
+					if(param && param == 'ignored'){
+					//get all ignored
+					let finalresult = [];
 
-					async.waterfall([
-					    function(callback) {
+						async.waterfall([
 
-					    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=1";
+						    function(callback) {
 
-					    	con.query(sql,(err,result)=>{
-					    			
-					    			if(!err && result.length > 0){
-					    				callback(null,result);
-					    			}else{
-					    				callback(null,[]);
-					    			}
-									
+						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=1";
 
-								});
-					    	
-					    
-					    },
-					    function(arg, callback) {
-					    	
-					    	if(arg.length > 0){
+						    	con.query(sql,(err,result)=>{
+						    			
+						    			if(!err && result.length > 0){
+						    				callback(null,result);
+						    			}else{
+						    				callback(null,[]);
+						    			}
+										
 
-					    		let result = [];
-						    	var pending = arg.length;
+									});
+						    	
+						    
+						    },
+						    function(arg, callback) {
+						    	
+						    	if(arg.length > 0){
 
-						    	for(let i=0; i<arg.length; i++) {
-						    		// console.log(arg[i].uuid);
-						    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
-						    	 		
-						    	 		
-							            finalresult.splice(i,0,result);
-							            
+						    		let result = [];
+							    	var pending = arg.length;
 
-							            if( 0 === --pending ) {
+							    	for(let i=0; i<arg.length; i++) {
+							    		// console.log(arg[i].uuid);
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	 		
+							    	 		
+								            finalresult.splice(i,0,result);
+								            
 
-							               	callback(null,finalresult);
+								            if( 0 === --pending ) {
 
-							            }
+								               	callback(null,finalresult);
 
-							        });
+								            }
+
+								        });
+							    	}
+
+						    	}else{
+						    		callback(null, []);
 						    	}
+						    	
 
-					    	}else{
-					    		callback(null, []);
-					    	}
-					    	
+						        
+						    }
+						], function (err, result) {
+							
+							callback(200,{'ignored':result});
 
-					        
-					    }
-					], function (err, result) {
-						
-						callback(200,{'ignored':result});
+						});
 
-					});
+					}
 
-			}
+					if(param && param == 'blocked'){
+					//get all blocked
+					let finalresult = [];
 
-			if(param && param == 'blocked'){
-				//get all blocked
-				let finalresult = [];
+						async.waterfall([
+							
+						    function(callback) {
 
-					async.waterfall([
-					    function(callback) {
+						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=3";
 
-					    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=3";
+						    	con.query(sql,(err,result)=>{
+						    			
+						    			if(!err && result.length > 0){
+						    				callback(null,result);
+						    			}else{
+						    				callback(null,[]);
+						    			}
+										
 
-					    	con.query(sql,(err,result)=>{
-					    			
-					    			if(!err && result.length > 0){
-					    				callback(null,result);
-					    			}else{
-					    				callback(null,[]);
-					    			}
-									
+									});
+						    	
+						    
+						    },
+						    function(arg, callback) {
+						    	
+						    	if(arg.length > 0){
 
-								});
-					    	
-					    
-					    },
-					    function(arg, callback) {
-					    	
-					    	if(arg.length > 0){
+						    		let result = [];
+							    	var pending = arg.length;
 
-					    		let result = [];
-						    	var pending = arg.length;
+							    	for(let i=0; i<arg.length; i++) {
+							    		// console.log(arg[i].uuid);
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	 		
+							    	 		
+								            finalresult.splice(i,0,result);
+								            
 
-						    	for(let i=0; i<arg.length; i++) {
-						    		// console.log(arg[i].uuid);
-						    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
-						    	 		
-						    	 		
-							            finalresult.splice(i,0,result);
-							            
+								            if( 0 === --pending ) {
 
-							            if( 0 === --pending ) {
+								               	callback(null,finalresult);
 
-							               	callback(null,finalresult);
+								            }
 
-							            }
+								        });
+							    	}
 
-							        });
+						    	}else{
+						    		callback(null, []);
 						    	}
+						    	
 
-					    	}else{
-					    		callback(null, []);
-					    	}
-					    	
+						        
+						    }
+						], function (err, result) {
+							
+							callback(200,{'blocked':result});
 
-					        
-					    }
-					], function (err, result) {
-						
-						callback(200,{'blocked':result});
+						});
 
-					});
+					}
 
-			}
+					if(param && param == 'pending'){
+					//get all blocked
+					let finalresult = [];
 
-			if(param && param == 'pending'){
-				//get all blocked
-				let finalresult = [];
+						async.waterfall([
+						    function(callback) {
 
-					async.waterfall([
-					    function(callback) {
+						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=0";
 
-					    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=0";
+						    	con.query(sql,(err,result)=>{
+						    			
+						    			if(!err && result.length > 0){
+						    				callback(null,result);
+						    			}else{
+						    				callback(null,[]);
+						    			}
+										
 
-					    	con.query(sql,(err,result)=>{
-					    			
-					    			if(!err && result.length > 0){
-					    				callback(null,result);
-					    			}else{
-					    				callback(null,[]);
-					    			}
-									
+									});
+						    	
+						    
+						    },
+						    function(arg, callback) {
+						    	
+						    	if(arg.length > 0){
 
-								});
-					    	
-					    
-					    },
-					    function(arg, callback) {
-					    	
-					    	if(arg.length > 0){
+						    		let result = [];
+							    	var pending = arg.length;
 
-					    		let result = [];
-						    	var pending = arg.length;
+							    	for(let i=0; i<arg.length; i++) {
+							    		// console.log(arg[i].uuid);
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	 		
+							    	 		
+								            finalresult.splice(i,0,result);
+								            
 
-						    	for(let i=0; i<arg.length; i++) {
-						    		// console.log(arg[i].uuid);
-						    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
-						    	 		
-						    	 		
-							            finalresult.splice(i,0,result);
-							            
+								            if( 0 === --pending ) {
 
-							            if( 0 === --pending ) {
+								               	callback(null,finalresult);
 
-							               	callback(null,finalresult);
+								            }
 
-							            }
+								        });
+							    	}
 
-							        });
+						    	}else{
+						    		callback(null, []);
 						    	}
+						    	
 
-					    	}else{
-					    		callback(null, []);
-					    	}
-					    	
+						        
+						    }
+						], function (err, result) {
+							
+							callback(200,{'pending':result});
 
-					        
-					    }
-					], function (err, result) {
+						});
+					}
+
 						
-						callback(200,{'pending':result});
+				}
+				else{
 
-					});
-
-			}
-			
-		}
-
+					callback(400,{'Error':'Token Mismatch or expired'});
+				}
+			});
 
 	}else{
 
