@@ -27,16 +27,16 @@ conversations.options = (data,callback)=>{
 
 conversations.post = (data,callback)=>{
 	//send message
-	//
+	
 }
 
 conversations.get = (data,callback)=>{
-	//send message
+	//get all message
 	//
 }
 
 conversations.delete = (data,callback)=>{
-	//send message
+	//delete message
 	//
 }
 
