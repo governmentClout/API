@@ -25,6 +25,10 @@ polls.options = (data,callback)=>{
 	
 }
 
+polls.post = (data,callback)=>{
+	
+}
+
 
 
 module.exports = polls;

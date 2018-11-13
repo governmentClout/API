@@ -105,7 +105,8 @@ posts.get = (data,callback)=>{
 	
 	if( 
 		token && 
-		uuidHeader  
+		uuidHeader 
+		 
 		){
 		
 

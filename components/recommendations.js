@@ -27,8 +27,7 @@ recommendations.options = (data,callback)=>{
 
 
 recommendations.get = (data,callback)=>{
-	//send message
-	//
+	//get all users in the area of the specified user
 }
 
 
