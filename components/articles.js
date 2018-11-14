@@ -306,7 +306,7 @@ articles.put = (data,callback)=>{
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 	let articleuuid = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	// console.log(data);
-	if(token && postuuid){
+	if(token && articleuuid){
 
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuidHeader + "'";
 
@@ -330,6 +330,8 @@ articles.put = (data,callback)=>{
 							){
 							
 							let article = typeof(data.payload.article) == 'string' && data.payload.article.trim().length > 0 ? data.payload.article.trim() : result[0].article;
+
+							let article_title = typeof(data.payload.article_title) == 'string' && data.payload.article_title.trim().length > 0 ? data.payload.article_title.trim() : result[0].article_title;							
 							let post_type = typeof(data.payload.post_type) == 'string' && data.payload.post_type.trim().length > 0 ? data.payload.post_type.trim() : result[0].post_type;
 							let location = typeof(data.payload.location) == 'string' && data.payload.location.trim().length > 0 ? data.payload.location.trim() : result[0].location;
 							let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? JSON.stringify(data.payload.attachment) : result[0].attachment;
@@ -337,7 +339,7 @@ articles.put = (data,callback)=>{
 							let updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 						
 
-							let sql = "UPDATE articles SET article='" + article + "', location ='"+location+"', attachment ='"+attachment+"',post_type='"+post_type+"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +articleuuid+ "'"; 
+							let sql = "UPDATE articles SET article='" + article + "',article_title='"+article_title+"', location ='"+location+"', attachment ='"+attachment+"',post_type='"+post_type+"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +articleuuid+ "'"; 
 
 							con.query(sql,  (err,result) => {
 
@@ -380,7 +382,7 @@ articles.delete = (data,callback)=>{
 	if( 
 		token && 
 		uuidHeader &&
-		post 
+		article 
 		){
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
@@ -400,12 +402,12 @@ articles.delete = (data,callback)=>{
 
 					if(!err && result[0]){
 
-						let deletePost = "DELETE FROM articles WHERE uuid='"+post+"'";
+						let deletePost = "DELETE FROM articles WHERE uuid='"+article+"'";
 
 						con.query(deletePost,(err,result)=>{
 
 							if(!err){
-								let deleteComments = "DELETE FROM comments WHERE ref='"+articles+"'";
+								let deleteComments = "DELETE FROM comments WHERE ref='"+article+"'";
 								//delete all comments on this
 								con.query(deleteComments,(err,result)=>{
 									if(err){
