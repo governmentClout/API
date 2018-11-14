@@ -80,7 +80,7 @@ login.post = (data,callback)=>{
 			provider == 'google'  
 			){
 
-				const login = "SELECT uuid,email,phone,dob FROM users WHERE email='" + email + "'";
+				const login = "SELECT uuid,email,phone,dob FROM users WHERE email='" + email + "' AND provider='"+provider+"'";
 			
 
 				con.query(login,  (err,result) => {
@@ -90,8 +90,6 @@ login.post = (data,callback)=>{
 						let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
 						
 						con.query(verifyToken, (err,tokenResult)=>{
-
-							console.log('Token: ' + tokenResult);
 
 							if(
 								!err && 
@@ -112,7 +110,7 @@ login.post = (data,callback)=>{
 					}else{
 						
 						console.log(err);
-						callback(404,{'Error':err});
+						callback(404,{'Error':'User not found'});
 					}
 
 				});
