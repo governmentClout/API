@@ -36,7 +36,7 @@ articles.post = (data,callback)=>{
 	let uuidHeader = data.headers.uuid;
 
 	let article = typeof(data.payload.article) == 'string' && data.payload.article.trim().length > 0 ? data.payload.article.trim() : false;
-	let title = typeof(data.payload.article_title) == 'string' && data.payload.article_title.trim().length > 0 ? data.payload.article_title.trim() : false;
+	let article_title = typeof(data.payload.article_title) == 'string' && data.payload.article_title.trim().length > 0 ? data.payload.article_title.trim() : false;
 	let location = typeof(data.payload.location) == 'string' && data.payload.location.trim().length > 0 ? data.payload.location.trim() : 'unspecified';
 	let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? data.payload.attachment : null;
 	let post_type = typeof(data.payload.post_type) == 'object' && data.payload.attachment.post_type > 0  ? data.payload.post_type : 'article';
@@ -63,7 +63,7 @@ articles.post = (data,callback)=>{
 							attachment = JSON.stringify(attachment);
 						}
 
-						let sql = "INSERT INTO articles (title,post,location,attachment,uuid,user,post_type) VALUES('"+article_title+"','"+post+"','" + location+"','"+attachment+"','"+uuid+"','"+user+"','"+post_type+"')";
+						let sql = "INSERT INTO articles (article_title,article,location,attachment,uuid,user,post_type) VALUES('"+article_title+"','"+article+"','" + location+"','"+attachment+"','"+uuid+"','"+user+"','"+post_type+"')";
 
 						con.query(sql,(err,result)=>{
 

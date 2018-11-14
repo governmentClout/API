@@ -288,11 +288,11 @@ users.get = (data,callback) => {
 
 				){
 
-				let check = "SELECT users.*,JSON_OBJECT('nationality_residence',profiles.nationality_residence,'nationality_origin',profiles.nationality_origin,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid";
+				let check = "SELECT users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users RIGHT JOIN profiles ON(users.uuid=profiles.uuid)";
 
 				if(param){
 					
-					check = "SELECT users.*,JSON_OBJECT('nationality_residence',profiles.nationality_residence,'nationality_origin',profiles.nationality_origin,'state',profiles.state,'lga',profiles.lga,'firstName',profiles.firstName,'lastName',profiles.lastName,'photo',profiles.photo,'profile_updated_at',profiles.updated_at) as profile FROM users LEFT JOIN profiles ON profiles.uuid=users.uuid WHERE users.uuid='"+param+"'";
+					check = "SELECT users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users RIGHT JOIN profiles ON(users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
 				}
 		
 

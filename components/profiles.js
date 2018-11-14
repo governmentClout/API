@@ -173,7 +173,7 @@ profiles.get = (data,callback)=>{
 				results && 
 				results[0].token.length > 0){
 
-				let profile = "SELECT profiles.*, JSON_OBJECT('email',users.email,'phone',users.phone,'dob',users.dob) AS user_details FROM profiles LEFT JOIN users ON profiles.uuid=users.uuid WHERE users.uuid='" + uuidQuery + "'";
+				let profile = "SELECT profiles.* FROM profiles WHERE profiles.uuid='" + uuidQuery + "'";
 			// console.log('uuid ' + uuidHeader);
 				con.query(profile,(err,result)=>{
 					
