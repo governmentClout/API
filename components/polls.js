@@ -34,9 +34,13 @@ polls.post = (data,callback)=>{
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 
+	let ex = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
 	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
 	let sector = typeof(data.payload.sector) == 'string' && data.payload.sector.trim().length > 0 ? data.payload.sector.trim() : false;
 	let opinion = typeof(data.payload.opinion) == 'string' && data.payload.opinion.trim().length > 0 ? data.payload.opinion.trim() : false;
+	let expire_at = typeof(data.payload.expire_at) == 'string' && data.payload.expire_at.trim().length > 0 ? data.payload.expire_at.trim() : ex;
+	let response_limit = typeof(data.payload.response_limit) == 'string' && data.payload.response_limit.trim().length > 0 ? data.payload.response_limit.trim() : '1000';
 	let poll = typeof(data.payload.poll) == 'string' && data.payload.poll.trim().length > 0 ? data.payload.poll.trim() : false;
 	let status = typeof(data.payload.status) == 'number' && data.payload.status != 0 ? data.payload.status : false;
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
@@ -53,7 +57,7 @@ polls.post = (data,callback)=>{
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
 
 		con.query(verifyToken, (err,result)=>{
-			
+				
 			if(
 				!err && 
 				result[0] && 
@@ -66,7 +70,7 @@ polls.post = (data,callback)=>{
 					//create new poll
 					//user is the uuid of the creator
 				
-					let sqlCreatePoll = "INSERT INTO polls (uuid,sector,opinion,expire_at,response_limit,created_by) VALUES ('"+uuid+"','"+sector+"','"+opinion+"','"+expire_at+"','"+response_limit+"','" + uuid + "')";
+					let sqlCreatePoll = "INSERT INTO polls (uuid,sector,opinion,expire_at,response_limit,created_by) VALUES ('"+uuid+"','"+sector+"','"+opinion+"','"+expire_at+"','"+response_limit+"','" + user + "')";
 
 					con.query(sqlCreatePoll,(err,result)=>{
 
@@ -80,6 +84,23 @@ polls.post = (data,callback)=>{
 						}
 
 					});
+
+				}
+
+				if(!param && (!opinion || !sector)){
+
+					let errorObject = [];
+					if(!param){
+						errorObject.push('No Parameter set');
+					}
+					if(!opinion){
+						errorObject.push('Opinion required');
+					}
+					if(!sector){
+						errorObject.push('sector is required');
+					}
+					console.log(errorObject);
+					callback(400,{'Error':errorObject});
 
 				}
 
