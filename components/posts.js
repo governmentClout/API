@@ -114,7 +114,7 @@ posts.get = (data,callback)=>{
 		
 		
 		con.query(headerChecker,(err,results)=>{
-			
+			console.log(results);
 			if(!err && 
 				results && 
 				results[0].token.length > 0){
@@ -140,11 +140,11 @@ posts.get = (data,callback)=>{
 					    	var pending = arg.length;
 
 					    	for(let i=0; i<arg.length; i++) {
-					    		// console.log(arg[i].uuid);
-					    	 con.query("SELECT profiles.*,users.* FROM profiles LEFT JOIN users ON (profiles.uuid=users.uuid);SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
+					    		console.log(arg[i].user);
+					    	 con.query("SELECT profiles.lga,profiles.firstName,profiles.lastName,profiles.photo,profiles.nationality_residence,profiles.nationality_origin,profiles.state,users.email,users.phone,users.dob FROM profiles,users WHERE users.uuid ='"+arg[i].user+"' AND profiles.uuid='"+arg[i].user+"' LIMIT 1;SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
 					    	 		
 					    	 		let post = arg[i];
-					    	 		
+					    	 		// console.log(compile);
 						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
 						            
 
