@@ -121,7 +121,6 @@ posts.get = (data,callback)=>{
 
 				if( !queryObject && !post ){
 
-					console.log('here');
 					let finalresult = [];
 
 					async.waterfall([
