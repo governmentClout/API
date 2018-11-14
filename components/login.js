@@ -24,49 +24,115 @@ login.options = (data,callback)=>{
 
 login.post = (data,callback)=>{
 
-//check token
 	let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
 	let password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
+	let provider = typeof(data.payload.provider) == 'string' && data.payload.provider.trim().length > 0 ? data.payload.provider.trim() : false;
 
-	if(email && password){
+	if(email && password && provider){
 
-		let hashedPassword = helpers.hash(password);
+		if(provider == 'email'){
 
-		const login = "SELECT uuid,email,phone,dob FROM users WHERE email='" + email + "' AND password='" + hashedPassword + "'";
-		
+			let hashedPassword = helpers.hash(password);
 
-		con.query(login,  (err,result) => {
+			const login = "SELECT uuid,email,phone,dob FROM users WHERE email='" + email + "' AND password='" + hashedPassword + "'";
+			
 
-			if(!err && result.length > 0){
+			con.query(login,  (err,result) => {
 
-				let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
-				
-				con.query(verifyToken, (err,tokenResult)=>{
+				if(!err && result.length > 0){
 
-					console.log('Token: ' + tokenResult);
+					let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
+					
+					con.query(verifyToken, (err,tokenResult)=>{
 
-					if(
-						!err && 
-						tokenResult &&
-						tokenResult.length > 0 
-					){
+						console.log('Token: ' + tokenResult);
+
+						if(
+							!err && 
+							tokenResult &&
+							tokenResult.length > 0 
+						){
+							
+						let finalReqult = Object.assign(...result, ...tokenResult[0],...tokenResult[1]);
+							callback(200,{'user':finalReqult});
+
+						}else{
+							callback(500,{'Error':'Login failed, token Not found or expired'});
+						}
+
+					});
+					
+
+				}else{
+					
+					console.log(err);
+					callback(404,{'Error':err});
+				}
+
+			});
+
+		}
+
+		if(
+			provider == 'twitter' || 
+			provider == 'facebook' || 
+			provider == 'linkedin' || 
+			provider == 'google'  
+			){
+
+				const login = "SELECT uuid,email,phone,dob FROM users WHERE email='" + email + "'";
+			
+
+				con.query(login,  (err,result) => {
+
+					if(!err && result.length > 0){
+
+						let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
 						
-					let finalReqult = Object.assign(...result, ...tokenResult[0],...tokenResult[1]);
-						callback(200,{'user':finalReqult});
+						con.query(verifyToken, (err,tokenResult)=>{
+
+							console.log('Token: ' + tokenResult);
+
+							if(
+								!err && 
+								tokenResult &&
+								tokenResult.length > 0 
+							){
+								
+							let finalReqult = Object.assign(...result, ...tokenResult[0],...tokenResult[1]);
+								callback(200,{'user':finalReqult});
+
+							}else{
+								callback(500,{'Error':'Login failed, token Not found or expired'});
+							}
+
+						});
+						
 
 					}else{
-						callback(500,{'Error':'Login failed, token Not found or expired'});
+						
+						console.log(err);
+						callback(404,{'Error':err});
 					}
 
 				});
-				
+		}
+		
 
-			}else{
-				console.log(err);
-				callback(404,{'Error':'User not found'});
-			}
+	}else{
 
-		});
+		let errorObject = [];
+
+				if(!provider){
+					errorObject.push('provider is a required field');
+				}
+				if(!email){
+					errorObject.push('email is a required field');
+				}
+				if(!password){
+					errorObject.push('password is a required field');
+				}
+				console.log(errorObject);
 
 	}
 }
