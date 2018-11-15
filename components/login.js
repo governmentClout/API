@@ -28,9 +28,9 @@ login.post = (data,callback)=>{
 	let password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
 	let provider = typeof(data.payload.provider) == 'string' && data.payload.provider.trim().length > 0 ? data.payload.provider.trim() : false;
 
-	if(email && password && provider){
+	if(provider){
 
-		if(provider == 'email'){
+		if(provider == 'email' && password && email){
 
 			let hashedPassword = helpers.hash(password);
 
@@ -65,6 +65,15 @@ login.post = (data,callback)=>{
 
 				}else{
 					
+					let errorObject = [];
+
+					if(!email){
+					errorObject.push('email is a required field');
+					}
+					if(!password){
+						errorObject.push('password is a required field');
+					}
+
 					console.log(err);
 					callback(404,{'Error':err});
 				}
@@ -78,6 +87,7 @@ login.post = (data,callback)=>{
 			provider == 'facebook' || 
 			provider == 'linkedin' || 
 			provider == 'google'  
+
 			){
 
 				const login = "SELECT uuid,email,phone,dob FROM users WHERE email='" + email + "' AND provider='"+provider+"'";
@@ -115,6 +125,16 @@ login.post = (data,callback)=>{
 
 				});
 		}
+
+		if(
+			provider != 'email' && 
+			provider != 'google' &&
+			provider != 'facebook' &&
+			provider != 'linkedin' &&
+			provider != 'twitter' &&
+			){
+			callback(500,{'Error':'Invalid Provider'});
+		}
 		
 
 	}else{
@@ -124,12 +144,7 @@ login.post = (data,callback)=>{
 				if(!provider){
 					errorObject.push('provider is a required field');
 				}
-				if(!email){
-					errorObject.push('email is a required field');
-				}
-				if(!password){
-					errorObject.push('password is a required field');
-				}
+				
 				console.log(errorObject);
 				callback(400,{'Error':errorObject});
 
