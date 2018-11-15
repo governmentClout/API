@@ -131,6 +131,7 @@ login.post = (data,callback)=>{
 					errorObject.push('password is a required field');
 				}
 				console.log(errorObject);
+				callback(400,{'Error':errorObject});
 
 	}
 }
