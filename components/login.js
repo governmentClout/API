@@ -131,8 +131,9 @@ login.post = (data,callback)=>{
 			provider != 'google' &&
 			provider != 'facebook' &&
 			provider != 'linkedin' &&
-			provider != 'twitter' &&
+			provider != 'twitter' 
 			){
+
 			callback(500,{'Error':'Invalid Provider'});
 		}
 		
