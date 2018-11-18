@@ -26,19 +26,26 @@ executives.options = (data,callback)=>{
 }
 
 executives.get = (data,callback)=>{
+	//get executives for a single pereson
+	// -- this must be area based... obviously president is the same for everyone, 
+	// -- state should be that of origin, (add state of origin to profile)
+	//and other areas
 
 	callback(200,{'success':'you have hit executives get endpoint'})
 
 }
 
 executives.post = (data,callback)=>{
-
+	//request to become an executve
+	//update executive profile
+	//
 	callback(200,{'success':'you have hit executives post endpoint'})
 
 }
 
 executives.delete = (data,callback)=>{
-
+	//change executive profile
+	//
 	callback(200,{'success':'you have hit executives delete endpoint'})
 
 }

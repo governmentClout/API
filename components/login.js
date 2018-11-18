@@ -27,7 +27,7 @@ login.post = (data,callback)=>{
 	let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
 	let password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
 	let provider = typeof(data.payload.provider) == 'string' && data.payload.provider.trim().length > 0 ? data.payload.provider.trim() : false;
-
+	console.log('here');
 	if(provider){
 
 		if(provider == 'email' && password && email){
@@ -38,14 +38,14 @@ login.post = (data,callback)=>{
 			
 
 			con.query(login,  (err,result) => {
-
+				console.log(result);
 				if(!err && result.length > 0){
 
 					let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
 					
 					con.query(verifyToken, (err,tokenResult)=>{
 
-						console.log('Token: ' + tokenResult);
+						console.log(tokenResult);
 
 						if(
 							!err && 

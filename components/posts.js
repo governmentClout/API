@@ -100,8 +100,6 @@ posts.get = (data,callback)=>{
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
-
-// console.log(data);
 	
 	if( 
 		token && 
@@ -114,7 +112,7 @@ posts.get = (data,callback)=>{
 		
 		
 		con.query(headerChecker,(err,results)=>{
-			console.log(results);
+			
 			if(!err && 
 				results && 
 				results[0].token.length > 0){
@@ -139,11 +137,11 @@ posts.get = (data,callback)=>{
 					    	var pending = arg.length;
 
 					    	for(let i=0; i<arg.length; i++) {
-					    		console.log(arg[i].user);
+					    		
 					    	 con.query("SELECT profiles.lga,profiles.firstName,profiles.lastName,profiles.photo,profiles.nationality_residence,profiles.nationality_origin,profiles.state,users.email,users.phone,users.dob FROM profiles,users WHERE users.uuid ='"+arg[i].user+"' AND profiles.uuid='"+arg[i].user+"' LIMIT 1;SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
 					    	 		
 					    	 		let post = arg[i];
-					    	 		// console.log(compile);
+					    	 		
 						            finalresult.splice(i,0,{'post':post,'user':compile[0],'comments':compile[1],'reactions':compile[2],'shares':compile[3],'views':compile[4]});
 						            
 
@@ -184,7 +182,7 @@ posts.get = (data,callback)=>{
 					    	var pending = arg.length;
 
 					    	for(let i=0; i<arg.length; i++) {
-					    		// console.log(arg[i].uuid);
+					    		
 					    	 con.query("SELECT profiles.lga,profiles.firstName,profiles.lastName,profiles.photo,profiles.nationality_residence,profiles.nationality_origin,profiles.state,users.email,users.phone,users.dob FROM profiles,users WHERE users.uuid ='"+arg[i].user+"' AND profiles.uuid='"+arg[i].user+"' LIMIT 1;SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
 					    	 		
 					    	 		let post = arg[i];
@@ -233,7 +231,7 @@ posts.get = (data,callback)=>{
 					    	var pending = arg.length;
 
 					    	for(let i=0; i<arg.length; i++) {
-					    		// console.log(arg[i].uuid);
+					    	
 					    	  con.query("SELECT profiles.lga,profiles.firstName,profiles.lastName,profiles.photo,profiles.nationality_residence,profiles.nationality_origin,profiles.state,users.email,users.phone,users.dob FROM profiles,users WHERE users.uuid ='"+arg[i].user+"' AND profiles.uuid='"+arg[i].user+"' LIMIT 1;SELECT * FROM comments WHERE ref='"+arg[i].uuid+"';SELECT * from reactions WHERE post='"+arg[i].uuid+"';SELECT * FROM shares WHERE post='"+arg[i].uuid+"';SELECT * FROM views WHERE post='"+arg[i].uuid+"'",(err, compile)=>{
 					    	 		
 					    	 		let post = arg[i];
@@ -292,7 +290,7 @@ posts.put = (data,callback)=>{
 	// let uuid = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 	let postuuid = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
-	// console.log(data);
+
 	if(token && postuuid){
 
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuidHeader + "'";
@@ -305,11 +303,11 @@ posts.put = (data,callback)=>{
 				result[0].token == token 
 
 				){
-				// console.log('post content ' + post);
+				
 					let checkPost = "SELECT * FROM posts WHERE uuid='" + postuuid + "'";
 
 					con.query(checkPost, (err,result)=>{
-						// console.log(result);
+						
 						if(
 							!err && 
 							result.length > 0
@@ -329,7 +327,7 @@ posts.put = (data,callback)=>{
 							con.query(sql,  (err,result) => {
 
 							   	if(!err){
-							   		console.log(result);
+							   		
 							   		callback(200, {'Success':'Post Update Done'});
 
 							   	}else{
@@ -373,7 +371,7 @@ posts.delete = (data,callback)=>{
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
 		
 		con.query(headerChecker,(err,results)=>{
-			// console.log(results[0].token);
+			
 			if(!err && 
 				results && 
 				results[0].token.length > 0 &&

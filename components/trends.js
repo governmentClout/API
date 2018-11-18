@@ -23,7 +23,8 @@ trends.options = (data,callback)=>{
 }
 
 trends.get = (data,callback)=>{
-
+	//deliver trending posts and articles
+	//get post and articles with highest comments, likes, shares and
 	// callback(200, {'You have hit the trends get endpoint'} );
 	
 }
