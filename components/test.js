@@ -6,8 +6,13 @@ const mysql = require('mysql');
 const dbhelper = require('./../lib/db_helper');
 const mailer = require('./mailer');
 
+const cloudinary = require('cloudinary');
 
-
+cloudinary.config({ 
+  cloud_name: 'staybusy', 
+  api_key: '513764555178418', 
+  api_secret: 'NJCsxMKkJ1H6-5QsfPd3HkLohHA' 
+});
 // function getStudents(ids, cb) { 
 //     var students = [];
 //     var pending = ids.length;
@@ -44,8 +49,10 @@ const tests = {};
 
 tests.get = (data,callback)=>{
 
+cloudinary.v2.uploader.upload(__dirname + "/logo.png", 
+  function(error, result) {console.log(result, error)});
 
-mailer.send([]);
+// mailer.send([]);
 
 // 	console.log('getting started');
 // 	async.waterfall([
