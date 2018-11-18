@@ -112,7 +112,9 @@ let router = {
 	'articles': handlers.articles,
 	'polls': handlers.polls,
 	'petitions':handlers.petitions,
-	'settings':handlers.settings
+	'settings':handlers.settings,
+	'admins':handlers.admin,
+	'resets':handlers.resets
 };
 
 
