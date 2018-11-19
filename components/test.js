@@ -49,9 +49,6 @@ const tests = {};
 
 tests.get = (data,callback)=>{
 
-cloudinary.v2.uploader.upload(__dirname + "/logo.png", 
-  function(error, result) {console.log(result, error)});
-
 // mailer.send([]);
 
 // 	console.log('getting started');

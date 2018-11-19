@@ -4,6 +4,7 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
+const uploader = require('./uploader');
 
 const con = mysql.createConnection({
 
@@ -40,7 +41,6 @@ profiles.post = (data,callback)=>{
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 
 
-
 	if(token && uuid){
 
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
@@ -71,8 +71,7 @@ profiles.post = (data,callback)=>{
 						con.query(checkUser,  (err,result) => {
 
 							//check if profule already exist
-							console.log(' result ' + result);
-
+							
 							if(!err && result.length > 0){
 
 								let checkProfile = "SELECT * FROM profiles WHERE uuid='" + uuid + "'";
@@ -81,12 +80,20 @@ profiles.post = (data,callback)=>{
 									if(!err && 
 										result.length < 1
 										){
+										//upload to cloudinary
 
 										let sql = "INSERT INTO profiles (uuid, nationality_residence, nationality_origin, state, lga, firstName, lastName, photo) VALUES ( '" + uuid + "','" +nationality_residence+ "', '" +nationality_origin+ "','" + state + "' , '" + lga +"' ,'"+firstName +"', '" + lastName + "','" + photo +"' )";
 
 										con.query(sql,  (err,result) => {
 
 										   	if(!err){
+
+										   		uploader.send({
+													'file':photo,
+													'table':'profiles',
+													'uuid':uuid,
+													'column':'photo'
+													});
 
 										   		callback(200, {'Success':'Profile created'});
 
@@ -114,8 +121,11 @@ profiles.post = (data,callback)=>{
 
 					}else{
 						let errorObject = [];
-						if(!nationality){
-							errorObject.push('Nationality is missing or invalid format');
+						if(!nationality_residence){
+							errorObject.push('Nationality Residence is missing or invalid format');
+						}
+						if(!nationality_origin){
+							errorObject.push('Nationality Origin is missing or invalid format');
 						}
 						if(!state){
 							errorObject.push('State is missing or invalid format');
