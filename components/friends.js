@@ -459,6 +459,12 @@ friends.post = (data,callback)=>{
 								con.query(sqlRequest,(err,result)=>{
 									if(!err && result){
 
+										mailer.sendByUUID({
+						   					'uuid':user,
+						   					'subject':'Notification: Friend Request',
+						   					'message':'You have a new friend request'
+						   					});
+
 										callback(200,{'Success':'Request Sent'});
 
 									}else{
@@ -503,7 +509,11 @@ friends.post = (data,callback)=>{
 								con.query(sqlAccept,(err,result)=>{
 
 									if(!err && result){
-
+										mailer.sendByUUID({
+						   					'uuid':user,
+						   					'subject':'Notification: Friend Request',
+						   					'message':'Your friend request has been accepted'
+						   					});
 										callback(200,{'Success':'Request Accepted'});
 
 									}else{
