@@ -97,7 +97,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
 							    	 		
 							    	 		
 								            finalresult.splice(i,0,result);
@@ -137,10 +137,10 @@ friends.get = (data,callback)=>{
 						async.waterfall([
 						    function(callback) {
 
-						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
+						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status='2'";
 
 						    	con.query(sqlGetFriends,(err,result)=>{
-						    			
+						    				
 						    			if(!err && result.length > 0){
 						    				callback(null,result);
 						    			}else{
@@ -158,14 +158,14 @@ friends.get = (data,callback)=>{
 
 						    		let result = [];
 							    	var pending = arg.length;
-
+							    	console.log(arg);
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
 							    	 		
-							    	 		
-								            finalresult.splice(i,0,result);
-								            
+							    	 		console.log(i);
+								            finalresult.splice(i,0,{'user':result[1],'profile':result[0]});
+								            // console.log(finalresult);
 
 								            if( 0 === --pending ) {
 
@@ -224,7 +224,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
 							    	 		
 							    	 		
 								            finalresult.splice(i,0,result);
@@ -286,7 +286,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
 							    	 		
 							    	 		
 								            finalresult.splice(i,0,result);
@@ -350,11 +350,9 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		
-							    		// console.log(arg[i].uuid);
 							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
-							    	 		console.log('here 6');
 							    	 		
-								            finalresult.splice(i,0,{'0ouser':result[0],'profile':result[1]});
+								            finalresult.splice(i,0,{'user':result[0],'profile':result[1]});
 								            
 								            if( 0 === --pending ) {
 
@@ -497,13 +495,13 @@ friends.post = (data,callback)=>{
 						//accept friend request
 						//check if request has not already been accepted
 
-						let checkRequest = "SELECT count(*) FROM friends WHERE (user='"+user+"' AND friend='"+friend+"') OR  (friend='"+user+"' AND user='"+friend+"')";
+						let checkRequest = "SELECT * FROM friends WHERE (user='"+user+"' OR friend='"+friend+"' OR user='"+friend+"' OR friend='"+user+"')";
 
 						con.query(checkRequest,(err,result)=>{
+							// console.log(result[0].uuid);
+							if(!err && result.length > 0 && result.status != 2){
 
-							if(!err && request.length > 0 && result.status != 2){
-
-								let sqlAccept = "UPDATE friends SET status='2' WHERE uuid='"+result.uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='2' WHERE uuid='"+result[0].uuid+"'";
 
 								con.query(sqlAccept,(err,result)=>{
 
