@@ -3,19 +3,6 @@ const config = require('./../lib/config');
 const nodemailer = require('nodemailer');
 const handlebars = require('handlebars');
 const fs = require('fs');
-const async = require('async');
-const mysql = require('mysql');
-
-
-const con = mysql.createPool({
-
-  host: config.db_host,
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name,
-  multipleStatements: true
-
-});
 
 
 let readHTMLFile = function(path, callback) {
@@ -49,48 +36,45 @@ mailer.send = (data)=>{
 //get user details from database
 //send email to the user specified
 
-async.waterfall([
-                function(callback) {
+let to = data.email;
+let subject = data.subject;
+let message = data.message;
 
-                    let getUserEmail = "SELECT email FROM uers WHERE uuid='"+data['uuid']+"'";
-                    //get user email here
-                
-                }
-            ], function (err, result) {
+// let mailOptions = {
+//   from: 'youremail@gmail.com',
+//   to: to,
+//   subject: subject,
+//   html: {
+//   	path: __dirname + 'email.html',
+//   	subject: subject,
+//   	message: message
+//   }
+// };
 
-                let to = result.email;
-                let subject = data['subject'];
-                let message = data['message'];
+readHTMLFile(__dirname + '/email.html', function(err, html) {
+    let template = handlebars.compile(html);
+    let replacements = {
+         subject: subject,
+         message: message
+    };
+    let htmlToSend = template(replacements);
 
+    let mailOptions = {
+	  from: 'info@gclout.com',
+	  to: to,
+	  subject: subject,
+	  html: htmlToSend
+	};
 
-                readHTMLFile(__dirname + '/email.html', function(err, html) {
-                  let template = handlebars.compile(html);
-                  let replacements = {
-                       subject: subject,
-                       message: message
-                  };
-                  let htmlToSend = template(replacements);
+    transporter.sendMail(mailOptions, function(error, info){
 
-                  let mailOptions = {
-                  from: 'info@gclout.com',
-                  to: to,
-                  subject: subject,
-                  html: htmlToSend
-                };
-
-                  transporter.sendMail(mailOptions, function(error, info){
-
-                  if (error) {
-                    console.log(error);
-                  } else {
-                    console.log('Email sent: ' + info.response);
-                  }
-                });
-              });
-
-
-          });
-
+	  if (error) {
+	    console.log(error);
+	  } else {
+	    console.log('Email sent: ' + info.response);
+	  }
+	});
+});
 
 
 

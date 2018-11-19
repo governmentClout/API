@@ -6,6 +6,7 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
+const mailer = require('./mailer');
 
 const con = mysql.createConnection({
 
@@ -82,6 +83,13 @@ users.post = (data,callback)=>{
 										   		con.query(tokenInsert,(err,result)=>{
 
 										   			if(!err){
+										   				console.log('done');
+										   				//send email here
+										   				mailer.send({
+										   					'email':email,
+										   					'subject':'Welcome to GClout',
+										   					'message':'Your registration was successful, welcome to gclout.com'
+										   					});
 
 										   				callback(200, {'Token':userToken, 'uuid':uuid});
 
