@@ -4,7 +4,7 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
-
+const async = require('async');
 
 
 const con = mysql.createPool({
@@ -36,9 +36,9 @@ friends.get = (data,callback)=>{
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
-	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
-
+	
 	//if uuidHeader === queryObject.user, then the person can perform every activity, otherwise, uuidHeader can only see friend list of the queryObject.user
 	//friends status: 0 - pending, 1 - ignored, 2 - accepted 3 - blocked.
 
@@ -58,8 +58,11 @@ friends.get = (data,callback)=>{
 				result[0].token == token 
 
 				){
-
-					if(queryObject && queryObject.user != uuidHeader && param == 'friends'){
+				console.log('param - >' + param);
+				console.log('uuid - >' + uuidHeader);
+				console.log(param == uuidHeader);
+					if(param && param != uuidHeader){
+						console.log('stage 1');
 						//get all friends from another user
 					let finalresult = [];
 
@@ -414,7 +417,7 @@ friends.post = (data,callback)=>{
 	//friends/request
 	//friends/accept
 	//friends/block
-
+	console.log('se');
 	//if request: user is the requester, friend is the requestee
 	//if accept: user is the accepter, friend is the accepted
 	//if ignore: user is the ignorer, friend is the ignored
@@ -424,7 +427,8 @@ friends.post = (data,callback)=>{
 
 	if( 
 		token && 
-		uuidHeader  
+		uuidHeader 
+
 		){
 		
 
@@ -653,4 +657,4 @@ friends.delete = (data,callback)=>{
 
 
 
-module.exports = shares;
+module.exports = friends;
