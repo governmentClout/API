@@ -127,7 +127,7 @@ friends.get = (data,callback)=>{
 				
 
 
-				if(param && param == 'friends'){
+				if(!param && uuidHeader){
 					//get all my friends
 
 					let finalresult = [];
@@ -412,12 +412,11 @@ friends.post = (data,callback)=>{
 	//request is being sent to:
 	let friend = typeof(data.payload.friend) == 'string' && data.payload.friend.trim().length > 0 ? data.payload.friend.trim() : false;
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
-	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let uuid = uuidV1();
 	//friends/request
 	//friends/accept
 	//friends/block
-	console.log('se');
 	//if request: user is the requester, friend is the requestee
 	//if accept: user is the accepter, friend is the accepted
 	//if ignore: user is the ignorer, friend is the ignored
@@ -446,11 +445,11 @@ friends.post = (data,callback)=>{
 						//check if they are not already friends
 						//send friend request
 
-						let checkRequest = "SELECT count(*) FROM friends WHERE (user='"+user+"' AND friend='"+friend+"') OR  (friend='"+user+"' AND user='"+friend+"')";
+						let checkRequest = "SELECT * FROM friends WHERE (user='"+user+"' OR friend='"+friend+"' OR user='"+friend+"' OR friend='"+user+"')";
 
 						con.query(checkRequest,(err,result)=>{
 
-							if(!err && request.length < 1){
+							if(!err && result.length < 1){
 								//proceed
 								
 								let sqlRequest = "INSERT INTO friends (uuid,friend,user) VALUES('"+uuid+"','"+friend+"','"+user+"')";
@@ -474,7 +473,7 @@ friends.post = (data,callback)=>{
 									errorObject.push(err);
 								}
 
-								if(request.length > 0){
+								if(result.length > 0){
 									errorObject.push('request already exist');
 								}
 
