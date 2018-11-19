@@ -160,13 +160,12 @@ friends.get = (data,callback)=>{
 							    	var pending = arg.length;
 							    	console.log(arg);
 							    	for(let i=0; i<arg.length; i++) {
-							    		// console.log(arg[i].uuid);
+							    		
 							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
 							    	 		
 							    	 		console.log(i);
 								            finalresult.splice(i,0,{'user':result[1],'profile':result[0]});
-								            // console.log(finalresult);
-
+								            
 								            if( 0 === --pending ) {
 
 								               	callback(null,finalresult);
@@ -547,7 +546,7 @@ friends.post = (data,callback)=>{
 
 							if(!err && request.length > 0 && result.status != 1){
 
-								let sqlAccept = "UPDATE friends SET status='1' WHERE uuid='"+result.uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='1' WHERE uuid='"+result[0].uuid+"')";
 
 								con.query(sqlAccept,(err,result)=>{
 
@@ -591,7 +590,7 @@ friends.post = (data,callback)=>{
 
 							if(!err && request.length > 0 && resquest.status != 3){
 
-								let sqlAccept = "UPDATE friends SET status='3' WHERE uuid='"+result.uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='3' WHERE uuid='"+result[0].uuid+"')";
 
 								con.query(sqlAccept,(err,result)=>{
 
