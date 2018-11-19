@@ -58,10 +58,14 @@ friends.get = (data,callback)=>{
 				result[0].token == token 
 
 				){
-				console.log('param - >' + param);
-				console.log('uuid - >' + uuidHeader);
+				
 				console.log(param == uuidHeader);
-					if(param && param != uuidHeader){
+					if(	param && 
+						param != uuidHeader &&
+						param != 'pending' &&
+						param != 'blocked' &&
+						param != 'ignored'
+						){
 						console.log('stage 1');
 						//get all friends from another user
 					let finalresult = [];
@@ -121,13 +125,11 @@ friends.get = (data,callback)=>{
 
 						});
 
-				}else{
-					callback(403,{'Error':'Access Denied'});
 				}
 				
 
 
-				if(!param && uuidHeader){
+				if(!param){
 					//get all my friends
 
 					let finalresult = [];
@@ -316,41 +318,44 @@ friends.get = (data,callback)=>{
 
 					if(param && param == 'pending'){
 					//get all blocked
+					console.log('pending');
 					let finalresult = [];
 
 						async.waterfall([
 						    function(callback) {
 
-						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=0";
+						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status='0'";
 
-						    	con.query(sql,(err,result)=>{
+						    	con.query(sqlGetFriends,(err,result)=>{
 						    			
 						    			if(!err && result.length > 0){
+						    			
+
 						    				callback(null,result);
+
 						    			}else{
 						    				callback(null,[]);
 						    			}
 										
 
 									});
-						    	
-						    
 						    },
 						    function(arg, callback) {
-						    	
+						    			
 						    	if(arg.length > 0){
+						    			
 
 						    		let result = [];
 							    	var pending = arg.length;
 
 							    	for(let i=0; i<arg.length; i++) {
+							    		
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
+							    	 		console.log('here 6');
 							    	 		
-							    	 		
-								            finalresult.splice(i,0,result);
+								            finalresult.splice(i,0,{'0ouser':result[0],'profile':result[1]});
 								            
-
 								            if( 0 === --pending ) {
 
 								               	callback(null,finalresult);
@@ -367,11 +372,13 @@ friends.get = (data,callback)=>{
 
 						        
 						    }
-						], function (err, result) {
+						], 
+						function (err, result) {
 							
-							callback(200,{'pending':result});
+							callback(200,{'friends':result});
 
 						});
+						
 					}
 
 						
