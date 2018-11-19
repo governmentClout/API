@@ -55,7 +55,11 @@ comments.post = (data,callback)=>{
 						con.query(sql,(err,result)=>{
 
 							if(!err && result){
-
+								mailer.sendByUUID({
+						   					'uuid':user,
+						   					'subject':'Notification: Comment',
+						   					'message':'You have a new comment on your post'
+						   					});
 								callback(200,{'Success':'Comment Posted'});
 
 							}else{

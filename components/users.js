@@ -85,7 +85,7 @@ users.post = (data,callback)=>{
 										   			if(!err){
 										   				console.log('done');
 										   				//send email here
-										   				mailer.send({
+										   				mailer.sendByEmail({
 										   					'email':email,
 										   					'subject':'Welcome to GClout',
 										   					'message':'Your registration was successful, welcome to gclout.com'
@@ -211,7 +211,11 @@ users.post = (data,callback)=>{
 								con.query(tokenInsert,(err,result)=>{
 
 						   			if(!err){
-
+						   				mailer.sendByEmail({
+								   					'email':email,
+								   					'subject':'Welcome to GClout',
+								   					'message':'Your registration was successful, welcome to gclout.com'
+								   					});
 						   				callback(200, {'Token':userToken, 'uuid':uuid});
 
 						   			}else{

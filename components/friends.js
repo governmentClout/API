@@ -58,8 +58,6 @@ friends.get = (data,callback)=>{
 				result[0].token == token 
 
 				){
-				
-				console.log(param == uuidHeader);
 					if(	param && 
 						param != uuidHeader &&
 						param != 'pending' &&
