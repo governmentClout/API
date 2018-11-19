@@ -274,6 +274,12 @@ profiles.put = (data,callback)=>{
 
 										   	if(!err){
 										   		console.log(result);
+										   		uploader.send({
+													'file':photo,
+													'table':'profiles',
+													'uuid':uuid,
+													'column':'photo'
+													});
 										   		callback(200, {'Success':'Profile Update Done'});
 
 										   	}else{
