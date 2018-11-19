@@ -36,9 +36,7 @@ friends.get = (data,callback)=>{
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
-
 	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
-
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 
 	//if uuidHeader === queryObject.user, then the person can perform every activity, otherwise, uuidHeader can only see friend list of the queryObject.user
@@ -62,7 +60,7 @@ friends.get = (data,callback)=>{
 				){
 
 					if(queryObject && queryObject.user != uuidHeader && param == 'friends'){
-
+						//get all friends from another user
 					let finalresult = [];
 
 						async.waterfall([
@@ -70,7 +68,7 @@ friends.get = (data,callback)=>{
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
 
-						    	con.query(sql,(err,result)=>{
+						    	con.query(sqlGetFriends,(err,result)=>{
 						    			
 						    			if(!err && result.length > 0){
 						    				callback(null,result);
@@ -126,8 +124,8 @@ friends.get = (data,callback)=>{
 				
 
 
-					if(param && param == 'friends'){
-					//get all friends
+				if(param && param == 'friends'){
+					//get all my friends
 
 					let finalresult = [];
 
@@ -136,7 +134,7 @@ friends.get = (data,callback)=>{
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
 
-						    	con.query(sql,(err,result)=>{
+						    	con.query(sqlGetFriends,(err,result)=>{
 						    			
 						    			if(!err && result.length > 0){
 						    				callback(null,result);
@@ -355,69 +353,6 @@ friends.get = (data,callback)=>{
 								               	callback(null,finalresult);
 
 								            }
-
-	if(queryObject && queryObject.user != uuidHeader && param == 'friends'){
-
-					let finalresult = [];
-
-						async.waterfall([
-						    function(callback) {
-
-						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
-
-						    	con.query(sql,(err,result)=>{
-						    			
-						    			if(!err && result.length > 0){
-						    				callback(null,result);
-						    			}else{
-						    				callback(null,[]);
-						    			}
-										
-
-									});
-						    	
-						    
-						    },
-						    function(arg, callback) {
-						    	
-						    	if(arg.length > 0){
-
-						    		let result = [];
-							    	var pending = arg.length;
-
-							    	for(let i=0; i<arg.length; i++) {
-							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].uuid+"'",(err, result)=>{
-							    	 		
-							    	 		
-								            finalresult.splice(i,0,result);
-								            
-
-								            if( 0 === --pending ) {
-
-								               	callback(null,finalresult);
-
-								            }
-
-								        });
-							    	}
-
-						    	}else{
-						    		callback(null, []);
-						    	}
-						    	
-
-						        
-						    }
-						], function (err, result) {
-							
-							callback(200,{'friends':result});
-
-						});
-
-				}else{
-					callback(403,{'Error':'Access Denied'});
-				}
 				
 								        });
 							    	}
@@ -470,14 +405,10 @@ friends.post = (data,callback)=>{
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
-	
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
-
 	//request is being sent to:
 	let friend = typeof(data.payload.friend) == 'string' && data.payload.friend.trim().length > 0 ? data.payload.friend.trim() : false;
-
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
-
 	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
 	let uuid = uuidV1();
 	//friends/request
@@ -540,7 +471,7 @@ friends.post = (data,callback)=>{
 								}
 
 								if(request.length > 0){
-									errorObject.push('Connection between users already exist');
+									errorObject.push('request already exist');
 								}
 
 								callback(400,{'Error':errorObject});
@@ -562,7 +493,7 @@ friends.post = (data,callback)=>{
 
 							if(!err && request.length > 0 && result.status != 2){
 
-								let sqlAccept = "UPDATE friends SET status=2 WHERE uuid='"+result.uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='2' WHERE uuid='"+result.uuid+"')";
 
 								con.query(sqlAccept,(err,result)=>{
 
@@ -608,7 +539,7 @@ friends.post = (data,callback)=>{
 
 							if(!err && request.length > 0 && result.status != 1){
 
-								let sqlAccept = "UPDATE friends SET status=1 WHERE uuid='"+result.uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='1' WHERE uuid='"+result.uuid+"')";
 
 								con.query(sqlAccept,(err,result)=>{
 
@@ -652,7 +583,7 @@ friends.post = (data,callback)=>{
 
 							if(!err && request.length > 0 && resquest.status != 3){
 
-								let sqlAccept = "UPDATE friends SET status=3 WHERE uuid='"+result.uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='3' WHERE uuid='"+result.uuid+"')";
 
 								con.query(sqlAccept,(err,result)=>{
 
