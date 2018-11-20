@@ -41,7 +41,7 @@ login.post = (data,callback)=>{
 				console.log(result);
 				if(!err && result.length > 0){
 
-					let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "' LIMIT 1; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
+					let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "'; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";
 					
 					con.query(verifyToken, (err,tokenResult)=>{
 

@@ -1,5 +1,3 @@
-
-
 const _db = require('./../lib/migrations');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
@@ -39,6 +37,7 @@ polls.post = (data,callback)=>{
 	let opinion = typeof(data.payload.opinion) == 'string' && data.payload.opinion.trim().length > 0 ? data.payload.opinion.trim() : false;
 	let expire_at = typeof(data.payload.expire_at) == 'string' && data.payload.expire_at.trim().length > 0 ? data.payload.expire_at.trim() : '3014-01-01 00:00:00';
 	let response_limit = typeof(data.payload.response_limit) == 'string' && data.payload.response_limit.trim().length > 0 ? data.payload.response_limit.trim() : '1000';
+	let status = typeof(data.payload.status) == 'number' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 

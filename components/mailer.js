@@ -1,9 +1,20 @@
 
 const config = require('./../lib/config');
 const nodemailer = require('nodemailer');
-const handlebars = require('handlebars');
+const handlebars = require('handlebars'); 
 const fs = require('fs');
 const async = require('async');
+const mysql = require('mysql');
+
+const con = mysql.createPool({
+
+  host: config.db_host,
+  user: config.db_username,
+  password: config.db_password,
+  database: config.db_name,
+  multipleStatements: true
+
+});
 
 
 let readHTMLFile = function(path, callback) {

@@ -4,6 +4,7 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
+const mailer = require('./mailer');
 
 
 const con = mysql.createConnection({

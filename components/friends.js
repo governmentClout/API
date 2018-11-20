@@ -5,6 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const async = require('async');
+const mailer = require('./mailer');
 
 
 const con = mysql.createPool({
@@ -447,11 +448,11 @@ friends.post = (data,callback)=>{
 						//check if they are not already friends
 						//send friend request
 
-						let checkRequest = "SELECT * FROM friends WHERE (user='"+user+"' OR friend='"+friend+"' OR user='"+friend+"' OR friend='"+user+"')";
+						let checkRequest = "SELECT * FROM friends WHERE user='"+user+"' AND friend='"+friend+"'; SELECT * FROM friends WHERE user='"+friend+"' AND friend='"+user+"'";
 
 						con.query(checkRequest,(err,result)=>{
-
-							if(!err && result.length < 1){
+							console.log(result);
+							if(!err && result[0].length < 1 && result[1].length < 1){
 								//proceed
 								
 								let sqlRequest = "INSERT INTO friends (uuid,friend,user) VALUES('"+uuid+"','"+friend+"','"+user+"')";
@@ -498,7 +499,7 @@ friends.post = (data,callback)=>{
 						//accept friend request
 						//check if request has not already been accepted
 
-						let checkRequest = "SELECT * FROM friends WHERE (user='"+user+"' OR friend='"+friend+"' OR user='"+friend+"' OR friend='"+user+"')";
+						let checkRequest = "SELECT * FROM friends WHERE user='"+user+"' AND friend='"+friend+"'; SELECT * FROM friends WHERE user='"+friend+"' AND friend='"+user+"'";
 
 						con.query(checkRequest,(err,result)=>{
 							// console.log(result[0].uuid);
@@ -548,13 +549,13 @@ friends.post = (data,callback)=>{
 						//accept friend request
 						//check if request has not already been accepted
 
-						let checkRequest = "SELECT count(*) FROM friends WHERE (user='"+user+"' AND friend='"+friend+"') OR  (friend='"+user+"' AND user='"+friend+"')";
+						let checkRequest = "SELECT * FROM friends WHERE user='"+user+"' AND friend='"+friend+"'; SELECT * FROM friends WHERE user='"+friend+"' AND friend='"+user+"'";
 
 						con.query(checkRequest,(err,result)=>{
 
-							if(!err && request.length > 0 && result.status != 1){
+							if(!err && result.length > 0 && result.status != 1){
 
-								let sqlAccept = "UPDATE friends SET status='1' WHERE uuid='"+result[0].uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='1' WHERE uuid='"+result[0].uuid+"'";
 
 								con.query(sqlAccept,(err,result)=>{
 
@@ -596,15 +597,15 @@ friends.post = (data,callback)=>{
 
 						con.query(checkRequest,(err,result)=>{
 
-							if(!err && request.length > 0 && resquest.status != 3){
+							if(!err && result.length > 0 && resquest.status != 3){
 
-								let sqlAccept = "UPDATE friends SET status='3' WHERE uuid='"+result[0].uuid+"')";
+								let sqlAccept = "UPDATE friends SET status='3' WHERE uuid='"+result[0].uuid+"'";
 
 								con.query(sqlAccept,(err,result)=>{
 
 									if(!err && result){
 
-										callback(200,{'Success':'Request Accepted'});
+										callback(200,{'Success':'Request Block'});
 
 									}else{
 										console.log(err);
