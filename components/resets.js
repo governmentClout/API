@@ -34,8 +34,10 @@ resets.post = (data,callback)=>{
 	//send password reset code to user
 
 	let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length > 0 ? data.payload.email.trim() : false;
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 && data.param.trim() == 'code' ? data.param : false;
+	let reset_code = typeof(data.payload.reset_code) == 'string' && data.payload.reset_code.trim().length > 0 ? data.payload.reset_code.trim() : false;
 
-	if(email){
+	if(email && !param){
 
 		//check that this email exists in the database
 
@@ -50,7 +52,7 @@ resets.post = (data,callback)=>{
 				let uuid = uuidV1();
 
 					//enter the code in the database
-					let resetSQL = "INSERT INTO password_reset (uuid,email,code,status) VALUES('"+uuid+"','"+email+"','"+resetCode+"','0')";
+					let resetSQL = "INSERT INTO password_reset (uuid,email,code) VALUES('"+uuid+"','"+email+"','"+resetCode+"')";
 
 					con.query(resetSQL,(err,result)=>{
 
@@ -76,8 +78,45 @@ resets.post = (data,callback)=>{
 			}
 		})
 
-	}else{
-		callback(400,{'Error':'Email is a required field'});
+	}
+
+	if(param){
+
+		if(reset_code){
+
+			let checkResetCode = "SELECT * FROM password_reset WHERE code='"+reset_code+"' AND status ='0'";
+
+			con.query(checkResetCode,(err,result)=>{
+
+				if(!err && result.length > 0){
+					//code exists
+
+					let userEmail = "SELECT * FROM users WHERE email='" +result.email+"'";
+
+					con.query(userEmail,(err,result)=>{
+
+						if(!err){
+							callback(200,{'uuid':result.uuid});
+						}else{
+							callback(500,{'Error':err});
+						}
+
+					});
+
+				}else{
+					callback(404,{'Error':'Code does not exist or already used'});
+				}
+
+			});
+
+		}else{
+			callback(400,{'Error':'Reset code is required'});
+		}
+
+	}
+
+	if(!email && !param){
+		callback(400,{'Error':'You are trying the impossible, visit the right endpoint or send an email parameter'})
 	}
 
 
@@ -86,12 +125,60 @@ resets.post = (data,callback)=>{
 
 
 resets.put = (data,callback)=>{
+	//collect uuid, collect password
+
+	let uuid = typeof(data.payload.uuid) == 'string' && data.payload.uuid.trimg().length > 10 ? data.payload.uuid.trimg() : false;
+	let password = typeof(data.payload.password) == 'string' && data.payload.password.trim().length > 0 ? data.payload.password.trim() : false;
+
+	if(uuid && password){
+
+		let checkUUID = "SELECT * FROM users WHERE uuid='" +uuid+"'";
+
+		con.query(checkUUID,(err,result)=>{
+
+			if(!err && result.length > 1){
+				let email = result.email;
+				let hashedPassword = helpers.hash(password);
+
+				let updatePassword = "UPDATE users SET password='"+hashedPassword+"' WHERE uuid='"++"'";
+
+				con.query(updatePassword,(err,password)=>{
+
+					if(!err && result){
+
+						mailer.sendByEmail([
+							'email':email,
+		   					'subject':'Password Reset Done',
+		   					'message':'You just did a password reset on your account, if you did not initiate it... blah blah bleh'
+							]);
+
+						callback(200,{'Success':'Password reset Done'})
+
+					}else{
+						callback(500,{'Error':'Password Reset Failed'});
+					}
+
+				});
+
+			}else{
+
+				callback(400,{'Error':'UUID not found'});
+
+			}
+		});
+
+	}else{
+		let errorObject = [];
+		if(!uuid){
+			errorObject.push('uuid is a required field');
+		}
+		if(!password){
+			errorObject.push('password is required');
+		}
+		callback(400,errorObject);
+	}
+
 	
-
-
-}
-
-resets.get = (data,callback)=>{
 
 
 
