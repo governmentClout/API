@@ -1,10 +1,12 @@
 
-
-const _db = require('./../lib/migrations');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
+const tokens = require('./../lib/tokenization');
+
+
+
 
 const con = mysql.createConnection({
 
@@ -16,23 +18,22 @@ const con = mysql.createConnection({
 });
 
 
-let recommendations = {};
+notitications = {};
 
-
-recommendations.options = (data,callback)=>{
+notitications.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
+notitications.add = (data,callback)=>{
+	//post notification
+	
+}
 
-recommendations.get = (data,callback)=>{
-	//get all users in the area of the specified user
+notitications.get = (data,callback)=>{
+	//get notifications
 }
 
 
-
-
-
-
-module.exports = recommendations;
+module.exports = notitications;
