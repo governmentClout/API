@@ -279,7 +279,98 @@ messages.get = (data,callback)=>{
 
 messages.delete = (data,callback)=>{
 	//delete message
-	//
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false; 
+
+	if(param && user && token){
+
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuidHeader + "'";
+
+		con.query(verifyToken, (err,result)=>{
+			
+			if(
+				!err && 
+				result[0] && 
+				result[0].token == token 
+
+				){
+
+				//check that this message exists and that the sender is the user
+				let checkMessage = "SELECT * FROM messages WHERE uuid ='" +param+ "'";
+
+				con.query(checkMessage,(err,result)=>{
+
+					if(!err && result[0].length > 0){
+
+						if(result[0].sender == user) {
+
+							let updateMessage = "UPDATE messages set sender="+null+" WHERE uuid='"+result[0].uuid+"'";
+
+							con.query(updateMessage,(err,result)=>{
+
+								if(!err){
+
+									callback(200,{'Success':'Message deleted'});
+
+								}else{
+									console.log(err);
+									callback(500,{'Error':'Something went wrong'});
+								}
+
+							});
+
+						}else if(result[0].receiver == user){
+
+							let updateMessage = "UPDATE messages set receiver="+null+" WHERE uuid='"+result[0].uuid+"'";
+
+							con.query(updateMessage,(err,result)=>{
+
+								if(!err){
+
+									callback(200,{'Success':'Message deleted'});
+
+								}else{
+									console.log(err);
+									callback(500,{'Error':'Something went wrong'});
+								}
+
+							});
+
+						}else{
+
+							callback(400,{'Error':'You are not allowed to delete this message'})
+
+						}
+
+					}else{
+						console.log(err);
+						callback(400,{'Error':'Message not found'});
+					}
+
+				});
+
+				
+			}else{
+
+			}
+		});
+
+	}else{
+		let errorObject = [];
+		if(!param){
+			errorObject.push('UUID of message is required');
+		}
+		if(!user){
+			errorObject.push('Header UUID is required');
+		}
+		if(!token){
+			errorObject.push('Header Token is required');
+		}
+		callback(400,{'Error':errorObject});
+	}
+
+
 }
 
 messages.put = (data,callback)=>{
