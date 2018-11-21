@@ -6,13 +6,15 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const mailer = require('./mailer');
+const async = require('async');
 
 const con = mysql.createConnection({
 
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -77,26 +79,22 @@ messages.post = (data,callback)=>{
 
 						if(!err && result[0].length > 0 && result[1].length > 0){
 
-							//this means they are friends
 							friends = true;
-							
 
 						}
-
-						//send the message
 
 						let sendMessageSQL = "INSERT INTO messages (uuid,sender,receiver,message,reply_to) VALUES ('"+uuid+"','"+sender+"','"+receiver+"','"+message+"','"+reply_to+"')";
 
 						con.query(sendMessageSQL,(err,result)=>{
 
 							if(!err && result[0]){
-								//message sent, send email
+								
 										mailer.sendByUUID({
 						   					'uuid':receiver,
 						   					'subject':'New Message',
 						   					'message':'You have a new message'
 						   					});
-										
+
 								callback(200,{'Success':'Message sent'});
 
 							}else{
@@ -146,8 +144,137 @@ messages.post = (data,callback)=>{
 }
 
 messages.get = (data,callback)=>{
-	//get all message
-	//
+	//get all message and replies
+	//get details of specific message (messages and replies)
+
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let user = typeof(data.queryStringObject) == 'string' && data.queryStringObject.trim().length > 0 ? data.queryStringObject.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false; 
+
+	if(uuidHeader && token){
+
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuidHeader + "'";
+
+		con.query(verifyToken, (err,result)=>{
+			
+			if(
+				!err && 
+				result[0] && 
+				result[0].token == token 
+
+				){
+
+				if(param){
+				//get message object for a single message, hence return the message and replies and profile of sender
+					async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM messages WHERE uuid='"+param+"' WHERE reply_to = NULL";
+					    	con.query(sql,(err,result)=>{
+					    		
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM messages WHERE uuid='"+arg[i].uuid+"' WHERE reply_to != NULL",(err, compile)=>{
+					    	 		
+					    	 		let post = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'message':post,'replies':compile});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,result);
+					});
+				}
+
+				if(user){
+					//get message object of a user , includes the profile of the user and sender
+					async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM messages WHERE reply_to = NULL";
+					    	con.query(sql,(err,result)=>{
+					    		
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM messages WHERE uuid='"+arg[i].uuid+"' WHERE reply_to != NULL",(err, compile)=>{
+					    	 		
+					    	 		let post = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'message':post,'replies':compile});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,result);
+					});
+
+				}
+
+				if(!param && !user){
+					callback(400,{'Error':'You are visiting a wrong endpoint or supplying wrong parameter'})
+				}
+
+			}else{
+				callback(400,{'Error':'Token Mismatch or expired'});
+			}
+	});
+
+
+	}else{
+		let errorObject = [];
+
+		if(!uuidHeader){
+			errorObject.push('header uuid is invalid or missing');
+		}
+		if(!token){
+			errorObject.push('Header token missing or invalid');
+		}
+		callback(400,{'Error':errorObject});
+	}
 }
 
 messages.delete = (data,callback)=>{
