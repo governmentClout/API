@@ -38,7 +38,7 @@ messages.post = (data,callback)=>{
 
 	let sender = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
-	let receiver = typeof(data.payload.receiver) == 'string' && data.payload.sender.trim().length > 0 ? data.payload.receiver.trim(): false;
+	let receiver = typeof(data.payload.receiver) == 'string' && data.payload.receiver.trim().length > 0 ? data.payload.receiver.trim(): false;
 	let message = typeof(data.payload.message) == 'string' && data.payload.message.trim().length > 0 ? data.payload.message.trim() : false;
 	let reply_to = typeof(data.payload.reply_to) == 'string' && data.payload.reply_to.trim().length > 0 ? data.payload.reply_to.trim() : false;
 	let uuid = uuidV1();
@@ -56,7 +56,7 @@ messages.post = (data,callback)=>{
 			reply_to = null;
 		}
 
-		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + sender + "'";
 			
 			con.query(verifyToken, (err,result)=>{
 
@@ -86,8 +86,8 @@ messages.post = (data,callback)=>{
 						let sendMessageSQL = "INSERT INTO messages (uuid,sender,receiver,message,reply_to) VALUES ('"+uuid+"','"+sender+"','"+receiver+"','"+message+"','"+reply_to+"')";
 
 						con.query(sendMessageSQL,(err,result)=>{
-
-							if(!err && result[0]){
+							// console.log(result);
+							if(!err){
 								
 										mailer.sendByUUID({
 						   					'uuid':receiver,
@@ -294,7 +294,7 @@ messages.delete = (data,callback)=>{
 				result[0] && 
 				result[0].token == token 
 
-				){
+				){ 
 
 				//check that this message exists and that the sender is the user
 				let checkMessage = "SELECT * FROM messages WHERE uuid ='" +param+ "'";

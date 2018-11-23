@@ -114,7 +114,8 @@ let router = {
 	'petitions':handlers.petitions,
 	'settings':handlers.settings,
 	'admins':handlers.admin,
-	'resets':handlers.resets
+	'resets':handlers.resets,
+	'messages':handlers.messages 
 };
 
 
