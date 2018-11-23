@@ -152,7 +152,7 @@ messages.get = (data,callback)=>{
 	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false; 
 
-	if(uuidHeader && token){
+	if(user && token){
 
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
 
@@ -210,13 +210,21 @@ messages.get = (data,callback)=>{
 				}
 
 				if(user){
+					let finalresult = [];
 					//get message object of a user , includes the profile of the user and sender
 					async.waterfall([
+					
 					    function(callback) {
-					    	let sql = "SELECT * FROM messages WHERE reply_to = NULL";
+					console.log('point 1');
+
+					    	let sql = "SELECT * FROM messages WHERE reply_to='" +null+"' AND receiver='"+user+"'; SELECT * FROM messages WHERE reply_to='"+null+"' AND sender='"+user+"'";
+
 					    	con.query(sql,(err,result)=>{
-					    		
+					console.log('point 2');
+					// console.log(result);
+							//sent result[1], received result[0]
 									callback(null,result);
+
 
 								});
 					    	
@@ -225,29 +233,49 @@ messages.get = (data,callback)=>{
 					    function(arg, callback) {
 					    	
 					    	let result = [];
-					    	var pending = arg.length;
+					    	var pending = arg[1].length;
+					    	let sent = arg[1];
+					    	let received = arg[0];
+					    	console.log('received--->');
+					    	console.log(received);
+					    	console.log('sent--->');
+					    	console.log(sent);
+					    	console.log('length--_)000->')
+					    	console.log(received.length);
 
-					    	for(let i=0; i<arg.length; i++) {
+					    	// if(received.length > 0){
+
+					    		for(let i=0; i<received.length; i++) {
+					console.log('point 4' + i);
+					// console.log(received[i].sender);
 					    		
-					    	 con.query("SELECT * FROM messages WHERE uuid='"+arg[i].uuid+"' WHERE reply_to != NULL",(err, compile)=>{
+					    	 con.query("SELECT * FROM profiles WHERE uuid='"+received[i].sender+"'",(err, compile)=>{
+					    	 		console.log('point 5');
+					    	 		// console.log(received[i]);
 					    	 		
-					    	 		let post = arg[i];
-					    	 		
-						            finalresult.splice(i,0,{'message':post,'replies':compile});
+						            finalresult.splice(i,0,{'message':received[i],'user':compile[0]});
 						            
 
-						            if( 0 === --pending ) {
-
-						               	callback(null, finalresult);
+						            if( 0 === --received.length ) {
+						            	console.log('final result');
+						            	console.log(finalresult);
+						               	callback(null, {'received':finalresult,'sent':sent});
 
 						            }
 
 						        });
 					    	}
 
+					    	// }else{
+					    	// 	console.log('got here');
+					    	// 		callback(null, {'received':{},'sent':sent});
+					    	// }
+					    	
+
 					        
 					    }
 					], function (err, result) {
+					
 						
 						callback(200,result);
 					});
