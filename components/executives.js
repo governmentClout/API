@@ -39,7 +39,7 @@ executives.get = (data,callback)=>{
 executives.post = (data,callback)=>{
 	//request to become an executve
 	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
-	let token = typeof(data.token.uuid) == 'string' && data.token.uuid.trim().length > 0 ? data.token.uuid.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let party = typeof(data.payload.party) == 'string' && data.payload.party.trim().length > 0 ? data.payload.party.trim() : false;
 	let about_you = typeof(data.payload.about_you) == 'string' && data.payload.about_you.trim().length > 0 ? data.payload.about_you.trim() : false;
 	let about_party = typeof(data.payload.about_party) == 'string' && data.payload.about_party.trim().length > 0 ? data.payload.about_party.trim() : false;
@@ -58,7 +58,6 @@ executives.post = (data,callback)=>{
 				result[0].token == token 
 
 				){
-
 				//check that this request does not already exist
 
 				let sqlCheckRequest = "SELECT * FROM executives WHERE user='"+user+"'";
