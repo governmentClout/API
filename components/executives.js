@@ -37,6 +37,7 @@ executives.get = (data,callback)=>{
 }
 
 executives.post = (data,callback)=>{
+	console.log('here');
 	//request to become an executve
 	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
@@ -64,8 +65,7 @@ executives.post = (data,callback)=>{
 
 				con.query(sqlCheckRequest,(err,result)=>{
 
-
-					if(!err && result.length < 0){
+					if(!err && result.length < 1){
 
 						if(!about_you){
 							about_you = '';
@@ -74,7 +74,7 @@ executives.post = (data,callback)=>{
 							about_party = '';
 						}
 
-						let sqlCreateExecutiveRequest = "INSERT INTO executives (uuid,user,party,about_you,about_party,office) VALUES('"+uuid+"','"+user+"','"+party+"','"+about_you+"','"+about_party+"','"+office+"')";
+						let sqlCreateExecutiveRequest = "INSERT INTO executives (uuid,user,party,about_you,about_party,office,admin) VALUES('"+uuid+"','"+user+"','"+party+"','"+about_you+"','"+about_party+"','"+office+"','null')";
 
 						con.query(sqlCreateExecutiveRequest,(err,result)=>{
 
@@ -82,7 +82,7 @@ executives.post = (data,callback)=>{
 
 								//send email
 								mailer.sendByUUID({
-						   					'uuid':receiver,
+						   					'uuid':user,
 						   					'subject':'Upgrade Request Submitted',
 						   					'message':'Your upgrade request to become an executive has been submitted'
 						   					});
@@ -129,7 +129,7 @@ executives.post = (data,callback)=>{
 		let errorObject = [];
 
 		if(!user){
-			errorObject.push('Missing header uuid');
+			errorObject.push('Missing header uuid 1');
 		}
 		if(!token){
 			errorObject.push('Missing header token');
@@ -137,8 +137,6 @@ executives.post = (data,callback)=>{
 
 		callback(400,{'Error':errorObject});
 	}
-
-	callback(200,{'success':'you have hit executives post endpoint'})
 
 }
 
@@ -154,4 +152,4 @@ executives.delete = (data,callback)=>{
 
 
 
-module.exports = shares;
+module.exports = executives;
