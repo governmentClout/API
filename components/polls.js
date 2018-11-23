@@ -3,13 +3,15 @@ const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
+const async = require('async');
 
 const con = mysql.createConnection({
 
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -35,7 +37,7 @@ polls.post = (data,callback)=>{
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let sector = typeof(data.payload.sector) == 'string' && data.payload.sector.trim().length > 0 ? data.payload.sector.trim() : false;
 	let opinion = typeof(data.payload.opinion) == 'string' && data.payload.opinion.trim().length > 0 ? data.payload.opinion.trim() : false;
-	let expire_at = typeof(data.payload.expire_at) == 'string' && data.payload.expire_at.trim().length > 0 ? data.payload.expire_at.trim() : '3014-01-01 00:00:00';
+	let expire_at = typeof(data.payload.expire_at) == 'string' && data.payload.expire_at.trim().length > 0 ? data.payload.expire_at.trim() : '2054-01-01 00:00:00';
 	let response_limit = typeof(data.payload.response_limit) == 'string' && data.payload.response_limit.trim().length > 0 ? data.payload.response_limit.trim() : '1000';
 	let status = typeof(data.payload.status) == 'number' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
 
@@ -169,6 +171,7 @@ polls.get = (data,callback)=>{
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
+	let poll = typeof(data.queryStringObject.poll) == 'string' && data.queryStringObject.poll.trim().length > 0 ? data.queryStringObject.poll.trim() : false; //should be ?user={uuid}
 
 	if( 
 		token && 
@@ -190,9 +193,88 @@ polls.get = (data,callback)=>{
 
 					//get all polls
 					//get single users polls
+					//get all polls response
+					if(poll){
+						//then get polls belonging to a single user
+
+
+
+					}
 
 					if(param){
-						//get for specific user
+						//get single poll and all respoonse with profile of the responders
+					}
+
+					if(!param && !poll){
+						let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM polls";
+
+					    	con.query(sql,(err,result)=>{
+
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'",(err, compile)=>{
+					    	 		
+					    	 		let polls = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    },
+					    function(finalresult, callback) {
+					    	
+					    	let result = [];
+					    	var polls = finalresult[0].polls;
+					    	var responses = finalresult[0].responses;
+
+					    	//each poll, a
+					    	
+					    	for(let i=0; i<finalresult[0].responses.length; i++) {
+					    		console.log('for ' + i);
+					    	 con.query("SELECT * FROM profiles WHERE uuid='"+finalresult[0].responses[i].user+"'",(err, compile)=>{
+					    	 		
+						            result.splice(i,0,{'poll':finalresult[0].polls[i],'responses':finalresult[0].responses[i],'user':compile});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, result);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,result);
+					});
 					}
 
 
@@ -202,10 +284,6 @@ polls.get = (data,callback)=>{
 					callback(400,{'Error':'Token Mismatch or expired'});
 				}
 			});
-			
-
-			
-
 
 	}else{
 
@@ -225,11 +303,11 @@ polls.get = (data,callback)=>{
 }
 
 polls.put = (data,callback)=>{
-
+	callback(200,{'Success':'You have hit polls put endpoint'});
 }
 
 polls.delete = (data,callback)=>{
-	
+	callback(200,{'Success':'You have hit polls delete endpoint'});
 }
 
 module.exports = polls;
