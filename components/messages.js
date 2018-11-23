@@ -59,14 +59,14 @@ messages.post = (data,callback)=>{
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + sender + "'";
 			
 			con.query(verifyToken, (err,result)=>{
-
+console.log('point 0')
 				if(
 				!err && 
 				result[0] && 
 				result[0].token == token 
 
 				){
-
+console.log('point 1')
 					//anybody can send message to anybody, but check if they are friends, 
 					//if they are not friends, send a notice to the frontend
 					//if they are friends, send the message without notice
@@ -74,7 +74,7 @@ messages.post = (data,callback)=>{
 					let checkIfConnectionExists = "SELECT * FROM friends WHERE user='"+sender+"' AND friend='"+receiver+"'; SELECT * FROM friends WHERE user='"+receiver+"' AND friend='"+sender+"'";
 
 					con.query(checkIfConnectionExists,(err,result)=>{
-
+console.log('point 2')
 						let friends = false;
 
 						if(!err && result[0].length > 0 && result[1].length > 0){
@@ -82,13 +82,13 @@ messages.post = (data,callback)=>{
 							friends = true;
 							//i can refuse them from sending message here
 						}
-
+						console.log('point 3')
 						let sendMessageSQL = "INSERT INTO messages (uuid,sender,receiver,message,reply_to) VALUES ('"+uuid+"','"+sender+"','"+receiver+"','"+message+"','"+reply_to+"')";
 
 						con.query(sendMessageSQL,(err,result)=>{
 							// console.log(result);
 							if(!err){
-									console.log(receiver);
+									
 										mailer.sendByUUID({
 						   					'uuid':receiver,
 						   					'subject':'New Message',
@@ -166,12 +166,14 @@ messages.get = (data,callback)=>{
 				){
 
 				if(param){
+					let finalresult = [];
 				//get message object for a single message, hence return the message and replies and profile of sender
 					async.waterfall([
 					    function(callback) {
-					    	let sql = "SELECT * FROM messages WHERE uuid='"+param+"' WHERE reply_to = NULL";
+					    	let sql = "SELECT * FROM messages WHERE uuid='"+param+"' AND reply_to ='"+null+"'";
+
 					    	con.query(sql,(err,result)=>{
-					    		
+
 									callback(null,result);
 
 								});
@@ -185,11 +187,11 @@ messages.get = (data,callback)=>{
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
-					    	 con.query("SELECT * FROM messages WHERE uuid='"+arg[i].uuid+"' WHERE reply_to != NULL",(err, compile)=>{
+					    	 con.query("SELECT * FROM messages WHERE reply_to='"+arg[i].uuid+"'",(err, compile)=>{
 					    	 		
-					    	 		let post = arg[i];
+					    	 		let message = arg[i];
 					    	 		
-						            finalresult.splice(i,0,{'message':post,'replies':compile});
+						            finalresult.splice(i,0,{'message':message,'replies':compile});
 						            
 
 						            if( 0 === --pending ) {
@@ -215,14 +217,11 @@ messages.get = (data,callback)=>{
 					async.waterfall([
 					
 					    function(callback) {
-					console.log('point 1');
-
+					
 					    	let sql = "SELECT * FROM messages WHERE reply_to='" +null+"' AND receiver='"+user+"'; SELECT * FROM messages WHERE reply_to='"+null+"' AND sender='"+user+"'";
 
 					    	con.query(sql,(err,result)=>{
-					console.log('point 2');
-					// console.log(result);
-							//sent result[1], received result[0]
+					
 									callback(null,result);
 
 
@@ -236,41 +235,22 @@ messages.get = (data,callback)=>{
 					    	var pending = arg[1].length;
 					    	let sent = arg[1];
 					    	let received = arg[0];
-					    	console.log('received--->');
-					    	console.log(received);
-					    	console.log('sent--->');
-					    	console.log(sent);
-					    	console.log('length--_)000->')
-					    	console.log(received.length);
-
-					    	// if(received.length > 0){
-
-					    		for(let i=0; i<received.length; i++) {
-					console.log('point 4' + i);
-					// console.log(received[i].sender);
+					    	
+					    	for(let i=0; i<received.length; i++) {
 					    		
 					    	 con.query("SELECT * FROM profiles WHERE uuid='"+received[i].sender+"'",(err, compile)=>{
-					    	 		console.log('point 5');
-					    	 		// console.log(received[i]);
 					    	 		
 						            finalresult.splice(i,0,{'message':received[i],'user':compile[0]});
 						            
 
 						            if( 0 === --received.length ) {
-						            	console.log('final result');
-						            	console.log(finalresult);
+						            	
 						               	callback(null, {'received':finalresult,'sent':sent});
 
 						            }
 
 						        });
 					    	}
-
-					    	// }else{
-					    	// 	console.log('got here');
-					    	// 		callback(null, {'received':{},'sent':sent});
-					    	// }
-					    	
 
 					        
 					    }
