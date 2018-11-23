@@ -80,7 +80,7 @@ messages.post = (data,callback)=>{
 						if(!err && result[0].length > 0 && result[1].length > 0){
 
 							friends = true;
-
+							//i can refuse them from sending message here
 						}
 
 						let sendMessageSQL = "INSERT INTO messages (uuid,sender,receiver,message,reply_to) VALUES ('"+uuid+"','"+sender+"','"+receiver+"','"+message+"','"+reply_to+"')";
@@ -88,7 +88,7 @@ messages.post = (data,callback)=>{
 						con.query(sendMessageSQL,(err,result)=>{
 							// console.log(result);
 							if(!err){
-								
+									console.log(receiver);
 										mailer.sendByUUID({
 						   					'uuid':receiver,
 						   					'subject':'New Message',
@@ -148,13 +148,13 @@ messages.get = (data,callback)=>{
 	//get details of specific message (messages and replies)
 
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
-	let user = typeof(data.queryStringObject) == 'string' && data.queryStringObject.trim().length > 0 ? data.queryStringObject.trim() : false;
-	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	// let user = typeof(data.queryStringObject) == 'string' && data.queryStringObject.trim().length > 0 ? data.queryStringObject.trim() : false;
+	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false; 
 
 	if(uuidHeader && token){
 
-		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuidHeader + "'";
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
 
 		con.query(verifyToken, (err,result)=>{
 			

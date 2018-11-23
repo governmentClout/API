@@ -8,7 +8,7 @@ const mysql = require('mysql');
 
 const con = mysql.createPool({
 
-  host: config.db_host,
+  host: config.db_host, 
   user: config.db_username,
   password: config.db_password,
   database: config.db_name,
@@ -89,9 +89,9 @@ async.waterfall([
                 function(callback) {
 
                   let sqlGetEmail = "SELECT email FROM users WHERE uuid='"+uuid+"' LIMIT 1";
-
+                 
                   con.query(sqlGetEmail,(err,result)=>{
-                      
+                    
                       if(!err && result.length > 0){
                         callback(null,result);
                       }else{
@@ -104,8 +104,8 @@ async.waterfall([
                 
                 }
             ], function (err, result) {
-              
-                  let to = result.email;
+            
+                  let to = result[0].email;
                   let subject = data.subject;
                   let message = data.message;
 
