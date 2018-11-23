@@ -59,14 +59,14 @@ messages.post = (data,callback)=>{
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + sender + "'";
 			
 			con.query(verifyToken, (err,result)=>{
-console.log('point 0')
+
 				if(
 				!err && 
 				result[0] && 
 				result[0].token == token 
 
 				){
-console.log('point 1')
+
 					//anybody can send message to anybody, but check if they are friends, 
 					//if they are not friends, send a notice to the frontend
 					//if they are friends, send the message without notice
@@ -74,7 +74,7 @@ console.log('point 1')
 					let checkIfConnectionExists = "SELECT * FROM friends WHERE user='"+sender+"' AND friend='"+receiver+"'; SELECT * FROM friends WHERE user='"+receiver+"' AND friend='"+sender+"'";
 
 					con.query(checkIfConnectionExists,(err,result)=>{
-console.log('point 2')
+
 						let friends = false;
 
 						if(!err && result[0].length > 0 && result[1].length > 0){
@@ -82,11 +82,11 @@ console.log('point 2')
 							friends = true;
 							//i can refuse them from sending message here
 						}
-						console.log('point 3')
+					
 						let sendMessageSQL = "INSERT INTO messages (uuid,sender,receiver,message,reply_to) VALUES ('"+uuid+"','"+sender+"','"+receiver+"','"+message+"','"+reply_to+"')";
 
 						con.query(sendMessageSQL,(err,result)=>{
-							// console.log(result);
+						
 							if(!err){
 									
 										mailer.sendByUUID({
@@ -293,7 +293,7 @@ messages.delete = (data,callback)=>{
 
 	if(param && user && token){
 
-		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuidHeader + "'";
+		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
 
 		con.query(verifyToken, (err,result)=>{
 			
@@ -309,11 +309,11 @@ messages.delete = (data,callback)=>{
 
 				con.query(checkMessage,(err,result)=>{
 
-					if(!err && result[0].length > 0){
-
+					if(!err && result.length > 0){
+					
 						if(result[0].sender == user) {
 
-							let updateMessage = "UPDATE messages set sender="+null+" WHERE uuid='"+result[0].uuid+"'";
+							let updateMessage = "UPDATE messages set sender='"+null+"' WHERE uuid='"+result.uuid+"'";
 
 							con.query(updateMessage,(err,result)=>{
 
@@ -330,7 +330,7 @@ messages.delete = (data,callback)=>{
 
 						}else if(result[0].receiver == user){
 
-							let updateMessage = "UPDATE messages set receiver="+null+" WHERE uuid='"+result[0].uuid+"'";
+							let updateMessage = "UPDATE messages set receiver='"+null+"' WHERE uuid='"+result.uuid+"'";
 
 							con.query(updateMessage,(err,result)=>{
 
