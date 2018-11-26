@@ -170,9 +170,9 @@ polls.get = (data,callback)=>{
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
-	let param = typeof(data.payload.param) == 'string' && data.payload.param.trim().length > 0 ? data.payload.param.trim() : false;
-	let poll = typeof(data.queryStringObject.poll) == 'string' && data.queryStringObject.poll.trim().length > 0 ? data.queryStringObject.poll.trim() : false; //should be ?user={uuid}
-
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let userPoll = typeof(data.queryStringObject.user) == 'string' && data.queryStringObject.user.trim().length > 0 ? data.queryStringObject.user.trim() : false; //should be ?user={uuid}
+	
 	if( 
 		token && 
 		uuidHeader 
@@ -194,18 +194,131 @@ polls.get = (data,callback)=>{
 					//get all polls
 					//get single users polls
 					//get all polls response
-					if(poll){
+					if(userPoll){
 						//then get polls belonging to a single user
+						console.log('here --- ');
+						console.log(userPoll);
+						let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM polls WHERE created_by='"+userPoll+"'";
 
+					    	con.query(sql,(err,result)=>{
+					    		console.log(result);
+									callback(null,result);
 
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
 
-					}
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'",(err, compile)=>{
+					    	 		
+					    	 		let polls = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						console.log(result);
+						callback(200,result);
+					});
+				}
+
+					
 
 					if(param){
+						
 						//get single poll and all respoonse with profile of the responders
+
+						let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM polls WHERE uuid='"+param+"'";
+
+					    	con.query(sql,(err,result)=>{
+									console.log('point 1');
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+					    
+					    		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[0].uuid+"'",(err, compile)=>{
+					    	 		
+						               	callback(null, {'poll':arg,'response':compile});
+
+						        });
+					    
+
+					        
+					    },
+					     function(arg, callback) {
+
+					     	
+					    	let result = [];
+					    	var pending = arg.response.length;
+					    	let poll = arg.poll;
+					    	let responses = arg.response;
+					  
+					    	if(responses.length > 0){
+
+					    		for(let i=0; i<pending; i++) {
+					    		
+						    	 con.query("SELECT * FROM profiles WHERE uuid='"+responses[i].user+"'",(err, users)=>{
+						    	 	
+							            finalresult.splice(i,0,users);
+							            
+							            if( 0 === --pending ) {
+							            	
+							               	callback(null, {'poll':poll,'responses':finalresult});
+
+							            }
+
+							        });
+						    	}
+
+					    	}else{
+					    		callback(null, {'poll':poll,'responses':[]});
+					    	}
+					    	
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,{'poll':result.poll,'responses':result.responses});
+					});
+					
+
 					}
 
-					if(!param && !poll){
+					if(!param && !user){
 						let finalresult = [];
 						//just get everything and give it to them
 						async.waterfall([
