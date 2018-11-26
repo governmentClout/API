@@ -5,6 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
+const async = require('async');
 
 
 const con = mysql.createConnection({
@@ -12,7 +13,8 @@ const con = mysql.createConnection({
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -109,20 +111,50 @@ comments.get = (data,callback)=>{
 				results[0].token == token
 				){
 
-				let commentQuery = "SELECT comment,user,uuid,created_at,updated_at FROM comments WHERE ref='" + ref + "'";
-			// console.log('uuid ' + uuidHeader);
-				con.query(commentQuery,(err,result)=>{
-					
-					if(!err && result[0]){
+					let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM comments WHERE ref='" + ref + "'";
 
-						callback(200,{'comment':result});
+					    	con.query(sql,(err,result)=>{
+					    		// console.log(result);
+									callback(null,result);
 
-					}else{
-						console.log(err);
-						callback(404,{'Error':'Comment not found'});
-					}
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	console.log('th===>');
+					    	console.log(arg);
+					    	let result = [];
+					    	var pending = arg.length;
 
-				})
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'",(err, compile)=>{
+					    	 		
+					    	 		
+						            finalresult.splice(i,0,{'comment':arg[i],'user':compile});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						console.log(result);
+						callback(200,result);
+					});
+				
 
 			}else{
 				console.log(err);

@@ -196,8 +196,7 @@ polls.get = (data,callback)=>{
 					//get all polls response
 					if(userPoll){
 						//then get polls belonging to a single user
-						console.log('here --- ');
-						console.log(userPoll);
+						
 						let finalresult = [];
 						//just get everything and give it to them
 						async.waterfall([
