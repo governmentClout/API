@@ -244,35 +244,9 @@ polls.get = (data,callback)=>{
 					    	}
 
 					        
-					    },
-					    function(finalresult, callback) {
-					    	
-					    	let result = [];
-					    	var polls = finalresult[0].polls;
-					    	var responses = finalresult[0].responses;
-
-					    	//each poll, a
-					    	
-					    	for(let i=0; i<finalresult[0].responses.length; i++) {
-					    		console.log('for ' + i);
-					    	 con.query("SELECT * FROM profiles WHERE uuid='"+finalresult[0].responses[i].user+"'",(err, compile)=>{
-					    	 		
-						            result.splice(i,0,{'poll':finalresult[0].polls[i],'responses':finalresult[0].responses[i],'user':compile});
-						            
-
-						            if( 0 === --pending ) {
-
-						               	callback(null, result);
-
-						            }
-
-						        });
-					    	}
-
-					        
 					    }
 					], function (err, result) {
-						
+						console.log(result);
 						callback(200,result);
 					});
 					}
