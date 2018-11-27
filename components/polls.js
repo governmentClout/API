@@ -9,7 +9,7 @@ const con = mysql.createConnection({
 
   host: config.db_host,
   user: config.db_username,
-  password: config.db_password,
+  password: config.db_password, 
   database: config.db_name,
   multipleStatements: true
 
@@ -172,7 +172,7 @@ polls.get = (data,callback)=>{
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let userPoll = typeof(data.queryStringObject.user) == 'string' && data.queryStringObject.user.trim().length > 0 ? data.queryStringObject.user.trim() : false; //should be ?user={uuid}
-	
+
 	if( 
 		token && 
 		uuidHeader 
@@ -195,6 +195,7 @@ polls.get = (data,callback)=>{
 					//get single users polls
 					//get all polls response
 					if(userPoll){
+						
 						//then get polls belonging to a single user
 						
 						let finalresult = [];
@@ -317,7 +318,8 @@ polls.get = (data,callback)=>{
 
 					}
 
-					if(!param && !user){
+					if(!param && !userPoll){
+						
 						let finalresult = [];
 						//just get everything and give it to them
 						async.waterfall([
