@@ -100,7 +100,17 @@ posts.get = (data,callback)=>{
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
-	
+
+/**
+PAGINATION SETTINGS
+**/
+
+	let perpage = typeof(data.queryStringObject.per_page) == 'number' && data.queryStringObject.per_page > 0 ? data.queryStringObject.per_page : 10; 
+	let skip = typeof(data.queryStringObject.skip) == 'number' && data.queryStringObject.skip > 0 ? data.queryStringObject.skip : 0; 
+	let limit = typeof(data.queryStringObject.limit) == 'number' && data.queryStringObject.limit > 0 ? data.queryStringObject.limit : false;
+
+
+
 	if( 
 		token && 
 		uuidHeader 
@@ -123,7 +133,12 @@ posts.get = (data,callback)=>{
 
 					async.waterfall([
 					    function(callback) {
+					    	//check if limit is set
 					    	let sql = "SELECT * FROM posts";
+					    	if(limit){
+					    		sql = "SELECT * FROM posts LIMIT " + limit;
+					    	}
+					    	
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
@@ -157,6 +172,8 @@ posts.get = (data,callback)=>{
 					        
 					    }
 					], function (err, result) {
+						//instead of returning everything here, i should:
+						//callculate total number of pagse
 						
 						callback(200,result);
 					});
