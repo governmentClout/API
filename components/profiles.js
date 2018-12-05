@@ -37,6 +37,7 @@ profiles.post = (data,callback)=>{
 	let firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : false;
 	let lastName = typeof(data.payload.lastName) == 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName.trim() : false;
 	let photo = typeof(data.payload.photo) == 'string' && data.payload.photo.trim().length > 0 ? data.payload.photo.trim() : false;
+	let background = typeof(data.payload.background) == 'string' && data.payload.background.trim().length > 0 ? data.payload.background.trim() : false;
 	let uuid = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 
@@ -82,19 +83,12 @@ profiles.post = (data,callback)=>{
 										){
 										//upload to cloudinary
 
-										let sql = "INSERT INTO profiles (uuid, nationality_residence, nationality_origin, state, lga, firstName, lastName, photo) VALUES ( '" + uuid + "','" +nationality_residence+ "', '" +nationality_origin+ "','" + state + "' , '" + lga +"' ,'"+firstName +"', '" + lastName + "','" + photo +"' )";
+										let sql = "INSERT INTO profiles (uuid, nationality_residence, nationality_origin, state, lga, firstName, lastName, photo, background) VALUES ( '" + uuid + "','" +nationality_residence+ "', '" +nationality_origin+ "','" + state + "' , '" + lga +"' ,'"+firstName +"', '" + lastName + "','" + photo +"','" + background + "' )";
 
 										con.query(sql,  (err,result) => {
 
 										   	if(!err){
-
-										   		uploader.send({
-													'file':photo,
-													'table':'profiles',
-													'uuid':uuid,
-													'column':'photo'
-													});
-
+										   		
 										   		callback(200, {'Success':'Profile created'});
 
 										   	}else{
