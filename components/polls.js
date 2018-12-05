@@ -219,11 +219,11 @@ polls.get = (data,callback)=>{
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'",(err, compile)=>{
-					    	 		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 		console.log(compile);
 					    	 		let polls = arg[i];
 					    	 		
-						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile});
+						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile[0], 'user':compile[1]});
 						            
 
 						            if( 0 === --pending ) {
@@ -269,9 +269,9 @@ polls.get = (data,callback)=>{
 					    	var pending = arg.length;
 					    
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[0].uuid+"'",(err, compile)=>{
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[0].uuid+"'; SELECT firstName,lastName from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
 					    	 		
-						               	callback(null, {'poll':arg,'response':compile});
+						               	callback(null, {'poll':arg,'responses':compile[0], 'user':compile[1]});
 
 						        });
 					    
@@ -319,7 +319,7 @@ polls.get = (data,callback)=>{
 					}
 
 					if(!param && !userPoll){
-						
+						console.log('here');
 						let finalresult = [];
 						//just get everything and give it to them
 						async.waterfall([
@@ -341,11 +341,11 @@ polls.get = (data,callback)=>{
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'",(err, compile)=>{
-					    	 		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 		// console.log(compile);
 					    	 		let polls = arg[i];
 					    	 		
-						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile});
+						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile[0], 'user':compile[1]});
 						            
 
 						            if( 0 === --pending ) {

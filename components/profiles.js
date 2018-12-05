@@ -177,8 +177,8 @@ profiles.get = (data,callback)=>{
 				results && 
 				results[0].token.length > 0){
 
-				let profile = "SELECT profiles.* FROM profiles WHERE profiles.uuid='" + uuidQuery + "'";
-			// console.log('uuid ' + uuidHeader);
+				let profile = "SELECT * FROM profiles WHERE profiles.uuid='" + uuidQuery + "'";
+			
 				con.query(profile,(err,result)=>{
 					
 					if(!err && result[0]){
@@ -257,23 +257,19 @@ profiles.put = (data,callback)=>{
 										let firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : result[0].firstName;
 										let lastName = typeof(data.payload.lastName) == 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName.trim() : result[0].lastName;
 										let photo = typeof(data.payload.photo) == 'string' && data.payload.photo.trim().length > 0 ? data.payload.photo.trim() : result[0].photo;
+										let background = typeof(data.payload.background) == 'string' && data.payload.background.trim().length > 0 ? data.payload.background.trim() : result[0].background;
 
 
 										let updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 									
 
-										let sql = "UPDATE profiles SET nationality_residence='" + nationality_residence + "', nationality_origin='" + nationality_origin + "', state ='"+state+"', lga ='"+lga+"', firstName='"+firstName+"', lastName='"+lastName+"',photo='"+ photo +"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +uuid+ "'"; 
+										let sql = "UPDATE profiles SET nationality_residence='" + nationality_residence + "', nationality_origin='" + nationality_origin + "', state ='"+state+"', lga ='"+lga+"', firstName='"+firstName+"', lastName='"+lastName+"',photo='"+ photo +"', background='"+background+"', updated_at='"+updated_at.toString()+"' WHERE uuid='" +uuid+ "'"; 
 
 										con.query(sql,  (err,result) => {
 
 										   	if(!err){
 										   		console.log(result);
-										   		uploader.send({
-													'file':photo,
-													'table':'profiles',
-													'uuid':uuid,
-													'column':'photo'
-													});
+										   		
 										   		callback(200, {'Success':'Profile Update Done'});
 
 										   	}else{
