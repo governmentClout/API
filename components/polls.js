@@ -219,7 +219,7 @@ polls.get = (data,callback)=>{
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName,photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
 					    	 		console.log(compile);
 					    	 		let polls = arg[i];
 					    	 		
@@ -269,7 +269,7 @@ polls.get = (data,callback)=>{
 					    	var pending = arg.length;
 					    
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[0].uuid+"'; SELECT firstName,lastName from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[0].uuid+"'; SELECT firstName,lastName,photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
 					    	 		
 						               	callback(null, {'poll':arg,'responses':compile[0], 'user':compile[1]});
 
@@ -341,7 +341,7 @@ polls.get = (data,callback)=>{
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName, photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
 					    	 		// console.log(compile);
 					    	 		let polls = arg[i];
 					    	 		
