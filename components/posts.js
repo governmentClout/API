@@ -105,10 +105,10 @@ posts.get = (data,callback)=>{
 PAGINATION SETTINGS
 **/
 
-	let perpage = typeof(data.queryStringObject.per_page) == 'number' && data.queryStringObject.per_page > 0 ? data.queryStringObject.per_page : 10; 
-	let skip = typeof(data.queryStringObject.skip) == 'number' && data.queryStringObject.skip > 0 ? data.queryStringObject.skip : 0; 
-	let limit = typeof(data.queryStringObject.limit) == 'number' && data.queryStringObject.limit > 0 ? data.queryStringObject.limit : false;
-	let sort = tyopeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : false;
+	// let perpage = typeof(data.queryStringObject.per_page) == 'number' && data.queryStringObject.per_page > 0 ? data.queryStringObject.per_page : 10; 
+	// let skip = typeof(data.queryStringObject.skip) == 'number' && data.queryStringObject.skip > 0 ? data.queryStringObject.skip : 0; 
+	// let limit = typeof(data.queryStringObject.limit) == 'number' && data.queryStringObject.limit > 0 ? data.queryStringObject.limit : false;
+	// let sort = tyopeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : false;
 
 
 
@@ -138,12 +138,12 @@ PAGINATION SETTINGS
 					    	//do all pagination calculation here
 					    	let sql = "SELECT * FROM posts";
 
-					    	if(limit){
-					    		sql += " LIMIT " + limit;
-					    	}
-					    	if(sort){
-					    		sql += " ORDER BY id " + sort;
- 					    	}
+					    	// if(limit){
+					    	// 	sql += " LIMIT " + limit;
+					    	// }
+					    	// if(sort){
+					    	// 	sql += " ORDER BY id " + sort;
+ 					    // 	}
 					    	
 					    	con.query(sql,(err,result)=>{
 					    		
