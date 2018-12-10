@@ -254,6 +254,7 @@ friends.get = (data,callback)=>{
 
 					if(param && param == 'blocked'){
 					//get all blocked
+					console.log('inside blocked');
 					let finalresult = [];
 
 						async.waterfall([
@@ -262,7 +263,7 @@ friends.get = (data,callback)=>{
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=3";
 
-						    	con.query(sql,(err,result)=>{
+						    	con.query(sqlGetFriends,(err,result)=>{
 						    			console.log(result);
 						    			if(!err && result.length > 0){
 						    				callback(null,result);
