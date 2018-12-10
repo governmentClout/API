@@ -96,7 +96,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].friend+"'; SELECT * FROM users WHERE uuid='"+arg[i].friend+"'",(err, result)=>{
 							    	 		
 							    	 		
 								            finalresult.splice(i,0,result);
@@ -160,7 +160,7 @@ friends.get = (data,callback)=>{
 							    	console.log(arg);
 							    	for(let i=0; i<arg.length; i++) {
 							    		
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].friend+"'; SELECT * FROM users WHERE uuid='"+arg[i].friend+"'",(err, result)=>{
 							    	 		
 							    	 		console.log(i);
 								            finalresult.splice(i,0,{'user':result[1],'profile':result[0]});
@@ -222,7 +222,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].friend+"'; SELECT * FROM users WHERE uuid='"+arg[i].friend+"'",(err, result)=>{
 							    	 		
 							    	 		
 								            finalresult.splice(i,0,result);
@@ -284,7 +284,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		// console.log(arg[i].uuid);
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].friend+"'; SELECT * FROM users WHERE uuid='"+arg[i].friend+"'",(err, result)=>{
 							    	 		
 							    	 		
 								            finalresult.splice(i,0,result);
@@ -348,7 +348,7 @@ friends.get = (data,callback)=>{
 
 							    	for(let i=0; i<arg.length; i++) {
 							    		
-							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].user+"'; SELECT * FROM users WHERE uuid='"+arg[i].user+"'",(err, result)=>{
+							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].friend+"'; SELECT * FROM users WHERE uuid='"+arg[i].friend+"'",(err, result)=>{
 							    	 		
 								            finalresult.splice(i,0,{'user':result[0],'profile':result[1]});
 								            

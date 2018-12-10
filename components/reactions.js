@@ -29,7 +29,7 @@ reactions.post = (data,callback)=>{
 	let user = data.headers.uuid;
 	let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : false;
 	let uuid = uuidV1();
-	console.log('here 111');
+	
 
 	if( token && user ){
 
@@ -198,8 +198,9 @@ reactions.delete = (data,callback)=>{
 								callback(200,{'Success':'Reaction Deleted'});
 								
 							}else{
-								console.log(err);
+								
 								callback(500,{'Error':'Reaction not deleted'});
+								
 							}
 
 						});
