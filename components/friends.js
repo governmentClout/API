@@ -263,7 +263,7 @@ friends.get = (data,callback)=>{
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=3";
 
 						    	con.query(sql,(err,result)=>{
-						    			
+						    			console.log(result);
 						    			if(!err && result.length > 0){
 						    				callback(null,result);
 						    			}else{
