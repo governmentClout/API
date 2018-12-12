@@ -221,7 +221,7 @@ friends.get = (data,callback)=>{
 							    	var pending = arg.length;
 
 							    	for(let i=0; i<arg.length; i++) {
-							    		// console.log(arg[i].uuid);
+							    		
 							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].friend+"'; SELECT * FROM users WHERE uuid='"+arg[i].friend+"'",(err, result)=>{
 							    	 		
 							    	 		
@@ -253,8 +253,7 @@ friends.get = (data,callback)=>{
 					}
 
 					if(param && param == 'blocked'){
-					//get all blocked
-					console.log('inside blocked');
+
 					let finalresult = [];
 
 						async.waterfall([

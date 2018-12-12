@@ -126,8 +126,8 @@ comments.get = (data,callback)=>{
 					    
 					    },
 					    function(arg, callback) {
-					    	console.log('th===>');
-					    	console.log(arg);
+					    	// console.log('th===>');
+					    	// console.log(arg);
 					    	let result = [];
 					    	var pending = arg.length;
 
