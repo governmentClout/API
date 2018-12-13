@@ -39,7 +39,7 @@ polls.post = (data,callback)=>{
 	let opinion = typeof(data.payload.opinion) == 'string' && data.payload.opinion.trim().length > 0 ? data.payload.opinion.trim() : false;
 	let expire_at = typeof(data.payload.expire_at) == 'string' && data.payload.expire_at.trim().length > 0 ? data.payload.expire_at.trim() : '2054-01-01 00:00:00';
 	let response_limit = typeof(data.payload.response_limit) == 'string' && data.payload.response_limit.trim().length > 0 ? data.payload.response_limit.trim() : '1000';
-	let status = typeof(data.payload.status) == 'number' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
+	let status = typeof(data.payload.status) == 'string' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 
@@ -117,7 +117,7 @@ polls.post = (data,callback)=>{
 						if(!err && result[0].count == 0){
 
 							
-							let sqlResponse = "INSERT polls_response (user,poll,status) VALUES ('"+user+"','"+poll+"',1)";
+							let sqlResponse = "INSERT polls_response (user,poll,status) VALUES ('"+user+"','"+poll+"','" +status+ "')";
 
 							con.query(sqlResponse,(err,result)=>{
 
