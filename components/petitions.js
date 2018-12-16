@@ -69,14 +69,17 @@ petitons.post = (data,callback)=>{
 
 					//create new poll
 					//user is the uuid of the creator
-				
-					let sqlCreatePoll = "INSERT INTO petition (uuid,sector,opinion,expire_at,response_limit,created_by) VALUES ('"+uuid+"','"+sector+"','"+opinion+"','"+expire_at+"','"+response_limit+"','" + user + "')";
+					if(attachment){
+							attachment = JSON.stringify(attachment);
+						}
 
-					con.query(sqlCreatePoll,(err,result)=>{
+					let sqlCreatePetition = "INSERT INTO petitions (uuid,user,targeted_office,petition_class,petition_title,attachment,status) VALUES ('"+uuid+"','"+user+"','"+targeted_office+"','"+petition_class+"','"+petition_title+"','" + attachment + "','0')";
+
+					con.query(sqlCreatePetition,(err,result)=>{
 
 						if(!err && result){
 
-							callback(200,{'Success':'Poll Created'});
+							callback(200,{'Success':'Petition Created'});
 
 						}else{
 							console.log(err);

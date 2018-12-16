@@ -377,7 +377,7 @@ posts.put = (data,callback)=>{
 	}
 }
 
-posts.delete = (data,callback)=>{
+posts.delete = (data,callback)=>{ 
 	//get a user profile
 	let post = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
