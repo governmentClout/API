@@ -34,17 +34,12 @@ petitons.post = (data,callback)=>{
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
-
-	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
-	let sector = typeof(data.payload.sector) == 'string' && data.payload.sector.trim().length > 0 ? data.payload.sector.trim() : false;
-	let opinion = typeof(data.payload.opinion) == 'string' && data.payload.opinion.trim().length > 0 ? data.payload.opinion.trim() : false;
-	let expire_at = typeof(data.payload.expire_at) == 'string' && data.payload.expire_at.trim().length > 0 ? data.payload.expire_at.trim() : '2054-01-01 00:00:00';
-	let response_limit = typeof(data.payload.response_limit) == 'string' && data.payload.response_limit.trim().length > 0 ? data.payload.response_limit.trim() : '1000';
+	let targeted_office = typeof(data.payload.targeted_office) == 'string' && data.payload.targeted_office.trim().length > 0 ? data.payload.targeted_office.trim() : false;
+	let petition_class = typeof(data.payload.petition_class) == 'string' && data.payload.petition_class.trim().length > 0 ? data.payload.petition_class.trim() : false;
+	let petition_title = typeof(data.payload.petition_title) == 'string' && data.payload.petition_title.trim().length > 0 ? data.payload.petition_title.trim() : false;
 	let status = typeof(data.payload.status) == 'string' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
-
-	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
-
-	let poll = typeof(data.payload.poll) == 'string' && data.payload.poll.trim().length > 0 ? data.payload.poll.trim() : false;
+	let petition = typeof(data.payload.petition) == 'string' && data.payload.petition.trim().length > 0 ? data.payload.petition.trim() : false;
+	let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? data.payload.attachment : null;
 
 	let uuid = uuidV1();
 
@@ -66,12 +61,16 @@ petitons.post = (data,callback)=>{
 
 				){
 
-				if( !param && opinion && sector ){
+				if( targeted_office && 
+					petition_class &&
+					petition &&
+					petition_title
+					){
 
 					//create new poll
 					//user is the uuid of the creator
 				
-					let sqlCreatePoll = "INSERT INTO polls (uuid,sector,opinion,expire_at,response_limit,created_by) VALUES ('"+uuid+"','"+sector+"','"+opinion+"','"+expire_at+"','"+response_limit+"','" + user + "')";
+					let sqlCreatePoll = "INSERT INTO petition (uuid,sector,opinion,expire_at,response_limit,created_by) VALUES ('"+uuid+"','"+sector+"','"+opinion+"','"+expire_at+"','"+response_limit+"','" + user + "')";
 
 					con.query(sqlCreatePoll,(err,result)=>{
 
@@ -86,61 +85,30 @@ petitons.post = (data,callback)=>{
 
 					});
 
-				}
-
-				if(!param && (!opinion || !sector)){
+				}else{
 
 					let errorObject = [];
-					if(!param){
-						errorObject.push('No Parameter set');
+
+					if(!targeted_office){
+						errorObject.push('Targeted Office is a required field');
 					}
-					if(!opinion){
-						errorObject.push('Opinion required');
+					if(!petition_class){
+						errorObject.push('Petition Class is required');
 					}
-					if(!sector){
-						errorObject.push('sector is required');
+					if(!petition){
+						errorObject.push('Petition content is required');
 					}
+					if(!petition_title){
+						errorObject.push('Petition Title is required');
+					}
+
+
 					console.log(errorObject);
 					callback(400,{'Error':errorObject});
 
 				}
 
-				if(param && param == 'response'){
-					// respond to a poll
-					//user is the uuid of the responder, poll is the poll
-					//check that user has not already responded
-					//response status: 1 - true/agree/yes 2 - no/disagree/false 3 - undecided
-
-					let checkResponse = "SELECT count(*) as count FROM polls_response WHERE user='"+user+"' and poll='" +poll+ "'";
-
-					con.query(checkResponse,(err,result)=>{
-						// console.log(result[0].count);
-						if(!err && result[0].count == 0){
-
-							
-							let sqlResponse = "INSERT polls_response (user,poll,status) VALUES ('"+user+"','"+poll+"','" +status+ "')";
-
-							con.query(sqlResponse,(err,result)=>{
-
-								if(!err && result){
-
-									callback(200,{'Success':'response submitted'});
-
-								}else{
-									callback(500,{'Error':err});
-								}
-
-							});
-
-
-
-						}else{
-							callback(400,{'Error':'User already responded to poll'});
-						}
-
-					});
-
-				}
+				
 			}else{
 				console.log(err);
 				callback(400,{'Error':'Token Mismatch or expired'});
@@ -163,6 +131,78 @@ petitons.post = (data,callback)=>{
 
 	}
 	
+}
+
+petitions.delete = (data,callback)=>{
+
+	let petition = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+
+	if( 
+		token && 
+		uuidHeader &&
+		post 
+		){
+
+		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
+		
+		con.query(headerChecker,(err,results)=>{
+			
+			if(!err && 
+				results && 
+				results[0].token.length > 0 &&
+				results[0].token == token
+
+				){
+
+				let postQuery = "SELECT * FROM petitions WHERE uuid='" + petition + "'";
+			
+				con.query(postQuery, (err,result)=>{
+
+					if(!err && result[0]){
+
+						let deletePost = "DELETE FROM petitions WHERE uuid='"+petition+"'";
+
+						con.query(deletePost,(err,result)=>{
+
+							
+							callback(200,{'Success':'Petition deleted'});
+								
+							
+						});
+
+					}else{
+						console.log(err);
+						callback(404,{'Error':'Petition not found'});
+					}
+
+				})
+
+			}else{
+				console.log(err);
+				callback(404,{'Error':'Token Invalid or Expired'});
+			}
+
+		});
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+		if(!post){
+			errorObject.push('Petition uuid not valid');
+		}
+
+		callback(400,{'Error':errorObject});
+	}
+
 }
 
 
