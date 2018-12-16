@@ -133,6 +133,10 @@ petitons.post = (data,callback)=>{
 	
 }
 
+petitions.get = (data,callback)=>{
+	callback(200,{'Success':'You have hit the petition get endpoint'});
+}
+
 petitions.delete = (data,callback)=>{
 
 	let petition = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
