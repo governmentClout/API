@@ -128,7 +128,7 @@ polls.post = (data,callback)=>{
 								}else{
 									callback(500,{'Error':err});
 								}
-
+ 
 							});
 
 
@@ -390,12 +390,76 @@ polls.get = (data,callback)=>{
 
 }
 
-polls.put = (data,callback)=>{
-	callback(200,{'Success':'You have hit polls put endpoint'});
-}
-
 polls.delete = (data,callback)=>{
-	callback(200,{'Success':'You have hit polls delete endpoint'});
+	
+	let poll = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+
+	if( 
+		token && 
+		uuidHeader &&
+		post 
+		){
+
+		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
+		
+		con.query(headerChecker,(err,results)=>{
+			
+			if(!err && 
+				results && 
+				results[0].token.length > 0 &&
+				results[0].token == token
+
+				){
+
+				let pollQuery = "SELECT * FROM polls WHERE uuid='" + poll + "'";
+			
+				con.query(pollQuery, (err,result)=>{
+
+					if(!err && result[0]){
+
+						let deletePoll = "DELETE FROM polls WHERE uuid='"+poll+"'";
+
+						con.query(deletePoll,(err,result)=>{
+
+							
+							callback(200,{'Success':'Poll deleted'});
+								
+							
+						});
+
+					}else{
+						console.log(err);
+						callback(404,{'Error':'Poll not found'});
+					}
+
+				})
+
+			}else{
+				console.log(err);
+				callback(404,{'Error':'Token Invalid or Expired'});
+			}
+
+		});
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+		if(!poll){
+			errorObject.push('Poll uuid not valid');
+		}
+
+		callback(400,{'Error':errorObject});
+	}
+
 }
 
 module.exports = polls;

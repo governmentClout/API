@@ -67,8 +67,6 @@ petitons.post = (data,callback)=>{
 					petition_title
 					){
 
-					//create new poll
-					//user is the uuid of the creator
 					if(attachment){
 							attachment = JSON.stringify(attachment);
 						}
