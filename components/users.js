@@ -287,6 +287,10 @@ users.get = (data,callback) => {
 	
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
 	if(token && uuid){
 
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
@@ -306,6 +310,21 @@ users.get = (data,callback) => {
 					
 					check = "SELECT users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
 				}
+
+						if(sort){
+					    		check += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		check += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		check += " OFFSET " + skip;
+
+					    	}
 		
 
 					con.query(check,  (err,result) => {
