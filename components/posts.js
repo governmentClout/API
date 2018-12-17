@@ -105,8 +105,8 @@ posts.get = (data,callback)=>{
 PAGINATION SETTINGS
 **/
 
-	let page = typeof(data.queryStringObject.page) == 'number' && data.queryStringObject.page > 0 ? data.queryStringObject.page : 1; 
-	let limit = typeof(data.queryStringObject.limit) == 'number' && data.queryStringObject.limit > 0 ? data.queryStringObject.limit : 10;
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
 	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
 
 
@@ -127,8 +127,8 @@ PAGINATION SETTINGS
 				results && 
 				results[0].token.length > 0){
 
-				if( !queryObject && !post ){
-
+				if( queryObject && !post && !queryObject.user ){
+					console.log('one');
 					let finalresult = [];
 
 					async.waterfall([
@@ -137,24 +137,24 @@ PAGINATION SETTINGS
 					    	//do all pagination calculation here
 					    	let sql = "SELECT * FROM posts";
 
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
 					    	if(limit){
 					    		sql += " LIMIT " + limit;
 					    	}
 
 					    	if(page){
-
-					    		let skip = page * limit;
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
 					    		sql += " OFFSET " + skip;
 
 					    	}
 					    	
-					    	if(sort){
-					    		sql += " ORDER BY id " + sort;
- 					    	}
-					    	
 					    	con.query(sql,(err,result)=>{
-					    		
-									callback(null,result);
+					    			console.log(sql);
+					    			return result.length > 0 ? callback(null,result) : callback(null,[]);
 									
 								});
 					    	
@@ -164,6 +164,8 @@ PAGINATION SETTINGS
 					    	
 					    	let result = [];
 					    	var pending = arg.length;
+
+					    	if(arg.length === 0) return callback(null,[]);
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
@@ -192,12 +194,28 @@ PAGINATION SETTINGS
 				}
 
 			if(queryObject && queryObject.user){
+					console.log('two');
 				
 				let finalresult = [];
 
 					async.waterfall([
 					    function(callback) {
 					    	let sql = "SELECT * FROM posts WHERE user='"+queryObject.user+"'";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+
+					    		let skip = page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
