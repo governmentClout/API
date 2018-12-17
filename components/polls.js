@@ -173,6 +173,10 @@ polls.get = (data,callback)=>{
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let userPoll = typeof(data.queryStringObject.user) == 'string' && data.queryStringObject.user.trim().length > 0 ? data.queryStringObject.user.trim() : false; //should be ?user={uuid}
 
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
 	if( 
 		token && 
 		uuidHeader 
@@ -204,6 +208,20 @@ polls.get = (data,callback)=>{
 					    function(callback) {
 					    	let sql = "SELECT * FROM polls WHERE created_by='"+userPoll+"'";
 
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
 					    	con.query(sql,(err,result)=>{
 					    		console.log(result);
 									callback(null,result);
@@ -254,6 +272,21 @@ polls.get = (data,callback)=>{
 						async.waterfall([
 					    function(callback) {
 					    	let sql = "SELECT * FROM polls WHERE uuid='"+param+"'";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
 
 					    	con.query(sql,(err,result)=>{
 									console.log('point 1');
@@ -325,6 +358,21 @@ polls.get = (data,callback)=>{
 						async.waterfall([
 					    function(callback) {
 					    	let sql = "SELECT * FROM polls";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
 
 					    	con.query(sql,(err,result)=>{
 

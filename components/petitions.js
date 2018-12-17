@@ -135,7 +135,269 @@ petitions.post = (data,callback)=>{
 }
 
 petitions.get = (data,callback)=>{
-	callback(200,{'Success':'You have hit the petition get endpoint'});
+	
+	let tokenHeader = data.headers.token;
+	let uuidHeader = data.headers.uuid; 
+	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
+	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let userPetition = typeof(data.queryStringObject.user) == 'string' && data.queryStringObject.user.trim().length > 0 ? data.queryStringObject.user.trim() : false; //should be ?user={uuid}
+
+
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
+
+	if( 
+		token && 
+		uuidHeader 
+
+		){
+
+
+			let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+
+			con.query(verifyToken, (err,result)=>{
+				
+				if(
+					!err && 
+					result[0] && 
+					result[0].token == token 
+
+					){
+
+					//get all petitions
+					//get single users petitions
+					//get all petitions response
+					if(userPetition){
+						
+						//then get polls belonging to a single user
+						
+						let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM petitions WHERE user='"+user+"'";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
+
+					    	con.query(sql,(err,result)=>{
+					    		console.log(result);
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName,photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 		console.log(compile);
+					    	 		let polls = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile[0], 'user':compile[1]});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						console.log(result);
+						callback(200,result);
+					});
+				}
+
+					
+
+					if(param){
+						
+						//get single poll and all respoonse with profile of the responders
+
+						let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM petitions WHERE uuid='"+param+"'";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
+
+					    	con.query(sql,(err,result)=>{
+									console.log('point 1');
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+					    
+					    		
+					    	 con.query("SELECT * FROM petitions_response WHERE poll='"+arg[0].uuid+"'; SELECT firstName,lastName,photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 		
+						               	callback(null, {'poll':arg,'responses':compile[0], 'user':compile[1]});
+
+						        });
+					    
+
+					        
+					    },
+					     function(arg, callback) {
+
+					     	
+					    	let result = [];
+					    	var pending = arg.response.length;
+					    	let poll = arg.poll;
+					    	let responses = arg.response;
+					  
+					    	if(responses.length > 0){
+
+					    		for(let i=0; i<pending; i++) {
+					    		
+						    	 con.query("SELECT * FROM profiles WHERE uuid='"+responses[i].user+"'",(err, users)=>{
+						    	 	
+							            finalresult.splice(i,0,users);
+							            
+							            if( 0 === --pending ) {
+							            	
+							               	callback(null, {'poll':poll,'responses':finalresult});
+
+							            }
+
+							        });
+						    	}
+
+					    	}else{
+					    		callback(null, {'poll':poll,'responses':[]});
+					    	}
+					    	
+
+					        
+					    }
+					], function (err, result) {
+						
+						callback(200,{'poll':result.poll,'responses':result.responses});
+					});
+					
+
+					}
+
+					if(!param && !userPoll){
+						console.log('here');
+						let finalresult = [];
+						//just get everything and give it to them
+						async.waterfall([
+					    function(callback) {
+					    	let sql = "SELECT * FROM polls";
+
+					    	con.query(sql,(err,result)=>{
+
+									callback(null,result);
+
+								});
+					    	
+					    
+					    },
+					    function(arg, callback) {
+					    	
+					    	let result = [];
+					    	var pending = arg.length;
+
+					    	for(let i=0; i<arg.length; i++) {
+					    		
+					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName, photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
+					    	 		// console.log(compile);
+					    	 		let polls = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile[0], 'user':compile[1]});
+						            
+
+						            if( 0 === --pending ) {
+
+						               	callback(null, finalresult);
+
+						            }
+
+						        });
+					    	}
+
+					        
+					    }
+					], function (err, result) {
+						console.log(result);
+						callback(200,result);
+					});
+					}
+
+
+
+				}else{
+					console.log(err);
+					callback(400,{'Error':'Token Mismatch or expired'});
+				}
+			});
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or has expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+
+		callback(400,{'Error':errorObject});
+
+	}
+
+}
+
+
+
 }
 
 petitions.put = (data,callback)=>{
