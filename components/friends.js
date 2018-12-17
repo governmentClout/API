@@ -43,6 +43,10 @@ friends.get = (data,callback)=>{
 	//if uuidHeader === queryObject.user, then the person can perform every activity, otherwise, uuidHeader can only see friend list of the queryObject.user
 	//friends status: 0 - pending, 1 - ignored, 2 - accepted 3 - blocked.
 
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
 	if( 
 		token && 
 		uuidHeader 
@@ -73,6 +77,21 @@ friends.get = (data,callback)=>{
 						    function(callback) {
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=2";
+
+						    	if(sort){
+						    		sqlGetFriends += " ORDER BY id " + sort;
+	 					    	}
+
+						    	if(limit){
+						    		sqlGetFriends += " LIMIT " + limit;
+						    	}
+
+						    	if(page){
+						    		
+						    		let skip = page == '1' ? 0 : page * limit;
+						    		sqlGetFriends += " OFFSET " + skip;
+
+						    	}
 
 						    	con.query(sqlGetFriends,(err,result)=>{
 						    			
@@ -138,6 +157,21 @@ friends.get = (data,callback)=>{
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status='2'";
 
+						    	if(sort){
+						    		sqlGetFriends += " ORDER BY id " + sort;
+	 					    	}
+
+						    	if(limit){
+						    		sqlGetFriends += " LIMIT " + limit;
+						    	}
+
+						    	if(page){
+						    		
+						    		let skip = page == '1' ? 0 : page * limit;
+						    		sqlGetFriends += " OFFSET " + skip;
+
+						    	}
+
 						    	con.query(sqlGetFriends,(err,result)=>{
 						    				
 						    			if(!err && result.length > 0){
@@ -199,6 +233,21 @@ friends.get = (data,callback)=>{
 						    function(callback) {
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=1";
+
+						    	if(sort){
+						    		sqlGetFriends += " ORDER BY id " + sort;
+	 					    	}
+
+						    	if(limit){
+						    		sqlGetFriends += " LIMIT " + limit;
+						    	}
+
+						    	if(page){
+						    		
+						    		let skip = page == '1' ? 0 : page * limit;
+						    		sqlGetFriends += " OFFSET " + skip;
+
+						    	}
 
 						    	con.query(sql,(err,result)=>{
 						    			
@@ -262,6 +311,21 @@ friends.get = (data,callback)=>{
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status=3";
 
+						    	if(sort){
+						    		sqlGetFriends += " ORDER BY id " + sort;
+	 					    	}
+
+						    	if(limit){
+						    		sqlGetFriends += " LIMIT " + limit;
+						    	}
+
+						    	if(page){
+						    		
+						    		let skip = page == '1' ? 0 : page * limit;
+						    		sqlGetFriends += " OFFSET " + skip;
+
+						    	}
+
 						    	con.query(sqlGetFriends,(err,result)=>{
 						    			console.log(result);
 						    			if(!err && result.length > 0){
@@ -323,6 +387,21 @@ friends.get = (data,callback)=>{
 						    function(callback) {
 
 						    	let sqlGetFriends = "SELECT * FROM friends WHERE user='"+user+"' AND status='0'";
+
+						    	if(sort){
+						    		sqlGetFriends += " ORDER BY id " + sort;
+	 					    	}
+
+						    	if(limit){
+						    		sqlGetFriends += " LIMIT " + limit;
+						    	}
+
+						    	if(page){
+						    		
+						    		let skip = page == '1' ? 0 : page * limit;
+						    		sqlGetFriends += " OFFSET " + skip;
+
+						    	}
 
 						    	con.query(sqlGetFriends,(err,result)=>{
 						    			
