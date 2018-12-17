@@ -101,15 +101,10 @@ posts.get = (data,callback)=>{
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 
-/**
-PAGINATION SETTINGS
-**/
 
 	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
 	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
-
-
 
 	if( 
 		token && 
@@ -154,7 +149,7 @@ PAGINATION SETTINGS
 					    	
 					    	con.query(sql,(err,result)=>{
 					    			console.log(sql);
-					    			return result.length > 0 ? callback(null,result) : callback(null,[]);
+					    			result.length > 0 ? callback(null,result) : callback(null,[]);
 									
 								});
 					    	

@@ -104,7 +104,10 @@ articles.get = (data,callback)=>{
 
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 
-// console.log(data);
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
 	
 	if( 
 		token && 
@@ -129,6 +132,22 @@ articles.get = (data,callback)=>{
 					async.waterfall([
 					    function(callback) {
 					    	let sql = "SELECT * FROM articles";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
+
 					    	con.query(sql,(err,result)=>{
 					    		
 					    		if(!err && result.length > 0){
@@ -184,6 +203,22 @@ articles.get = (data,callback)=>{
 					async.waterfall([
 					    function(callback) {
 					    	let sql = "SELECT * FROM articles WHERE user='"+queryObject.user+"'";
+
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
+
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
@@ -233,6 +268,21 @@ articles.get = (data,callback)=>{
 					async.waterfall([
 					    function(callback) {
 					    	let sql = "SELECT * FROM articles WHERE uuid='"+article+"'";
+					    	
+					    	if(sort){
+					    		sql += " ORDER BY id " + sort;
+ 					    	}
+
+					    	if(limit){
+					    		sql += " LIMIT " + limit;
+					    	}
+
+					    	if(page){
+					    		
+					    		let skip = page == '1' ? 0 : page * limit;
+					    		sql += " OFFSET " + skip;
+
+					    	}
 					    	con.query(sql,(err,result)=>{
 					    		
 									callback(null,result);
