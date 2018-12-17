@@ -22,6 +22,8 @@ trends.options = (data,callback)=>{
 	
 }
 
+//fetch both post and articles
+
 trends.get = (data,callback)=>{
 	//deliver trending posts and articles
 	//get post and articles with highest comments, likes, shares and

@@ -17,16 +17,16 @@ const con = mysql.createConnection({
 });
 
 
-let petitons = {};
+let petitions = {};
 
 
-petitons.options = (data,callback)=>{
+petitions.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
-petitons.post = (data,callback)=>{
+petitions.post = (data,callback)=>{
 
 	//create polls
 	//respond to polls
@@ -138,6 +138,11 @@ petitions.get = (data,callback)=>{
 	callback(200,{'Success':'You have hit the petition get endpoint'});
 }
 
+petitions.put = (data,callback)=>{
+	//to sign petition
+	callback(200,{'Success':'You have hit the petition get endpoint'});
+}
+
 petitions.delete = (data,callback)=>{
 
 	let petition = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
@@ -213,5 +218,5 @@ petitions.delete = (data,callback)=>{
 
 
 
-module.exports = petitons;
+module.exports = petitions;
 
