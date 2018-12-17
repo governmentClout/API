@@ -23,7 +23,9 @@ search.options = (data,callback)=>{
 }
 
 search.get = (data,callback)=>{
-
+	//collect search parameter
+	//parameter includes: component, details of search.
+	
 	callback(200,{'You have hit the trends get endpoint'});
 	
 }

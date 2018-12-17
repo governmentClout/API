@@ -148,6 +148,13 @@ executives.delete = (data,callback)=>{
 
 }
 
+executives.get = (data,callback)=>{
+	//get single executives details
+	//get all executives of a user
+	
+	callback(200,{'success':'You have hit the executives get point'});
+}
+
 
 
 
