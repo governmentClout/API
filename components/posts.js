@@ -104,6 +104,7 @@ posts.get = (data,callback)=>{
 	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
 	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+	let total_record = 0;
 
 	if( 
 		token && 
@@ -116,14 +117,13 @@ posts.get = (data,callback)=>{
 		
 		
 		con.query(headerChecker,(err,results)=>{
-			console.log('result--');
-			console.log(results);
+
 			if(!err && 
 				results && 
 				results[0].token.length > 0){
 
 				if( queryObject && !post && !queryObject.user ){
-					console.log('one');
+					
 					let finalresult = [];
 
 					async.waterfall([
@@ -148,7 +148,7 @@ posts.get = (data,callback)=>{
 					    	}
 					    	
 					    	con.query(sql,(err,result)=>{
-					    			console.log(sql);
+					    			total_record = result.length;
 					    			result.length > 0 ? callback(null,result) : callback(null,[]);
 									
 								});
@@ -184,7 +184,7 @@ posts.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,result);
+						callback(200,{'posts':result,'total_record':total_record});
 					});
 				}
 
@@ -212,7 +212,7 @@ posts.get = (data,callback)=>{
 
 					    	}
 					    	con.query(sql,(err,result)=>{
-					    		
+					    			total_record = result.length;
 									callback(null,result);
 								});
 					    	
@@ -245,7 +245,7 @@ posts.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,result);
+						callback(200,{'posts':result,'total_record':total_record});
 					});
 
 			
@@ -261,7 +261,7 @@ posts.get = (data,callback)=>{
 					    function(callback) {
 					    	let sql = "SELECT * FROM posts WHERE uuid='"+post+"'";
 					    	con.query(sql,(err,result)=>{
-					    		
+					    		total_record = result.length;
 									callback(null,result);
 								});
 					    	
@@ -294,7 +294,7 @@ posts.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,result);
+						callback(200,{'posts':result,'total_record':total_record});
 					});
 				
 
