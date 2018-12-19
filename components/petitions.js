@@ -398,7 +398,6 @@ petitions.get = (data,callback)=>{
 
 
 
-}
 
 petitions.put = (data,callback)=>{
 	//to sign petition
