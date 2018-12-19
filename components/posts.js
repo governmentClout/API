@@ -116,7 +116,8 @@ posts.get = (data,callback)=>{
 		
 		
 		con.query(headerChecker,(err,results)=>{
-			
+			console.log('result--');
+			console.log(result);
 			if(!err && 
 				results && 
 				results[0].token.length > 0){
