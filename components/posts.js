@@ -183,13 +183,12 @@ posts.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,{'posts':result,'total_record':total_record});
+						callback(200,{'posts':result,'total_record':total_record,'page':page,'per_page':limit,'sort':sort});
 					});
 				}
 
 			if(queryObject && queryObject.user){
-					console.log('two');
-				
+					
 				let finalresult = [];
 
 					async.waterfall([
@@ -244,7 +243,7 @@ posts.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,{'posts':result,'total_record':total_record});
+						callback(200,{'posts':result,'total_record':total_record,'page':page,'per_page':limit,'sort':sort});
 					});
 
 			
@@ -293,7 +292,7 @@ posts.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,{'posts':result,'total_record':total_record});
+						callback(200,{'posts':result,'total_record':total_record,'page':page,'per_page':limit,'sort':sort});
 					});
 				
 
