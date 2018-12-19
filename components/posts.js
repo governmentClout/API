@@ -117,12 +117,11 @@ posts.get = (data,callback)=>{
 		
 		
 		con.query(headerChecker,(err,results)=>{
-
+			
 			if(!err && 
-				results && 
-				results[0].token.length > 0){
+				results.length > 0 ){
 
-				if( queryObject && !post && !queryObject.user ){
+				if( !post && !queryObject.user ){
 					
 					let finalresult = [];
 
