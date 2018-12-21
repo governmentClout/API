@@ -69,7 +69,7 @@ friends.get = (data,callback)=>{
 						param != 'blocked' &&
 						param != 'ignored'
 						){
-						console.log('stage 1');
+						// console.log('stage 1');
 						//get all friends from another user
 					let finalresult = [];
 
