@@ -8,12 +8,13 @@ const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
 
-const con = mysql.createConnection({
+const con = mysql.createPool({
 
   host: config.db_host,
   user: config.db_username,
   password: config.db_password,
-  database: config.db_name
+  database: config.db_name,
+  multipleStatements: true
 
 });
 
@@ -304,11 +305,11 @@ users.get = (data,callback) => {
 
 				){
 
-				let check = "SELECT users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid)";
+				let check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid)";
 
 				if(param){
 					
-					check = "SELECT users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
+					check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
 				}
 
 						if(sort){

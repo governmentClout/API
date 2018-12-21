@@ -6,8 +6,6 @@ const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const async = require('async');
 
-
-
 const con = mysql.createPool({
 
   host: config.db_host,
