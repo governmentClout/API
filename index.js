@@ -6,7 +6,6 @@ const http = require('http');
 const url = require('url');
 const stringDecoder = require('string_decoder').StringDecoder;
 const config = require('./lib/config');
-const fs = require('fs');
 const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 const dbconnect = require('./lib/db_connect');
@@ -32,7 +31,7 @@ var unifiedServer = (req,res)=>{
 	const path = parsedUrl.pathname; 
 	const trimmedPath = path.replace(/^\/+|\/+$/g,'');
 	const separatedUrl = trimmedPath.split('/');
-	const route = separatedUrl[0]; //take our the first element from the array
+	const route = separatedUrl[0]; //take out the first element from the array
 	const param = separatedUrl[1]; //send the rest
 	
 	//pagination details

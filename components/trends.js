@@ -72,12 +72,12 @@ trends.get = (data,callback)=>{
 						     function(callback){
 						       //create a single table with petitions and count.reactions, order by count.reaction
 						    	//get the number of results they want or just return default of 2
-						        callback(null, 'two');
+						        callback(null, 'three');
 						    },
 						     function(callback){
 						       //create a single table with polls and count.reactions, order by count.reaction
 						    	//get the number of results they want or just return default of 2
-						        callback(null, 'two');
+						        callback(null, 'four');
 						    }
 						],
 						// optional callback
