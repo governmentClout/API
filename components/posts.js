@@ -54,9 +54,9 @@ posts.post = (data,callback)=>{
 
 					if(post){
 
-						if(attachment){
-							attachment = JSON.stringify(attachment);
-						}
+						// if(attachment){
+						// 	attachment = JSON.stringify(attachment);
+						// }
 
 						let sql = "INSERT INTO posts (post,location,attachment,uuid,user,post_type) VALUES('"+post+"','" + location+"','"+attachment+"','"+uuid+"','"+user+"','"+post_type+"')";
 

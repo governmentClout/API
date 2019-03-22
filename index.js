@@ -9,7 +9,7 @@ const config = require('./lib/config');
 const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 const dbconnect = require('./lib/db_connect');
-// const cors = require('cors');
+
 
 
 const httpServer = http.createServer((req,res)=>{

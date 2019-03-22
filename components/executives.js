@@ -5,9 +5,6 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const mailer = require('./mailer');
 
-
-
-
 const con = mysql.createConnection({
 
   host: config.db_host,
@@ -18,7 +15,6 @@ const con = mysql.createConnection({
 
 });
 
-
 executives = {};
 
 executives.options = (data,callback)=>{
@@ -28,17 +24,70 @@ executives.options = (data,callback)=>{
 }
 
 executives.get = (data,callback)=>{
-	//get executives for a single pereson
-	// -- this must be area based... obviously president is the same for everyone, 
-	// -- state should be that of origin, (add state of origin to profile)
-	//and other areas
+
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+
+	let user = typeof(data.user) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	
+	if( 
+		token && 
+		uuidHeader 
+		 
+		){
+
+			let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
+		
+		
+			con.query(headerChecker,(err,results)=>{
+
+				if(!err && results.length > 0 ){
+
+						if(user){
+
+							let sqlCheckRequest = "SELECT * FROM executives WHERE user='"+user+"'";
+
+							con.query(sqlCheckRequest,(err,result)=>{
+
+								if(!err && result.length > 0){
+
+									callback(200,{'executive':result});
+
+								}else{
+									callback(404,{})
+								}
+
+							}
+							
+						}else{
+							callback(404,{'Error':'Missing uuid in parameter'});
+						}
+
+					}else{
+						console.log(err);
+						callback(404,{'Error':'Token Invalid or Expired'});
+					}
+			}
+
+		}else{
+
+			let errorObject = [];
+	
+			if(!token){
+				errorObject.push('Token you supplied is not valid or expired');
+			}
+			if(!uuidHeader){
+				errorObject.push('uuid in the header not found');
+			}
+	
+			callback(400,{'Error':errorObject});
+		}
 
 	callback(200,{'success':'you have hit executives get endpoint'})
 
 }
 
 executives.post = (data,callback)=>{
-	console.log('here');
 	//request to become an executve
 	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;

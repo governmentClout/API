@@ -42,7 +42,6 @@ trends.get = (data,callback)=>{
 
 	//param: post types - poll, petition, post, articles, all
 
-
 		if( token && user ){
 
 			let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
