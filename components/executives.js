@@ -66,7 +66,7 @@ executives.get = (data,callback)=>{
 						console.log(err);
 						callback(404,{'Error':'Token Invalid or Expired'});
 					}
-			}
+			});
 
 		}else{
 
