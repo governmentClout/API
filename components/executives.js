@@ -56,7 +56,7 @@ executives.get = (data,callback)=>{
 									callback(404,{});
 								}
 
-							}
+							});
 							
 						}else{
 							callback(404,{'Error':'Missing uuid in parameter'});
