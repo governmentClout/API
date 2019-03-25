@@ -36,8 +36,7 @@ executives.get = (data,callback)=>{
 		 
 		){
 
-			let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
-		
+			let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";		
 		
 			con.query(headerChecker,(err,results)=>{
 
@@ -54,7 +53,7 @@ executives.get = (data,callback)=>{
 									callback(200,{'executive':result});
 
 								}else{
-									callback(404,{})
+									callback(404,{});
 								}
 
 							}
@@ -83,7 +82,7 @@ executives.get = (data,callback)=>{
 			callback(400,{'Error':errorObject});
 		}
 
-	callback(200,{'success':'you have hit executives get endpoint'})
+	// callback(200,{'success':'you have hit executives get endpoint'})
 
 }
 
