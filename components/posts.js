@@ -33,8 +33,8 @@ posts.post = (data,callback)=>{
 
 	let post = typeof(data.payload.post) == 'string' && data.payload.post.trim().length > 0 ? data.payload.post.trim() : false;
 	let location = typeof(data.payload.location) == 'string' && data.payload.location.trim().length > 0 ? data.payload.location.trim() : 'unspecified';
-	let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? data.payload.attachment : null;
-	let post_type = typeof(data.payload.post_type) == 'object' && data.payload.attachment.post_type > 0  ? data.payload.post_type : 'post';
+	let attachment = typeof(data.payload.attachment) == 'string' && data.payload.attachment.trim().length > 0  ? data.payload.attachment : null;
+	let post_type = typeof(data.payload.post_type) == 'string' && data.payload.post_type.trim().length > 0  ? data.payload.post_type : 'post';
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let uuid = uuidV1();
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
@@ -53,10 +53,6 @@ posts.post = (data,callback)=>{
 				){
 
 					if(post){
-
-						// if(attachment){
-						// 	attachment = JSON.stringify(attachment);
-						// }
 
 						let sql = "INSERT INTO posts (post,location,attachment,uuid,user,post_type) VALUES('"+post+"','" + location+"','"+attachment+"','"+uuid+"','"+user+"','"+post_type+"')";
 

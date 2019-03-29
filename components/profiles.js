@@ -61,8 +61,7 @@ profiles.post = (data,callback)=>{
 					state &&
 					lga &&
 					firstName &&
-					lastName && 
-					photo 
+					lastName 
 
 					){
 
@@ -133,9 +132,9 @@ profiles.post = (data,callback)=>{
 						if(!lastName){
 							errorObject.push('lastName is mising or invalide format');
 						}
-						if(!photo){
-							errorObject.push('Photo is missing or invalid format');
-						}
+						// if(!photo){
+						// 	errorObject.push('Photo is missing or invalid format');
+						// }
 
 						callback(400,{'Error':errorObject});
 					}
