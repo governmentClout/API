@@ -11,7 +11,6 @@ const helpers = require('./lib/helpers');
 const dbconnect = require('./lib/db_connect');
 
 
-
 const httpServer = http.createServer((req,res)=>{
 
 	unifiedServer(req,res);
@@ -38,8 +37,6 @@ var unifiedServer = (req,res)=>{
 
 	const queryStringObject = parsedUrl.query;
 
-	console.log(queryStringObject);
-
 	const method = req.method.toLowerCase();
 	const headers = req.headers;
 	const decoder = new stringDecoder('utf-8');
@@ -65,8 +62,6 @@ var unifiedServer = (req,res)=>{
 			'headers': headers,
 			'payload': helpers.parseJsonToObject(buffer)
 		}
-
-
 
 		chosenHandler(data, (statusCode,payload)=>{
 			
