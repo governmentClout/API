@@ -6,6 +6,10 @@
   "directories": {
     "lib": "lib"
   },
+  "apidoc": {
+    "title": "API Documentation",
+    "url" : "https://api.gclout.com:3000"
+  },
   "dependencies": {
     "async": "^2.6.1",
     "cloudinary": "^1.13.2",

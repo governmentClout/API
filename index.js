@@ -10,7 +10,6 @@ const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 const dbconnect = require('./lib/db_connect');
 
-
 const httpServer = http.createServer((req,res)=>{
 
 	unifiedServer(req,res);
@@ -24,7 +23,6 @@ httpServer.listen(config.httpPort, ()=>{
 });
 
 var unifiedServer = (req,res)=>{
-
 	
 	const parsedUrl = url.parse(req.url,true);
 	const path = parsedUrl.pathname; 
@@ -51,7 +49,6 @@ var unifiedServer = (req,res)=>{
 
 		buffer += decoder.end();
 
-
 		let chosenHandler = typeof(router[route]) !== 'undefined' ? router[route] : handlers.notFound;
 		
 		let data = {
@@ -69,7 +66,6 @@ var unifiedServer = (req,res)=>{
 			payload = typeof(payload) == 'object' ? payload : {};
 
 			let payloadString = JSON.stringify(payload);
-
 
 				res.setHeader("Access-Control-Allow-Origin","*");
 				res.setHeader("Access-Control-Request-Headers","X-Requested-With,Origin,Content-Type,uuid,token");

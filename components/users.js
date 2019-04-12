@@ -1,5 +1,3 @@
-
-
 const _db = require('./../lib/migrations');
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
@@ -27,6 +25,43 @@ users.options = (data,callback)=>{
 	callback(200,data.headers);
 	
 }
+
+/**
+ * @api {post} /users Create User (Email)
+ * @apiName createUser
+ * @apiGroup Users
+ * @apiDescription The endpoint creates a new user using Email provider
+ * @apiParam {phone} phone User Phone number.
+ * @apiParam {String} email User Email address.
+ * @apiParam {String} password User Password.
+ * @apiParam {String} dob User Date of Birth.
+ * @apiParam {Boolean} tosAgreement TOS Agreement.
+ * @apiParam {String} provider User method of signup, either email, or any of the social media.
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ *{
+ * 	"Token": "UX4LmqktGgC7Ilib9qmpHTRnYxEjr7eMTiD6QUUhRSHI70nT482boFClYmB7FmM7ulcgqcE388grQLUg9IfD2Ol9mPPqM8kImoFF",
+ * 	"uuid": "055e8860-cbe9-11e8-98f8-4fae0909dc0e"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ *{
+ *  "Error": "Provider is required"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 401 Bad Request
+ *{
+ *"Error": [
+ * 	"Phone number is missing or invalid format",
+ *	"Email is missing or invalid format",
+ *	"DOB is missing or invalid format",
+ *	"Password is missing or invalid format",
+ *	"tosAgreement cannot be false"
+ *],
+ *	"Message": []
+ *}
+ */
 
 users.post = (data,callback)=>{
 
