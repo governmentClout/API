@@ -4,6 +4,7 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
+const async = require('async');
 
 const con = mysql.createConnection({
 
@@ -61,13 +62,16 @@ petitions.post = (data,callback)=>{
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+
 	let targeted_office = typeof(data.payload.targeted_office) == 'string' && data.payload.targeted_office.trim().length > 0 ? data.payload.targeted_office.trim() : false;
 	let petition_class = typeof(data.payload.petition_class) == 'string' && data.payload.petition_class.trim().length > 0 ? data.payload.petition_class.trim() : false;
 	let petition_title = typeof(data.payload.petition_title) == 'string' && data.payload.petition_title.trim().length > 0 ? data.payload.petition_title.trim() : false;
 	let status = typeof(data.payload.status) == 'string' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
 	let petition = typeof(data.payload.petition) == 'string' && data.payload.petition.trim().length > 0 ? data.payload.petition.trim() : false;
 	let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? data.payload.attachment : null;
-//@TODO: Change petition attachment to comma separated strings
+
+	//@TODO: Change petition attachment to comma separated strings
+
 	let uuid = uuidV1();
 
 
@@ -160,6 +164,45 @@ petitions.post = (data,callback)=>{
 	}
 	
 }
+
+/**
+ * @api {get} /petitions/:uuid/:page/:limit/:sort Delete Petition 
+ * @apiName deletePetition
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID.
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint deletes a petition
+ * @apiParam {String} uuid UUID of the pedition
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+{
+    "petitions": [
+        {
+            "id": 2,
+            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:28:15.000Z",
+            "updated_at": "2019-04-16T21:28:15.000Z",
+            "status": 0
+        }
+    ],
+    "responses": []
+}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "petitions": [],
+    "responses": []
+}
+ */
 
 petitions.get = (data,callback)=>{
 	
@@ -290,7 +333,9 @@ petitions.get = (data,callback)=>{
 
 					    	con.query(sql,(err,result)=>{
 									console.log('point 1');
+									console.log(result);
 									callback(null,result);
+
 
 								});
 					    	
@@ -302,9 +347,13 @@ petitions.get = (data,callback)=>{
 					    	var pending = arg.length;
 					    
 					    		
-					    	 con.query("SELECT * FROM petitions_response WHERE poll='"+arg[0].uuid+"'; SELECT firstName,lastName,photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
-					    	 		
-						               	callback(null, {'poll':arg,'responses':compile[0], 'user':compile[1]});
+					    	 con.query("SELECT * FROM petitions_response WHERE poll='"+arg.uuid+"'; SELECT firstName,lastName,photo from profiles where uuid='"+arg.user+"'",(err, compile)=>{
+					    	 		if(compile){
+										callback(null, {'petitions':arg,'response':compile[0], 'user':compile[1]});
+									 }else{
+										callback(null, {'petitions':arg,'response':[], 'user':[]});
+									 }
+						              	
 
 						        });
 					    
@@ -316,7 +365,7 @@ petitions.get = (data,callback)=>{
 					     	
 					    	let result = [];
 					    	var pending = arg.response.length;
-					    	let poll = arg.poll;
+					    	let petitions = arg.petitions;
 					    	let responses = arg.response;
 					  
 					    	if(responses.length > 0){
@@ -329,7 +378,7 @@ petitions.get = (data,callback)=>{
 							            
 							            if( 0 === --pending ) {
 							            	
-							               	callback(null, {'poll':poll,'responses':finalresult});
+							               	callback(null, {'petitions':poll,'responses':finalresult});
 
 							            }
 
@@ -337,7 +386,7 @@ petitions.get = (data,callback)=>{
 						    	}
 
 					    	}else{
-					    		callback(null, {'petition':poll,'responses':[]});
+					    		callback(null, {'petitions':petitions,'responses':[]});
 					    	}
 					    	
 
@@ -345,7 +394,7 @@ petitions.get = (data,callback)=>{
 					    }
 					], function (err, result) {
 						
-						callback(200,{'poll':result.poll,'responses':result.responses});
+						callback(200,{'petitions':result.petitions,'responses':result.responses});
 					});
 					
 
