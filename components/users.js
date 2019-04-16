@@ -36,7 +36,7 @@ users.options = (data,callback)=>{
  * @apiParam {String} password User Password.
  * @apiParam {String} dob User Date of Birth.
  * @apiParam {Boolean} tosAgreement TOS Agreement.
- * @apiParam {String} provider User method of signup, either email, or any of the social media.
+ * @apiParam {String} provider User method of signup, either email, or any of the social media (twitter|facebook|linkedin|google).
  *
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
@@ -317,11 +317,15 @@ users.post = (data,callback)=>{
 
 users.get = (data,callback) => {
 
+
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let query = data.queryStringObject;
+
+	console.log('query',query);
 	
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	console.log('param',param);
 	
 	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
