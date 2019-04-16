@@ -1,6 +1,81 @@
 define({ "api": [
   {
     "type": "post",
+    "url": "/petitions",
+    "title": "Create Petition",
+    "name": "createPetition",
+    "group": "Petitions",
+    "description": "<p>The endpoint creates a new petition</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "targeted_office",
+            "description": "<p>Office the petition is targetted at.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "petition_class",
+            "description": "<p>Class of this petition</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "petition_title",
+            "description": "<p>Title of this petition</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>Published 1, don't publish 0.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "petition",
+            "description": "<p>Content of the petition</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Petition Created\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Petition content is required\"\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Petition Title is required\"\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "post",
     "url": "/users",
     "title": "Create User (Email)",
     "name": "createUser",
@@ -49,7 +124,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "provider",
-            "description": "<p>User method of signup, either email, or any of the social media.</p>"
+            "description": "<p>User method of signup, either email, or any of the social media (twitter|facebook|linkedin|google).</p>"
           }
         ]
       }

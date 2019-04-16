@@ -424,6 +424,27 @@ petitions.get = (data,callback)=>{
 }
 
 
+/**
+ * @api {delete} /petitions/:uuid Delete Petition 
+ * @apiName deletePetition
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID.
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint deletes a petition
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ *{
+ *   "Success": "Petition Deleted"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ *{
+ *   "Error": [
+ *       "Petition uuid not valid"
+ *   ]
+ *}
+ */
 
 
 petitions.put = (data,callback)=>{
@@ -440,7 +461,7 @@ petitions.delete = (data,callback)=>{
 	if( 
 		token && 
 		uuidHeader &&
-		post 
+		petition 
 		){
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
@@ -494,7 +515,7 @@ petitions.delete = (data,callback)=>{
 		if(!uuidHeader){
 			errorObject.push('uuid in the header not found');
 		}
-		if(!post){
+		if(!petition){
 			errorObject.push('Petition uuid not valid');
 		}
 
