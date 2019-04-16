@@ -75,6 +75,276 @@
     "groupTitle": "Petitions"
   },
   {
+    "type": "delete",
+    "url": "/petitions/:uuid",
+    "title": "Delete Petition",
+    "name": "deletePetition",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint deletes a petition</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Petition Deleted\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Petition uuid not valid\"\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "get",
+    "url": "/petitions/:uuid",
+    "title": "get Single Petition",
+    "name": "getSinglePetition",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint deletes a petition</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>UUID of the pedition</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"petitions\": [\n        {\n            \"id\": 2,\n            \"uuid\": \"99262d0a-9c35-472f-b757-fb9f89c2faf9\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:28:15.000Z\",\n            \"updated_at\": \"2019-04-16T21:28:15.000Z\",\n            \"status\": 0\n        }\n    ],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"petitions\": [],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "get",
+    "url": "/petitions?page=:page&limit=:limit&sort=:sort",
+    "title": "get All Petitions",
+    "name": "getUserPetitions",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint get all petitions created by the user</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        \"petitions\": {\n            \"id\": 2,\n            \"uuid\": \"99262d0a-9c35-472f-b757-fb9f89c2faf9\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:28:15.000Z\",\n            \"updated_at\": \"2019-04-16T21:28:15.000Z\",\n            \"status\": 0\n        },\n        \"responses\": [],\n        \"user\": []\n    },\n    {\n        \"petitions\": {\n            \"id\": 3,\n            \"uuid\": \"f4af8c49-c91b-4cee-bcc7-9eed63cf0249\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:56:54.000Z\",\n            \"updated_at\": \"2019-04-16T21:56:54.000Z\",\n            \"status\": 0\n        },\n        \"responses\": [],\n        \"user\": []\n    },\n    {\n        \"petitions\": {\n            \"id\": 4,\n            \"uuid\": \"fbfcbe13-d06a-4456-8020-640d571081cd\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:56:56.000Z\",\n            \"updated_at\": \"2019-04-16T21:56:56.000Z\",\n            \"status\": 0\n        },\n        \"responses\": [],\n        \"user\": []\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"petitions\": [],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "get",
+    "url": "/petitions?user=:uuid&page=:page&limit=:limit&sort=:sort",
+    "title": "get Users Petitions",
+    "name": "getUserPetitions",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint get all petitions created by the user</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>User that owns the petitions</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"petitions\": [\n        {\n            \"id\": 2,\n            \"uuid\": \"99262d0a-9c35-472f-b757-fb9f89c2faf9\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:28:15.000Z\",\n            \"updated_at\": \"2019-04-16T21:28:15.000Z\",\n            \"status\": 0\n        }\n    ],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"petitions\": [],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
     "type": "post",
     "url": "/users",
     "title": "Create User (Email)",

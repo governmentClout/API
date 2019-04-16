@@ -17,7 +17,77 @@ const con = mysql.createConnection({
 });
 
 let petitions = {};
-
+/**
+ @api {get} /petitions?page=:page&limit=:limit&sort=:sort get All Petitions 
+ *
+ * @apiName getUserPetitions
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint get all petitions created by the user  
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+[
+    {
+        "petitions": {
+            "id": 2,
+            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:28:15.000Z",
+            "updated_at": "2019-04-16T21:28:15.000Z",
+            "status": 0
+        },
+        "responses": [],
+        "user": []
+    },
+    {
+        "petitions": {
+            "id": 3,
+            "uuid": "f4af8c49-c91b-4cee-bcc7-9eed63cf0249",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:56:54.000Z",
+            "updated_at": "2019-04-16T21:56:54.000Z",
+            "status": 0
+        },
+        "responses": [],
+        "user": []
+    },
+    {
+        "petitions": {
+            "id": 4,
+            "uuid": "fbfcbe13-d06a-4456-8020-640d571081cd",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:56:56.000Z",
+            "updated_at": "2019-04-16T21:56:56.000Z",
+            "status": 0
+        },
+        "responses": [],
+        "user": []
+    }
+]
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "petitions": [],
+    "responses": []
+}
+*/
 petitions.options = (data,callback)=>{
 
 	callback(200,data.headers);
@@ -200,114 +270,7 @@ petitions.post = (data,callback)=>{
     "responses": []
 }
 
-@api {get} /petitions?user=:uuid&page=:page&limit=:limit&sort=:sort get Users Petitions 
- *
- * @apiName getUserPetitions
- * @apiGroup Petitions
- * @apiHeader {String} uuid Authorization UUID .
- * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint get all petitions created by the user
- * @apiParam {String} uuid User that owns the petitions  
- * @apiParam {String} page page you wish to get (pagination)
- * @apiParam {String} limit result count per page you wish to get (pagination)
- * @apiParam {String} sort result sort [ASC | DESC] (pagination)
- *
- *@apiSuccessExample Success-Response:
- *HTTP/1.1 200 OK
-{
-    "petitions": [
-        {
-            "id": 2,
-            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
-            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
-            "targeted_office": "President",
-            "petition_class": "className",
-            "petition_title": "For the gods!",
-            "attachment": "null",
-            "created_at": "2019-04-16T21:28:15.000Z",
-            "updated_at": "2019-04-16T21:28:15.000Z",
-            "status": 0
-        }
-    ],
-    "responses": []
-}
- *@apiErrorExample Error-Response:
- *HTTP/1.1 404 Bad Request
-{
-    "petitions": [],
-    "responses": []
-}
-
-@api {get} /petitions?page=:page&limit=:limit&sort=:sort get All Petitions 
- *
- * @apiName getUserPetitions
- * @apiGroup Petitions
- * @apiHeader {String} uuid Authorization UUID .
- * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint get all petitions created by the user  
- * @apiParam {String} page page you wish to get (pagination)
- * @apiParam {String} limit result count per page you wish to get (pagination)
- * @apiParam {String} sort result sort [ASC | DESC] (pagination)
- *
- *@apiSuccessExample Success-Response:
- *HTTP/1.1 200 OK
-[
-    {
-        "petitions": {
-            "id": 2,
-            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
-            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
-            "targeted_office": "President",
-            "petition_class": "className",
-            "petition_title": "For the gods!",
-            "attachment": "null",
-            "created_at": "2019-04-16T21:28:15.000Z",
-            "updated_at": "2019-04-16T21:28:15.000Z",
-            "status": 0
-        },
-        "responses": [],
-        "user": []
-    },
-    {
-        "petitions": {
-            "id": 3,
-            "uuid": "f4af8c49-c91b-4cee-bcc7-9eed63cf0249",
-            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
-            "targeted_office": "President",
-            "petition_class": "className",
-            "petition_title": "For the gods!",
-            "attachment": "null",
-            "created_at": "2019-04-16T21:56:54.000Z",
-            "updated_at": "2019-04-16T21:56:54.000Z",
-            "status": 0
-        },
-        "responses": [],
-        "user": []
-    },
-    {
-        "petitions": {
-            "id": 4,
-            "uuid": "fbfcbe13-d06a-4456-8020-640d571081cd",
-            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
-            "targeted_office": "President",
-            "petition_class": "className",
-            "petition_title": "For the gods!",
-            "attachment": "null",
-            "created_at": "2019-04-16T21:56:56.000Z",
-            "updated_at": "2019-04-16T21:56:56.000Z",
-            "status": 0
-        },
-        "responses": [],
-        "user": []
-    }
-]
- *@apiErrorExample Error-Response:
- *HTTP/1.1 404 Bad Request
-{
-    "petitions": [],
-    "responses": []
-}
- */
+*/
 
 petitions.get = (data,callback)=>{
 	
@@ -345,6 +308,8 @@ petitions.get = (data,callback)=>{
 					//get all petitions
 					//get single users petitions
 					//get all petitions response
+
+
 					if(userPetition){
 						
 						//then get polls belonging to a single user
@@ -575,6 +540,51 @@ petitions.get = (data,callback)=>{
 
 }
 
+ /**
+* @api {get} /petitions?user=:uuid&page=:page&limit=:limit&sort=:sort get Users Petitions 
+ *
+ * @apiName getUserPetitions
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint get all petitions created by the user
+ * @apiParam {String} uuid User that owns the petitions  
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+{
+    "petitions": [
+        {
+            "id": 2,
+            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:28:15.000Z",
+            "updated_at": "2019-04-16T21:28:15.000Z",
+            "status": 0
+        }
+    ],
+    "responses": []
+}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "petitions": [],
+    "responses": []
+}
+
+ */
+
+petitions.put = (data,callback)=>{
+	//to sign petition
+	callback(200,{'Success':'You have hit the petition get endpoint'});
+}
 
 /**
  * @api {delete} /petitions/:uuid Delete Petition 
@@ -597,12 +607,6 @@ petitions.get = (data,callback)=>{
  *   ]
  *}
  */
-
-
-petitions.put = (data,callback)=>{
-	//to sign petition
-	callback(200,{'Success':'You have hit the petition get endpoint'});
-}
 
 petitions.delete = (data,callback)=>{
 
