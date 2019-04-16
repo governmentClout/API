@@ -5,7 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const async = require('async');
-const con = require('./../lib/db_connect');
+const con = require('../lib/db');
 
 let posts = {};
 let resultObject = [];

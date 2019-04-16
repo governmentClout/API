@@ -5,7 +5,7 @@ const handlebars = require('handlebars');
 const fs = require('fs');
 const async = require('async');
 const mysql = require('mysql');
-const con = require('./../lib/db_connect');
+const con = require('../lib/db');
 
 let readHTMLFile = function(path, callback) {
     fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
