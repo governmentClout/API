@@ -166,13 +166,48 @@ petitions.post = (data,callback)=>{
 }
 
 /**
- * @api {get} /petitions/:uuid/:page/:limit/:sort Delete Petition 
- * @apiName deletePetition
+ * @api {get} /petitions/:uuid get Single Petition 
+ * @apiName getSinglePetition
  * @apiGroup Petitions
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint deletes a petition
  * @apiParam {String} uuid UUID of the pedition
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+{
+    "petitions": [
+        {
+            "id": 2,
+            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:28:15.000Z",
+            "updated_at": "2019-04-16T21:28:15.000Z",
+            "status": 0
+        }
+    ],
+    "responses": []
+}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "petitions": [],
+    "responses": []
+}
+
+@api {get} /petitions?user=:uuid&page=:page&limit=:limit&sort=:sort get Users Petitions 
+ *
+ * @apiName getUserPetitions
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint get all petitions created by the user
+ * @apiParam {String} uuid User that owns the petitions  
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)
@@ -196,6 +231,76 @@ petitions.post = (data,callback)=>{
     ],
     "responses": []
 }
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "petitions": [],
+    "responses": []
+}
+
+@api {get} /petitions?page=:page&limit=:limit&sort=:sort get All Petitions 
+ *
+ * @apiName getUserPetitions
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint get all petitions created by the user  
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+[
+    {
+        "petitions": {
+            "id": 2,
+            "uuid": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:28:15.000Z",
+            "updated_at": "2019-04-16T21:28:15.000Z",
+            "status": 0
+        },
+        "responses": [],
+        "user": []
+    },
+    {
+        "petitions": {
+            "id": 3,
+            "uuid": "f4af8c49-c91b-4cee-bcc7-9eed63cf0249",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:56:54.000Z",
+            "updated_at": "2019-04-16T21:56:54.000Z",
+            "status": 0
+        },
+        "responses": [],
+        "user": []
+    },
+    {
+        "petitions": {
+            "id": 4,
+            "uuid": "fbfcbe13-d06a-4456-8020-640d571081cd",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "targeted_office": "President",
+            "petition_class": "className",
+            "petition_title": "For the gods!",
+            "attachment": "null",
+            "created_at": "2019-04-16T21:56:56.000Z",
+            "updated_at": "2019-04-16T21:56:56.000Z",
+            "status": 0
+        },
+        "responses": [],
+        "user": []
+    }
+]
  *@apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request
 {
@@ -332,10 +437,8 @@ petitions.get = (data,callback)=>{
 					    	}
 
 					    	con.query(sql,(err,result)=>{
-									console.log('point 1');
-									console.log(result);
+								
 									callback(null,result);
-
 
 								});
 					    	
@@ -400,16 +503,16 @@ petitions.get = (data,callback)=>{
 
 					}
 
-					if(!param && !userPoll){
-						console.log('here');
+					if(!param && !userPetition){
+						
 						let finalresult = [];
 						//just get everything and give it to them
 						async.waterfall([
 					    function(callback) {
-					    	let sql = "SELECT * FROM polls";
+					    	let sql = "SELECT * FROM petitions";
 
 					    	con.query(sql,(err,result)=>{
-
+								
 									callback(null,result);
 
 								});
@@ -423,13 +526,12 @@ petitions.get = (data,callback)=>{
 
 					    	for(let i=0; i<arg.length; i++) {
 					    		
-					    	 con.query("SELECT * FROM polls_response WHERE poll='"+arg[i].uuid+"'; SELECT firstName,lastName, photo from profiles where uuid='"+arg[i].created_by+"'",(err, compile)=>{
-					    	 		// console.log(compile);
-					    	 		let polls = arg[i];
+					    	 con.query("SELECT * FROM petitions_sign WHERE petition='"+arg[i].uuid+"'; SELECT firstName,lastName, photo from profiles where uuid='"+arg[i].user+"'",(err, compile)=>{
 					    	 		
-						            finalresult.splice(i,0,{'polls':arg[i],'responses':compile[0], 'user':compile[1]});
-						            
-
+					    	 		let petition = arg[i];
+					    	 		
+						            finalresult.splice(i,0,{'petitions':arg[i],'responses':compile[0], 'user':compile[1]});
+						          
 						            if( 0 === --pending ) {
 
 						               	callback(null, finalresult);
@@ -442,8 +544,9 @@ petitions.get = (data,callback)=>{
 					        
 					    }
 					], function (err, result) {
-						console.log(result);
+						
 						callback(200,result);
+
 					});
 					}
 
