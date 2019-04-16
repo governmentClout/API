@@ -5,18 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const async = require('async');
-
-
-
-const con = mysql.createPool({
-
-  host: config.db_host,
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name,
-  multipleStatements: true
-
-});
+const con = require('./../lib/db_connect');
 
 let articles = {};
 let resultObject = [];

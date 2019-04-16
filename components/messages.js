@@ -7,17 +7,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const mailer = require('./mailer');
 const async = require('async'); 
-
-const con = mysql.createConnection({
-
-  host: config.db_host,
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name,
-  multipleStatements: true
-
-});
-
+const con = require('./../lib/db_connect');
 
 let messages = {};
 

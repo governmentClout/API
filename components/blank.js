@@ -5,16 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 
-
-
-const con = mysql.createConnection({
-
-  host: config.db_host,
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name
-
-});
+const con = require('./../lib/db_connect');
 
 
 blank = {};

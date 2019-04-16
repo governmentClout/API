@@ -5,17 +5,7 @@ const handlebars = require('handlebars');
 const fs = require('fs');
 const async = require('async');
 const mysql = require('mysql');
-
-const con = mysql.createPool({
-
-  host: config.db_host, 
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name,
-  multipleStatements: true
-
-});
-
+const con = require('./../lib/db_connect');
 
 let readHTMLFile = function(path, callback) {
     fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {

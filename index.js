@@ -106,6 +106,7 @@ let router = {
 	'articles': handlers.articles,
 	'polls': handlers.polls,
 	'petitions':handlers.petitions,
+	'signatures':handlers.signatures,
 	'settings':handlers.settings,
 	'admins':handlers.admin,
 	'resets':handlers.resets,

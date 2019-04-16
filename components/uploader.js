@@ -10,15 +10,7 @@ cloudinary.config({
   api_secret: 'NJCsxMKkJ1H6-5QsfPd3HkLohHA' 
 });
 
-const con = mysql.createConnection({
-
-  host: config.db_host,
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name
-
-});
-
+const con = require('./../lib/db_connect');
 
 uploader = {};
 
