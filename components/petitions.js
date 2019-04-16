@@ -27,35 +27,30 @@ petitions.options = (data,callback)=>{
  * @apiName createPetition
  * @apiGroup Petitions
  * @apiDescription The endpoint creates a new petition
- * @apiParam {phone} phone User Phone number.
- * @apiParam {String} email User Email address.
- * @apiParam {String} password User Password.
- * @apiParam {String} dob User Date of Birth.
- * @apiParam {Boolean} tosAgreement TOS Agreement.
- * @apiParam {String} provider User method of signup, either email, or any of the social media (twitter|facebook|linkedin|google).
+ * @apiParam {String} targeted_office Office the petition is targetted at.
+ * @apiParam {String} petition_class Class of this petition
+ * @apiParam {String} petition_title Title of this petition
+ * @apiParam {String} status Published 1, don't publish 0.
+ * @apiParam {String} petition Content of the petition
  *
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
  *{
- * 	"Token": "UX4LmqktGgC7Ilib9qmpHTRnYxEjr7eMTiD6QUUhRSHI70nT482boFClYmB7FmM7ulcgqcE388grQLUg9IfD2Ol9mPPqM8kImoFF",
- * 	"uuid": "055e8860-cbe9-11e8-98f8-4fae0909dc0e"
+ *   "Success": "Petition Created"
  *}
  *@apiErrorExample Error-Response:
  *HTTP/1.1 400 Bad Request
- *{
- *  "Error": "Provider is required"
- *}
+ * {
+ *   "Error": [
+ *       "Petition content is required"
+ *   ]
+ * }
  *@apiErrorExample Error-Response:
- *HTTP/1.1 401 Bad Request
- *{
- *"Error": [
- * 	"Phone number is missing or invalid format",
- *	"Email is missing or invalid format",
- *	"DOB is missing or invalid format",
- *	"Password is missing or invalid format",
- *	"tosAgreement cannot be false"
- *],
- *	"Message": []
+ *HTTP/1.1 400 Bad Request
+ * {
+ *   "Error": [
+ *       "Petition Title is required"
+ *   ]
  *}
  */
 
@@ -72,7 +67,7 @@ petitions.post = (data,callback)=>{
 	let status = typeof(data.payload.status) == 'string' && data.payload.status.trim().length > 0 ? data.payload.status.trim() : '1';
 	let petition = typeof(data.payload.petition) == 'string' && data.payload.petition.trim().length > 0 ? data.payload.petition.trim() : false;
 	let attachment = typeof(data.payload.attachment) == 'object' && data.payload.attachment.length > 0  ? data.payload.attachment : null;
-
+//@TODO: Change petition attachment to comma separated strings
 	let uuid = uuidV1();
 
 
