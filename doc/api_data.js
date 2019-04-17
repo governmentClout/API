@@ -125,71 +125,9 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/petitions/:uuid",
-    "title": "get Single Petition",
-    "name": "getSinglePetition",
-    "group": "Petitions",
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "uuid",
-            "description": "<p>Authorization UUID.</p>"
-          },
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "Token",
-            "description": "<p>Authorization Token.</p>"
-          }
-        ]
-      }
-    },
-    "description": "<p>The endpoint deletes a petition</p>",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "uuid",
-            "description": "<p>UUID of the pedition</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"petitions\": [\n        {\n            \"id\": 2,\n            \"uuid\": \"99262d0a-9c35-472f-b757-fb9f89c2faf9\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:28:15.000Z\",\n            \"updated_at\": \"2019-04-16T21:28:15.000Z\",\n            \"status\": 0\n        }\n    ],\n    \"responses\": []\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 404 Bad Request\n{\n    \"petitions\": [],\n    \"responses\": []\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "version": "0.0.0",
-    "filename": "components/petitions.js",
-    "groupTitle": "Petitions"
-  },
-  {
-    "type": "get",
     "url": "/petitions?page=:page&limit=:limit&sort=:sort",
     "title": "get All Petitions",
-    "name": "getUserPetitions",
+    "name": "getAllPetitions",
     "group": "Petitions",
     "header": {
       "fields": {
@@ -263,9 +201,71 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/petitions/:uuid",
+    "title": "get Single Petition",
+    "name": "getSinglePetition",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint deletes a petition</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>UUID of the pedition</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"petitions\": [\n        {\n            \"id\": 2,\n            \"uuid\": \"99262d0a-9c35-472f-b757-fb9f89c2faf9\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"targeted_office\": \"President\",\n            \"petition_class\": \"className\",\n            \"petition_title\": \"For the gods!\",\n            \"attachment\": \"null\",\n            \"created_at\": \"2019-04-16T21:28:15.000Z\",\n            \"updated_at\": \"2019-04-16T21:28:15.000Z\",\n            \"status\": 0\n        }\n    ],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"petitions\": [],\n    \"responses\": []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "get",
     "url": "/petitions?user=:uuid&page=:page&limit=:limit&sort=:sort",
-    "title": "get Users Petitions",
-    "name": "getUserPetitions",
+    "title": "get Signle User Petitions",
+    "name": "getSingleUserPetitions",
     "group": "Petitions",
     "header": {
       "fields": {
@@ -342,6 +342,75 @@ define({ "api": [
     },
     "version": "0.0.0",
     "filename": "components/petitions.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "post",
+    "url": "/signatures",
+    "title": "Sign Petition",
+    "name": "signPetition",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint signs a petition</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>uuid of the user signing</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "petition",
+            "description": "<p>uuid of the petition to be signed</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Petition Signed\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": \"User already signed this petition\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/signatures.js",
     "groupTitle": "Petitions"
   },
   {
