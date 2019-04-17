@@ -31,8 +31,6 @@ var unifiedServer = (req,res)=>{
 	const route = separatedUrl[0]; //take out the first element from the array
 	const param = separatedUrl[1]; //send the rest
 	
-	//pagination details
-
 	const queryStringObject = parsedUrl.query;
 
 	const method = req.method.toLowerCase();
