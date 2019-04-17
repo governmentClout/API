@@ -192,7 +192,7 @@ signatures.delete = (data,callback)=>{
                                 
                                 if(!err && result[0].count != 0){
                                     
-                                    let sqlResponse = "DELETE petitions_sign WHERE user='"+user+"' AND petition='"+petition+"'";
+                                    let sqlResponse = "DELETE FROM petitions_sign WHERE user='"+user+"' AND petition='"+petition+"'";
 
                                     con.query(sqlResponse,(err,result)=>{
 
