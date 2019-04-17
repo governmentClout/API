@@ -4,7 +4,7 @@ For validating data submitted to modules
 
 const mysql = require('mysql');
 const config = require('./../lib/config');
-const con = require('./../lib/db_connect');
+const con = require('./../lib/db');
 
 let validator = {};
 

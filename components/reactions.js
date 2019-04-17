@@ -4,7 +4,7 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
-const con = require('./../lib/db_connect');
+const con = require('./../lib/db');
 
 reactions = {};
 

@@ -10,7 +10,7 @@ cloudinary.config({
   api_secret: 'NJCsxMKkJ1H6-5QsfPd3HkLohHA' 
 });
 
-const con = require('./../lib/db_connect');
+const con = require('./../lib/db');
 
 uploader = {};
 

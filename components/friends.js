@@ -6,7 +6,7 @@ const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const async = require('async');
 const mailer = require('./mailer');
-const con = require('./../lib/db_connect');
+const con = require('./../lib/db');
 
 
 friends = {};

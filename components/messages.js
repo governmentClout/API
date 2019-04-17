@@ -7,7 +7,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const mailer = require('./mailer');
 const async = require('async'); 
-const con = require('./../lib/db_connect');
+const con = require('./../lib/db');
 
 let messages = {};
 
