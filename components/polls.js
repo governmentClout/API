@@ -18,7 +18,7 @@ polls.options = (data,callback)=>{
 polls.post = (data,callback)=>{
 
 	//create polls
-	//respond to polls
+	//respond to polls 
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid; 
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;

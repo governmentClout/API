@@ -128,8 +128,96 @@ signatures.post = (data,callback)=>{
 	}
 }
 
+/**
+ * @api {get} /signatures/:uuid Get single petition signatures 
+ *
+ * @apiName singlePetitionSignature
+ * @apiGroup Petitions
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint signs a petition
+ * @apiParam {String} uuid uuid of the petition  
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+{
+    "signatures": [
+        {
+            "id": 2,
+            "uuid": "2bebbf3e-dd44-4574-86ad-be9fff37a665",
+            "petition": "99262d0a-9c35-472f-b757-fb9f89c2faf9",
+            "user": "08390ed2-7796-41bf-bbbd-72b176ffe309",
+            "created_at": "2019-04-17T12:36:31.000Z",
+            "updated_at": "2019-04-17T12:36:31.000Z",
+            "status": 0
+        }
+    ]
+}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    []
+}
+
+ */
+
 signatures.get = (data,callback)=>{
-    callback(200,{'Success':'Signature Get endpoint'});
+    //get all signatures for a particular petition
+    
+    let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+    let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+    
+    let petition = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+
+    if( 
+		token && 
+		uuid 
+
+		){
+            let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
+
+			con.query(verifyToken, (err,result)=>{
+				
+				if(
+					!err && 
+					result[0] && 
+					result[0].token == token 
+
+					){
+                        let sql = "SELECT * FROM petitions_sign WHERE petition='"+petition+"'";
+
+                        con.query(sql, (err,result)=>{
+
+                            if(!err && result.length > 0){
+
+                                callback(200,{'signatures':result});
+
+                            }else{
+                                callback(404,[]);
+                            }
+
+                        });
+
+                    }else{
+                        console.log(err);
+                        callback(400,{'Error':'Token Mismatch or expired'});
+                    }
+                });
+
+        }else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or has expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+
+		callback(400,{'Error':errorObject});
+
+	}
 }
 
 /**
@@ -146,12 +234,12 @@ signatures.get = (data,callback)=>{
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
 {
-    "Success": "Petition Signed"
+    "Success": "Petition Un Signed"
 }
  *@apiErrorExample Error-Response:
- *HTTP/1.1 405 Bad Request
+ *HTTP/1.1 404 Bad Request
 {
-    "Error": "User already signed this petition"
+    "Error": "User Signed Petition Not Found"
 }
 
  */
