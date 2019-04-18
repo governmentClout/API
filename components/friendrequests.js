@@ -19,7 +19,7 @@ friendrequests.options = (data,callback)=>{
  * @api {post} /friendrequests Send New Friend Request 
  *
  * @apiName sendFriendRequest
- * @apiGroup FriendRequests
+ * @apiGroup Friends
  * @apiHeader {String} uuid Authorization UUID .
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint send friend request
@@ -143,10 +143,10 @@ friendrequests.post = (data,callback)=>{
 }
 
 /**
- * @api {get} /friendrequests/:uuid Send New Friend Request 
+ * @api {get} /friendrequests/:uuid Get Pending Friend Request 
  *
- * @apiName getFriendRequest
- * @apiGroup FriendRequests
+ * @apiName getPendingFriendRequest
+ * @apiGroup Friends
  * @apiHeader {String} uuid Authorization UUID .
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint send friend request
@@ -509,12 +509,110 @@ friendrequests.get = (data,callback)=>{
 
 
 friendrequests.put = (data,callback)=>{
+
     callback(200,{'Success':'Friend Requests put endpoint'});
 
 }
 
+/**
+ * @api {delete} /friendrequests/:uuid Delete Friend Request 
+ * @apiName deleteFriendRequest
+ * @apiGroup Friends
+ * @apiHeader {String} uuid Authorization UUID.
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint deletes a petition
+ * @apiParam {String} uuid uuid of the request to be deleted 
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ *{
+ *   "Success": "Friend Request Deleted"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ *{
+ *   "Error": [
+ *       "Friend Request uuid not valid"
+ *   ]
+ *}
+ * @apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+ *{
+ *   "Error": [
+ *       "Friend Request not found"
+ *   ]
+ *}
+ */
+
+
 friendrequests.delete = (data,callback)=>{
-    callback(200,{'Success':'Friend Requests delete endpoint'});
+
+    let request = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+
+	if( 
+		token && 
+		uuidHeader &&
+		request 
+		){
+
+		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
+		
+		con.query(headerChecker,(err,results)=>{
+			
+			if(!err && 
+				results && 
+				results[0].token.length > 0 &&
+				results[0].token == token
+
+				){
+
+				let postQuery = "SELECT * FROM friendrequests WHERE uuid='" + request + "'";
+			
+				con.query(postQuery, (err,result)=>{
+
+					if(!err && result[0]){
+
+						let deletePost = "DELETE FROM friendrequests WHERE uuid='"+request+"'";
+
+						con.query(deletePost,(err,result)=>{
+
+							
+							callback(200,{'Success':'Friend Request Deleted'});
+								
+							
+						});
+
+					}else{
+						
+						callback(404,{'Error':'Friend Request not found'});
+					}
+
+				})
+
+			}else{
+				console.log(err);
+				callback(404,{'Error':'Token Invalid or Expired'});
+			}
+
+		});
+
+	}else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or expired');
+		}
+		if(!uuidHeader){
+			errorObject.push('uuid in the header not found');
+		}
+		if(!petition){
+			errorObject.push('Friend Request uuid not valid');
+		}
+
+		callback(400,{'Error':errorObject});
+	}
 
 }
 

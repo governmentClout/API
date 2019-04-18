@@ -473,37 +473,7 @@ friends.get = (data,callback)=>{
 
 }
 
-/**
- * @api {post} /friends/request Send Friend Request 
- * @apiName sendFriendRequest
- * @apiGroup Friends
- * @apiDescription The endpoint creates a new friend request
- * @apiParam {String} targeted_office Office the petition is targetted at.
- * @apiParam {String} petition_class Class of this petition
- * @apiParam {String} petition_title Title of this petition
- * @apiParam {String} status Published 1, don't publish 0.
- * @apiParam {String} petition Content of the petition
- *
- *@apiSuccessExample Success-Response:
- *HTTP/1.1 200 OK
- *{
- *   "Success": "Petition Created"
- *}
- *@apiErrorExample Error-Response:
- *HTTP/1.1 400 Bad Request
- * {
- *   "Error": [
- *       "Petition content is required"
- *   ]
- * }
- *@apiErrorExample Error-Response:
- *HTTP/1.1 400 Bad Request
- * {
- *   "Error": [
- *       "Petition Title is required"
- *   ]
- *}
- */
+
 
 friends.post = (data,callback)=>{
 	//send friend request

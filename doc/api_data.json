@@ -1,5 +1,146 @@
 [
   {
+    "type": "get",
+    "url": "/friendrequests/:uuid",
+    "title": "Get Pending Friend Request",
+    "name": "getPendingFriendRequest",
+    "group": "Friends",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint send friend request</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the user</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"for\": [\n        {\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        },\n        {\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        }\n    ],\n    \"from\": [\n        {\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n {\n    \"for\": [\n        {\n            \"user\": [\n                {\n                    \"id\": 5,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"email\": \"everistusolumese@gmail.com\",\n                    \"password\": \"2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb\",\n                    \"phone\": \"09031866339\",\n                    \"dob\": \"1980-01-31T23:00:00.000Z\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"updated_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 3,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"nationality_origin\": \"Vanuatu\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"N/A\",\n                    \"lga\": \"N/A\",\n                    \"firstName\": \"Everistus\",\n                    \"lastName\": \"Olumese\",\n                    \"photo\": \"https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png\",\n                    \"created_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"updated_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"background\": \"false\"\n                }\n            ]\n        }\n    ],\n    \"from\": []\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n {\n     []\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"Error\": [\n        \"You need to provide user uuid as a parameter\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/friendrequests.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "post",
+    "url": "/friendrequests",
+    "title": "Send New Friend Request",
+    "name": "sendFriendRequest",
+    "group": "Friends",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint send friend request</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "request_sender",
+            "description": "<p>uuid of the user sending the friend request</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "request_receiver",
+            "description": "<p>uuid of the user to receive the friend request</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Friend Request Sent\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": \"Request already exists, close that request first before sending another\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/friendrequests.js",
+    "groupTitle": "Friends"
+  },
+  {
     "type": "post",
     "url": "/petitions",
     "title": "Create Petition",
@@ -405,6 +546,137 @@
         {
           "title": "Error-Response:",
           "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": \"User already signed this petition\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/signatures.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "get",
+    "url": "/signatures/:uuid",
+    "title": "Get single petition signatures",
+    "name": "singlePetitionSignature",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint signs a petition</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the petition</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"signatures\": [\n        {\n            \"id\": 2,\n            \"uuid\": \"2bebbf3e-dd44-4574-86ad-be9fff37a665\",\n            \"petition\": \"99262d0a-9c35-472f-b757-fb9f89c2faf9\",\n            \"user\": \"08390ed2-7796-41bf-bbbd-72b176ffe309\",\n            \"created_at\": \"2019-04-17T12:36:31.000Z\",\n            \"updated_at\": \"2019-04-17T12:36:31.000Z\",\n            \"status\": 0\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    []\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/signatures.js",
+    "groupTitle": "Petitions"
+  },
+  {
+    "type": "delete",
+    "url": "/signatures",
+    "title": "Remote Signature from Petition",
+    "name": "unsignPetition",
+    "group": "Petitions",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint signs a petition</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>uuid of the user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "petition",
+            "description": "<p>uuid of the petition to be unsigned</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Petition Un Signed\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"Error\": \"User Signed Petition Not Found\"\n}",
           "type": "json"
         }
       ]
