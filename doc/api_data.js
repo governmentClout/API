@@ -472,7 +472,7 @@ define({ "api": [
   {
     "type": "get",
     "url": "/petitions?user=:uuid&page=:page&limit=:limit&sort=:sort",
-    "title": "get Signle User Petitions",
+    "title": "get Single User Petitions",
     "name": "getSingleUserPetitions",
     "group": "Petitions",
     "header": {
@@ -686,7 +686,7 @@ define({ "api": [
   {
     "type": "delete",
     "url": "/signatures",
-    "title": "Remote Signature from Petition",
+    "title": "Remove Signature from Petition",
     "name": "unsignPetition",
     "group": "Petitions",
     "header": {
