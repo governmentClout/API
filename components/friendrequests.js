@@ -2,6 +2,8 @@ const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const tokens = require('./../lib/tokenization');
+const async = require('async');
+const mailer = require('./mailer');
 
 const con = require('./../lib/db');
 
@@ -45,7 +47,6 @@ friendrequests.post = (data,callback)=>{
     let request_sender = typeof(data.payload.request_sender) == 'string' && data.payload.request_sender.trim().length > 0 ? data.payload.request_sender.trim() : false;
     let request_receiver = typeof(data.payload.request_receiver) == 'string' && data.payload.request_receiver.trim().length > 0 ? data.payload.request_receiver.trim() : false;
     
-    let uuid = uuidV1();
 
 	if( 
 		token && 
@@ -53,10 +54,10 @@ friendrequests.post = (data,callback)=>{
         request_sender &&
         request_receiver
 		){
-            let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+            let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
             con.query(verifyToken, (err,result)=>{
-
+                
                 if(
                     !err && 
                     result[0] && 
@@ -64,13 +65,14 @@ friendrequests.post = (data,callback)=>{
     
                     ){
 
-                        let checkRequest = "SELECT * FROM friendrequests WHERE request_sender='"+request_sender+"' AND request_receiver='"+request_receiver+"'; SELECT * FROM friends WHERE request_sender='"+request_receiver+"' AND request_receiver='"+request_sender+"'";
+                        let checkRequest = "SELECT * FROM friendrequests WHERE request_sender='"+request_sender+"' AND request_receiver='"+request_receiver+"'; SELECT * FROM friendrequests WHERE request_sender='"+request_receiver+"' AND request_receiver='"+request_sender+"'";
 
 						con.query(checkRequest,(err,result)=>{
-							
+							console.log('err',err);
+							console.log('result',result);
 							if(!err && result[0].length < 1 && result[1].length < 1){
 																
-								let sqlRequest = "INSERT INTO friendrequests (uuid,request_sender,request_receiver) VALUES('"+uuid+"','"+request_sender+"','"+request_receiver+"')";
+								let sqlRequest = "INSERT INTO friendrequests (uuid,request_sender,request_receiver) VALUES('"+ uuidV1() +"','"+request_sender+"','"+request_receiver+"')";
 
 								con.query(sqlRequest,(err,result)=>{
 
@@ -153,14 +155,162 @@ friendrequests.post = (data,callback)=>{
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
 {
-    "Success": "Friend Request Sent"
+    "for": [
+        {
+            "user": [
+                {
+                    "id": 1,
+                    "uuid": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                    "email": "franko4don@gmail.com",
+                    "password": "70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6",
+                    "phone": "07037219055",
+                    "dob": "04/05/2018",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-02-20T21:37:14.000Z",
+                    "updated_at": "2019-02-20T21:37:14.000Z",
+                    "status": 1
+                }
+            ],
+            "profile": [
+                {
+                    "id": 2,
+                    "uuid": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                    "nationality_origin": "Nigeria",
+                    "nationality_residence": "Nigeria",
+                    "state": "Delta",
+                    "lga": "Lga of residence",
+                    "firstName": "franklin",
+                    "lastName": "Nwanze",
+                    "photo": "https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg",
+                    "created_at": "2019-02-21T01:59:30.000Z",
+                    "updated_at": "2019-03-22T08:57:10.000Z",
+                    "background": "https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg"
+                }
+            ]
+        },
+        {
+            "user": [
+                {
+                    "id": 1,
+                    "uuid": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                    "email": "franko4don@gmail.com",
+                    "password": "70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6",
+                    "phone": "07037219055",
+                    "dob": "04/05/2018",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-02-20T21:37:14.000Z",
+                    "updated_at": "2019-02-20T21:37:14.000Z",
+                    "status": 1
+                }
+            ],
+            "profile": [
+                {
+                    "id": 2,
+                    "uuid": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                    "nationality_origin": "Nigeria",
+                    "nationality_residence": "Nigeria",
+                    "state": "Delta",
+                    "lga": "Lga of residence",
+                    "firstName": "franklin",
+                    "lastName": "Nwanze",
+                    "photo": "https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg",
+                    "created_at": "2019-02-21T01:59:30.000Z",
+                    "updated_at": "2019-03-22T08:57:10.000Z",
+                    "background": "https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg"
+                }
+            ]
+        }
+    ],
+    "from": [
+        {
+            "user": [
+                {
+                    "id": 1,
+                    "uuid": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                    "email": "franko4don@gmail.com",
+                    "password": "70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6",
+                    "phone": "07037219055",
+                    "dob": "04/05/2018",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-02-20T21:37:14.000Z",
+                    "updated_at": "2019-02-20T21:37:14.000Z",
+                    "status": 1
+                }
+            ],
+            "profile": [
+                {
+                    "id": 2,
+                    "uuid": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                    "nationality_origin": "Nigeria",
+                    "nationality_residence": "Nigeria",
+                    "state": "Delta",
+                    "lga": "Lga of residence",
+                    "firstName": "franklin",
+                    "lastName": "Nwanze",
+                    "photo": "https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg",
+                    "created_at": "2019-02-21T01:59:30.000Z",
+                    "updated_at": "2019-03-22T08:57:10.000Z",
+                    "background": "https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg"
+                }
+            ]
+        }
+    ]
 }
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ {
+    "for": [
+        {
+            "user": [
+                {
+                    "id": 5,
+                    "uuid": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                    "email": "everistusolumese@gmail.com",
+                    "password": "2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb",
+                    "phone": "09031866339",
+                    "dob": "1980-01-31T23:00:00.000Z",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-03-10T08:52:28.000Z",
+                    "updated_at": "2019-03-10T08:52:28.000Z",
+                    "status": 1
+                }
+            ],
+            "profile": [
+                {
+                    "id": 3,
+                    "uuid": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                    "nationality_origin": "Vanuatu",
+                    "nationality_residence": "Nigeria",
+                    "state": "N/A",
+                    "lga": "N/A",
+                    "firstName": "Everistus",
+                    "lastName": "Olumese",
+                    "photo": "https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png",
+                    "created_at": "2019-03-21T12:45:04.000Z",
+                    "updated_at": "2019-03-21T12:45:04.000Z",
+                    "background": "false"
+                }
+            ]
+        }
+    ],
+    "from": []
+}
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ {
+     []
+ }
  *@apiErrorExample Error-Response:
- *HTTP/1.1 405 Bad Request
+ *HTTP/1.1 404 Bad Request
 {
-    []
+    "Error": [
+        "You need to provide user uuid as a parameter"
+    ]
 }
-
  */
 // let request_sender = typeof(data.payload.request_sender) == 'string' && data.payload.request_sender.trim().length > 0 ? data.payload.request_sender.trim() : false;
 // let request_receiver
@@ -179,12 +329,13 @@ friendrequests.get = (data,callback)=>{
 
     if( 
 		token && 
-		uuid
-
+		uuid &&
+        param
 		){
             let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
             con.query(verifyToken, (err,result)=>{
+                
                 
                 if(
                     !err && 
@@ -195,7 +346,7 @@ friendrequests.get = (data,callback)=>{
 
                         async.waterfall([
 						    function(callback) {
-
+                               
 						    	let sqlGetFriends = "SELECT * FROM friendrequests WHERE request_sender='"+param+"'";
 
 						    	if(sort){
@@ -214,7 +365,7 @@ friendrequests.get = (data,callback)=>{
 						    	}
 
 						    	con.query(sqlGetFriends,(err,result)=>{
-						    				
+                                   						    				
 						    			if(!err && result.length > 0){
 						    				callback(null,result);
 						    			}else{
@@ -227,12 +378,13 @@ friendrequests.get = (data,callback)=>{
 						    
 						    },
 						    function(arg, callback) {
-						    	
+                               						    	
 						    	if(arg.length > 0){
+                                  
 
 						    		let fromResult = [];
 							    	var pending = arg.length;
-							    	// console.log(arg);
+							    	
 							    	for(let i=0; i<arg.length; i++) {
 							    		
 							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].request_sender+"'; SELECT * FROM users WHERE uuid='"+arg[i].request_sender+"'",(err, result)=>{
@@ -241,7 +393,7 @@ friendrequests.get = (data,callback)=>{
                                         fromResult.splice(i,0,{'user':result[1],'profile':result[0]});
 								            
 								            if( 0 === --pending ) {
-
+                                                                                                
 								               	callback(null,fromResult);
 
 								            }
@@ -255,6 +407,7 @@ friendrequests.get = (data,callback)=>{
 
 						        
 						    }, function(arg, callback) {
+                               
 						    	
                             let sqlGetFriends = "SELECT * FROM friendrequests WHERE request_receiver='"+param+"'";
 
@@ -274,6 +427,7 @@ friendrequests.get = (data,callback)=>{
 						    	}
 
 						    	con.query(sqlGetFriends,(err,result)=>{
+                                   
 						    				
 						    			if(!err && result.length > 0){
 						    				callback(null,{'partResultFor':result, 'fullResultFrom':arg});
@@ -286,11 +440,13 @@ friendrequests.get = (data,callback)=>{
 
                             
                         }, function(arg, callback) {
+                            
 						    	
-                            if(arg.partResultFor.length > 0){
+                            if(arg.partResultFor && arg.partResultFor.length > 0){
+                                
 
                                 let forResult = [];
-                                var pending = arg.length;
+                                var pending = arg.partResultFor.length;
                              
                                 for(let i=0; i<arg.partResultFor.length; i++) {
                                     
@@ -298,10 +454,11 @@ friendrequests.get = (data,callback)=>{
                                          
                                          
                                     forResult.splice(i,0,{'user':result[1],'profile':result[0]});
-                                        
+                                       
                                         if( 0 === --pending ) {
+                               
 
-                                               callback(null,{'for':forResult, 'from':arg.partResultFrom});
+                                               callback(null,{'for':forResult, 'from':arg.fullResultFrom});
 
                                         }
 
@@ -317,7 +474,7 @@ friendrequests.get = (data,callback)=>{
                         }
                         
                     ], function (err, result) {
-							
+                        							
 							callback(200,result);
 
 						});
