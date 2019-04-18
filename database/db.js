@@ -4,7 +4,6 @@ const mysql = require('mysql');
 const config = require('./config.js');
 
 
-
 let db = mysql.createConnection({
 
   host: config.db_host,

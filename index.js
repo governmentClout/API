@@ -8,6 +8,7 @@ const stringDecoder = require('string_decoder').StringDecoder;
 const config = require('./lib/config');
 const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
+const router = require('./lib/routes');
 
 
 const httpServer = http.createServer((req,res)=>{
@@ -84,32 +85,7 @@ var unifiedServer = (req,res)=>{
 	});
 }
 
-/**
-ROUTES
-*/
 
-let router = {
-	'users' : handlers.users,
-	'login' : handlers.login,
-	'profiles' : handlers.profiles,
-	'posts' : handlers.posts,
-	'comments' : handlers.comments,
-	'reactions' : handlers.reactions,
-	'shares' : handlers.shares,
-	'views': handlers.views,
-	'friends': handlers.friends,
-	'executives':handlers.executives,
-	'trends':handlers.trends,
-	'tests':handlers.tests,
-	'articles': handlers.articles,
-	'polls': handlers.polls,
-	'petitions':handlers.petitions,
-	'signatures':handlers.signatures,
-	'settings':handlers.settings,
-	'admins':handlers.admin,
-	'resets':handlers.resets,
-	'messages':handlers.messages 
-};
 
 
 

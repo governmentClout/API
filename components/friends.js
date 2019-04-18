@@ -1,5 +1,5 @@
 
-const helpers = require('./../lib/helpers');
+const helpers = require('./../lib/helpers'); 
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const mysql = require('mysql');
@@ -473,15 +473,50 @@ friends.get = (data,callback)=>{
 
 }
 
+/**
+ * @api {post} /friends/request Send Friend Request 
+ * @apiName sendFriendRequest
+ * @apiGroup Friends
+ * @apiDescription The endpoint creates a new friend request
+ * @apiParam {String} targeted_office Office the petition is targetted at.
+ * @apiParam {String} petition_class Class of this petition
+ * @apiParam {String} petition_title Title of this petition
+ * @apiParam {String} status Published 1, don't publish 0.
+ * @apiParam {String} petition Content of the petition
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ *{
+ *   "Success": "Petition Created"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ * {
+ *   "Error": [
+ *       "Petition content is required"
+ *   ]
+ * }
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ * {
+ *   "Error": [
+ *       "Petition Title is required"
+ *   ]
+ *}
+ */
+
 friends.post = (data,callback)=>{
 	//send friend request
 	//accept friend request
 	//block friend
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid; 
+	
 	let user = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
 	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+	
 	//request is being sent to:
+	
 	let friend = typeof(data.payload.friend) == 'string' && data.payload.friend.trim().length > 0 ? data.payload.friend.trim() : false;
 	let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
