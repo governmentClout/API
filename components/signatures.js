@@ -221,7 +221,7 @@ signatures.get = (data,callback)=>{
 }
 
 /**
- * @api {delete} /signatures Remote Signature from Petition 
+ * @api {delete} /signatures Remove Signature from Petition 
  *
  * @apiName unsignPetition
  * @apiGroup Petitions

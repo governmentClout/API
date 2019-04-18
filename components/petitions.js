@@ -160,7 +160,7 @@ petitions.post = (data,callback)=>{
 }
 
 /**
- * @api {get} /petitions?user=:uuid&page=:page&limit=:limit&sort=:sort get Signle User Petitions 
+ * @api {get} /petitions?user=:uuid&page=:page&limit=:limit&sort=:sort get Single User Petitions 
  *
  * @apiName getSingleUserPetitions
  * @apiGroup Petitions
