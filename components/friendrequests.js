@@ -390,7 +390,7 @@ friendrequests.get = (data,callback)=>{
 							    	  con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].request_sender+"'; SELECT * FROM users WHERE uuid='"+arg[i].request_sender+"'",(err, result)=>{
 							    	 		
 							    	 		
-                                        fromResult.splice(i,0,{'user':result[1],'profile':result[0]});
+                                        fromResult.splice(i,0,{'uuid': arg[i].uuid,'user': result[1],'profile':result[0]});
 								            
 								            if( 0 === --pending ) {
                                                                                                 
@@ -453,7 +453,7 @@ friendrequests.get = (data,callback)=>{
                                   con.query("SELECT * FROM profiles WHERE uuid='"+arg.partResultFor[i].request_receiver+"'; SELECT * FROM users WHERE uuid='"+arg.partResultFor[i].request_receiver+"'",(err, result)=>{
                                          
                                          
-                                    forResult.splice(i,0,{'user':result[1],'profile':result[0]});
+                                    forResult.splice(i,0,{'uuid':arg.partResultFor[i].uuid,'user':result[1],'profile':result[0]});
                                        
                                         if( 0 === --pending ) {
                                
