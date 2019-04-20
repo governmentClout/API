@@ -256,10 +256,11 @@ friends.get = (data,callback)=>{
                                 
                                 for(let i=0; i<arg.length; i++) {
                                     let selectParam = arg[i].user_a !== param ? arg[i].user_a : arg[i].user_b;
+                                    
                                   con.query("SELECT * FROM profiles WHERE uuid='"+selectParam+"'; SELECT * FROM users WHERE uuid='"+selectParam+"'",(err, result)=>{
                                          
                                          
-                                    friends.splice(i,0,{'user': result[1],'profile':result[0]});
+                                    friends.splice(i,0,{'uuid': arg[i].uuid ,'user': result[1],'profile':result[0]});
                                         
                                         if( 0 === --pending ) {
                                                                                             
@@ -311,9 +312,106 @@ friends.get = (data,callback)=>{
     
 }
 
+/**
+ * @api {delete} /friends/:uuid Delete Friend 
+ * @apiName deleteFriend
+ * @apiGroup Friends
+ * @apiHeader {String} uuid Authorization UUID.
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint deletes a friend from a user list of friends
+ * @apiParam {String} uuid uuid of the friend to be deleted 
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ *{
+ *   "Success": "Friend Deleted"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ *{
+ *   "Error": [
+ *       "Friend uuid not valid"
+ *   ]
+ *}
+ * @apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+ *{
+ *   "Error": [
+ *       "Relationship not found"
+ *   ]
+ *}
+ */
+
+
 friends.delete = (data,callback)=>{
-    //remove friend
-    callback(200,{'Success':'Friends delete endpoint'});
+
+    let friend = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+    let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+    
+    if( 
+		token && 
+		uuidHeader &&
+		friend 
+		){
+
+		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
+		
+		con.query(headerChecker,(err,results)=>{
+			
+			if(
+                !err && 
+				results && 
+				results[0].token.length > 0 &&
+				results[0].token == token
+
+				){
+
+                    let postQuery = "SELECT * FROM friends WHERE uuid='" + friend + "'";
+			
+                    con.query(postQuery, (err,result)=>{
+
+                        if(!err && result[0]){
+
+                            let deletePost = "DELETE FROM friends WHERE uuid='"+friend+"'";
+
+                            con.query(deletePost,(err,result)=>{
+
+                                
+                                callback(200,{'Success':'Friend Deleted'});
+                                    
+                                
+                            });
+
+                        }else{
+                            
+                            callback(404,{'Error':'Friend Request not found'});
+                        }
+
+                    });
+
+                }else{
+                    console.log(err);
+                    callback(404,{'Error':'Token Invalid or Expired'});
+                }
+            });
+        }else{
+
+            let errorObject = [];
+    
+            if(!token){
+                errorObject.push('Token you supplied is not valid or expired');
+            }
+            if(!uuidHeader){
+                errorObject.push('uuid in the header not found');
+            }
+            if(!friend){
+                errorObject.push('Friend uuid not valid');
+            }
+    
+            callback(400,{'Error':errorObject});
+        }
+    
+
 }
 
 friends.put = (data,callback)=>{
