@@ -1,5 +1,134 @@
 [
   {
+    "type": "post",
+    "url": "/friends",
+    "title": "Accept Friend Request",
+    "name": "createFriend",
+    "group": "Friends",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint send friend request</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "request_uuid",
+            "description": "<p>the uuid of the request to be accepted</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Friend Request Accepted\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Bad Request\n{\n    \"Error\": \"Bad Request\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/friends.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "delete",
+    "url": "/friends/:uuid",
+    "title": "Delete Friend",
+    "name": "deleteFriend",
+    "group": "Friends",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint deletes a friend from a user list of friends</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the friend to be deleted</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Friend Deleted\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Friend uuid not valid\"\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n  \"Error\": [\n      \"Relationship not found\"\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/friends.js",
+    "groupTitle": "Friends"
+  },
+  {
     "type": "delete",
     "url": "/friendrequests/:uuid",
     "title": "Delete Friend Request",
@@ -25,7 +154,7 @@
         ]
       }
     },
-    "description": "<p>The endpoint deletes a petition</p>",
+    "description": "<p>The endpoint rejects / deletes a friend request</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -110,7 +239,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"for\": [\n        {\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        },\n        {\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        }\n    ],\n    \"from\": [\n        {\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        }\n    ]\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"for\": [\n        {   \n            \"uuid\": \"34dee2a7-7b19-49a1-b853-e4b6eaa84969\",\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        },\n        {\n            \"uuid\": \"34dee2a7-7b19-49a1-b853-e4b6eaa84969\",\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        }\n    ],\n    \"from\": [\n        {\n            \"uuid\": \"34dee2a7-7b19-49a1-b853-e4b6eaa84969\",\n            \"user\": [\n                {\n                    \"id\": 1,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"email\": \"franko4don@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219055\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"updated_at\": \"2019-02-20T21:37:14.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 2,\n                    \"uuid\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                    \"nationality_origin\": \"Nigeria\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"Delta\",\n                    \"lga\": \"Lga of residence\",\n                    \"firstName\": \"franklin\",\n                    \"lastName\": \"Nwanze\",\n                    \"photo\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714823/zjb0nopimvhefa2nbuc6.jpg\",\n                    \"created_at\": \"2019-02-21T01:59:30.000Z\",\n                    \"updated_at\": \"2019-03-22T08:57:10.000Z\",\n                    \"background\": \"https://res.cloudinary.com/tribenigeria-com/image/upload/v1550714782/epa7arhqgv8fpapb7wje.jpg\"\n                }\n            ]\n        }\n    ]\n}",
           "type": "json"
         },
         {
@@ -136,6 +265,68 @@
     },
     "version": "0.0.0",
     "filename": "components/friendrequests.js",
+    "groupTitle": "Friends"
+  },
+  {
+    "type": "get",
+    "url": "/friends/:uuid",
+    "title": "Get Friends",
+    "name": "getSingleUserFriend",
+    "group": "Friends",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all associated friends with the user</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the usedr</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        \"user\": [\n            {\n                \"id\": 3,\n                \"uuid\": \"48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf\",\n                \"email\": \"frank4merry@gmail.com\",\n                \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                \"phone\": \"07037219054\",\n                \"dob\": \"04/05/2018\",\n                \"tosAgreement\": 1,\n                \"provider\": \"email\",\n                \"created_at\": \"2019-02-21T02:14:54.000Z\",\n                \"updated_at\": \"2019-02-21T02:14:54.000Z\",\n                \"status\": 1\n            }\n        ],\n        \"profile\": []\n    },\n    {\n        \"user\": [\n            {\n                \"id\": 3,\n                \"uuid\": \"48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf\",\n                \"email\": \"frank4merry@gmail.com\",\n                \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                \"phone\": \"07037219054\",\n                \"dob\": \"04/05/2018\",\n                \"tosAgreement\": 1,\n                \"provider\": \"email\",\n                \"created_at\": \"2019-02-21T02:14:54.000Z\",\n                \"updated_at\": \"2019-02-21T02:14:54.000Z\",\n                \"status\": 1\n            }\n        ],\n        \"profile\": []\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Bad Request\n{\n    \"Error\": [\n        \"You need to provide user uuid as a parameter\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/friends.js",
     "groupTitle": "Friends"
   },
   {

@@ -121,7 +121,7 @@ friends.post = (data,callback)=>{
 }
 
 /**
- * @api {get} /friends/:uuid Accept Friend Request 
+ * @api {get} /friends/:uuid Get Friends  
  *
  * @apiName getSingleUserFriend
  * @apiGroup Friends
@@ -256,7 +256,7 @@ friends.get = (data,callback)=>{
                                 
                                 for(let i=0; i<arg.length; i++) {
                                     let selectParam = arg[i].user_a !== param ? arg[i].user_a : arg[i].user_b;
-                                    
+
                                   con.query("SELECT * FROM profiles WHERE uuid='"+selectParam+"'; SELECT * FROM users WHERE uuid='"+selectParam+"'",(err, result)=>{
                                          
                                          
@@ -341,7 +341,6 @@ friends.get = (data,callback)=>{
  *}
  */
 
-
 friends.delete = (data,callback)=>{
 
     let friend = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
@@ -412,11 +411,6 @@ friends.delete = (data,callback)=>{
         }
     
 
-}
-
-friends.put = (data,callback)=>{
-    //block/unblock
-    callback(200,{'Success':'Friends put endpoint'});
 }
 
 module.exports = friends;
