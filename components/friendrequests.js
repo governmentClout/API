@@ -54,6 +54,11 @@ friendrequests.post = (data,callback)=>{
         request_sender &&
         request_receiver
 		){
+
+            if(request_sender == request_receiver){
+                callback(401,{'Error':'You cannot send request to yourself'});
+            }
+
             let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
             con.query(verifyToken, (err,result)=>{
@@ -65,12 +70,17 @@ friendrequests.post = (data,callback)=>{
     
                     ){
 
-                        let checkRequest = "SELECT * FROM friendrequests WHERE request_sender='"+request_sender+"' AND request_receiver='"+request_receiver+"'; SELECT * FROM friendrequests WHERE request_sender='"+request_receiver+"' AND request_receiver='"+request_sender+"'";
+                        let checkRequest = "SELECT * FROM friendrequests WHERE request_sender='"+request_sender+"' AND request_receiver='"+request_receiver+"'; SELECT * FROM friendrequests WHERE request_sender='"+request_receiver+"' AND request_receiver='"+request_sender+"'; SELECT * FROM friends WHERE user_a='"+request_receiver+"' AND user_b='"+request_sender+"'; SELECT * FROM friends WHERE user_b='"+request_receiver+"' AND user_a='"+request_sender+"'";
 
 						con.query(checkRequest,(err,result)=>{
-							console.log('err',err);
-							console.log('result',result);
-							if(!err && result[0].length < 1 && result[1].length < 1){
+                            
+                            if(!err && 
+                                result[0].length < 1 && 
+                                result[1].length < 1 && 
+                                result[2].length < 1 && 
+                                result[3].length < 1
+                                
+                                ){
 																
 								let sqlRequest = "INSERT INTO friendrequests (uuid,request_sender,request_receiver) VALUES('"+ uuidV1() +"','"+request_sender+"','"+request_receiver+"')";
 
@@ -102,8 +112,8 @@ friendrequests.post = (data,callback)=>{
 									errorObject.push(err);
 								}
 
-								if(result[0].length > 0 || result[1].length > 0){
-									errorObject.push('Request already exists, close that request first before sending another');
+								if(result[0].length > 0 || result[1].length > 0 || result[2].length > 0 || result[3].length > 0){
+									errorObject.push('Relationship already exists');
 								}
 
 								callback(400,{'Error':errorObject});
@@ -136,8 +146,7 @@ friendrequests.post = (data,callback)=>{
                     errorObject.push('Required Parameter request_receiver is missing or invalid');
                 }
         
-                callback(400,{'Error':errorObject});
-        
+                callback(400,{'Error':errorObject});       
             
         }
 }
@@ -156,7 +165,8 @@ friendrequests.post = (data,callback)=>{
  *HTTP/1.1 200 OK
 {
     "for": [
-        {
+        {   
+            "uuid": "34dee2a7-7b19-49a1-b853-e4b6eaa84969",
             "user": [
                 {
                     "id": 1,
@@ -190,6 +200,7 @@ friendrequests.post = (data,callback)=>{
             ]
         },
         {
+            "uuid": "34dee2a7-7b19-49a1-b853-e4b6eaa84969",
             "user": [
                 {
                     "id": 1,
@@ -225,6 +236,7 @@ friendrequests.post = (data,callback)=>{
     ],
     "from": [
         {
+            "uuid": "34dee2a7-7b19-49a1-b853-e4b6eaa84969",
             "user": [
                 {
                     "id": 1,
@@ -312,8 +324,7 @@ friendrequests.post = (data,callback)=>{
     ]
 }
  */
-// let request_sender = typeof(data.payload.request_sender) == 'string' && data.payload.request_sender.trim().length > 0 ? data.payload.request_sender.trim() : false;
-// let request_receiver
+
 friendrequests.get = (data,callback)=>{
     
     let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
@@ -520,7 +531,7 @@ friendrequests.put = (data,callback)=>{
  * @apiGroup Friends
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint deletes a petition
+ * @apiDescription The endpoint rejects / deletes a friend request
  * @apiParam {String} uuid uuid of the request to be deleted 
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
@@ -607,7 +618,7 @@ friendrequests.delete = (data,callback)=>{
 		if(!uuidHeader){
 			errorObject.push('uuid in the header not found');
 		}
-		if(!petition){
+		if(!request){
 			errorObject.push('Friend Request uuid not valid');
 		}
 

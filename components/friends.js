@@ -44,7 +44,7 @@ friends.post = (data,callback)=>{
     let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
     let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
     
-    let request_uuid = typeof(data.payload.request_sender) == 'string' && data.payload.request_sender.trim().length > 0 ? data.payload.request_sender.trim() : false;
+    let request_uuid = typeof(data.payload.request_uuid) == 'string' && data.payload.request_uuid.trim().length > 0 ? data.payload.request_uuid.trim() : false;
     
     if( 
 		token && 
@@ -67,13 +67,29 @@ friends.post = (data,callback)=>{
 
 						con.query(checkRequest,(err,result)=>{
 
-                            if(!err){
+                            if(!err && result.length > 0){
+                               
+                                let addfriendtodb = "INSERT INTO friends (uuid,user_a,user_b) VALUES('" + uuidV1() + "','"+result[0].request_sender+ "','"+result[0].request_receiver+"')";
 
-                                callback(200,{'Success':'Friend Request Accepted'});
+                                con.query(addfriendtodb,(err)=>{
+                                    let deletePendingRequest = "DELETE FROM friendrequests WHERE uuid='"+request_uuid+"'";
+                                    
+                                    con.query(deletePendingRequest,(err)=>{
+
+                                        if(!err){
+                                            callback(200,{'Success':'Friend Request Accepted'});
+                                        }else{
+                                            console.log(err);
+                                            callback(500,{'Error': err});
+                                        }
+
+                                    });                                   
+
+                                });
 
                             }else{
                                 console.log(err);
-                                callback(500,{'Error':err})
+                                callback(404,{'Error':'Request Not Found'})
                             }
 
                         })
@@ -104,12 +120,195 @@ friends.post = (data,callback)=>{
    
 }
 
+/**
+ * @api {get} /friends/:uuid Accept Friend Request 
+ *
+ * @apiName getSingleUserFriend
+ * @apiGroup Friends
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint returns all associated friends with the user
+ * @apiParam {String} uuid  uuid of the usedr  
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+[
+    {
+        "user": [
+            {
+                "id": 3,
+                "uuid": "48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf",
+                "email": "frank4merry@gmail.com",
+                "password": "70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6",
+                "phone": "07037219054",
+                "dob": "04/05/2018",
+                "tosAgreement": 1,
+                "provider": "email",
+                "created_at": "2019-02-21T02:14:54.000Z",
+                "updated_at": "2019-02-21T02:14:54.000Z",
+                "status": 1
+            }
+        ],
+        "profile": []
+    },
+    {
+        "user": [
+            {
+                "id": 3,
+                "uuid": "48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf",
+                "email": "frank4merry@gmail.com",
+                "password": "70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6",
+                "phone": "07037219054",
+                "dob": "04/05/2018",
+                "tosAgreement": 1,
+                "provider": "email",
+                "created_at": "2019-02-21T02:14:54.000Z",
+                "updated_at": "2019-02-21T02:14:54.000Z",
+                "status": 1
+            }
+        ],
+        "profile": []
+    }
+]
+
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 401 Bad Request
+{
+    "Error": [
+        "You need to provide user uuid as a parameter"
+    ]
+}
+ */
+
 friends.get = (data,callback)=>{
 
-   
+   //get all friends for a person
+   let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+   let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+
+   let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+
+   let queryObject = Object.keys(data.queryStringObject).length > 0 && typeof(data.queryStringObject) == 'object' ? data.queryStringObject : false;
+
+   let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+   let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+   let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
+   if( 
+    token && 
+    uuid &&
+    param
+    ){
+        let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
+
+        con.query(verifyToken, (err,result)=>{
+            
+            
+            if(
+                !err && 
+                result[0] && 
+                result[0].token == token 
+
+                ){  
+
+                    async.waterfall([
+                        function(callback) {
+                           
+                            let sqlGetFriends = "SELECT * FROM friends WHERE user_a='"+param+"' OR user_b ='"+param+"'";
+
+                            if(sort){
+                                sqlGetFriends += " ORDER BY id " + sort;
+                             }
+
+                            if(limit){
+                                sqlGetFriends += " LIMIT " + limit;
+                            }
+
+                            if(page){
+                                
+                                let skip = page == '1' ? 0 : page * limit;
+                                sqlGetFriends += " OFFSET " + skip;
+
+                            }
+
+                            con.query(sqlGetFriends,(err,result)=>{
+                                                                           
+                                    if(!err && result.length > 0){
+                                        console.log(result);
+                                        callback(null,result);
+                                    }else{
+                                        console.log(err);
+                                        callback(null,[]);
+                                    }
+                                    
+
+                                });
+                            
+                        
+                        },
+                        function(arg, callback) {
+                                                           
+                            if(arg.length > 0){
+                              
+
+                                let friends = [];
+                                var pending = arg.length;
+                                
+                                for(let i=0; i<arg.length; i++) {
+                                    let selectParam = arg[i].user_a !== param ? arg[i].user_a : arg[i].user_b;
+                                  con.query("SELECT * FROM profiles WHERE uuid='"+selectParam+"'; SELECT * FROM users WHERE uuid='"+selectParam+"'",(err, result)=>{
+                                         
+                                         
+                                    friends.splice(i,0,{'user': result[1],'profile':result[0]});
+                                        
+                                        if( 0 === --pending ) {
+                                                                                            
+                                               callback(null,friends);
+
+                                        }
+
+                                    });
+                                }
+
+                            }else{
+                                callback(null, []);
+                            }						    	
+
+                            
+                        } 
+                    ], function (err, result) {
+                        							
+							callback(200,result);
+
+						});
+
+                }else{
+
+                    callback(400,{'Error':'Token Mismatch or expired'});
+
+                }
+            });
+
+    }else{
+
+		let errorObject = [];
+
+		if(!token){
+			errorObject.push('Token you supplied is not valid or has expired');
+		}
+		if(!uuid){
+			errorObject.push('UUID you supplied is invalid or expired');
+        }
+        
+        if(!param){
+            errorObject.push('You need to provide user uuid as a parameter');
+        }
+
+		callback(400,{'Error':errorObject});
+
+	}
     
     
-    callback(200,{'Success':'Friends get endpoint'});
 }
 
 friends.delete = (data,callback)=>{
@@ -121,3 +320,5 @@ friends.put = (data,callback)=>{
     //block/unblock
     callback(200,{'Success':'Friends put endpoint'});
 }
+
+module.exports = friends;
