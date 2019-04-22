@@ -52,7 +52,7 @@ sendmessages.options = (data,callback)=>{
  */
 
 sendmessages.post = (data,callback)=>{
-    console.log('point 0');
+    
     let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
     let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
     
@@ -69,7 +69,7 @@ sendmessages.post = (data,callback)=>{
         content 
 
 		){
-            console.log('point 1');
+          
             if(sender == receiver){
                 callback(401,{'Error':'You cannot send message to yourself'});
             }
@@ -77,7 +77,7 @@ sendmessages.post = (data,callback)=>{
             let verifyToken = "SELECT token,uuid FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
             con.query(verifyToken, (err,result)=>{
-                console.log(result);
+               
                 if(
                     !err && 
                     result[0] && 
@@ -86,26 +86,22 @@ sendmessages.post = (data,callback)=>{
 
     
                     ){
-                        console.log('point 2');
-
+                      
                         let checkRequest = "SELECT * FROM friends WHERE user_a='"+receiver+"' AND user_b='"+sender+"'; SELECT * FROM friends WHERE user_b='"+receiver+"' AND user_a='"+sender+"'";
 
                         con.query(checkRequest,(err,result)=>{
-                            console.log(result);
+                          
                             if(!err && 
                                 result[0].length > 0 || 
                                 result[1].length > 0  
                                                                
                                 ){
-                                    console.log('point 3');
-
+                                   
                                     let sqlRequest = "INSERT INTO messages (uuid,sender,receiver,content,attachments) VALUES('"+ uuidV1() +"','"+sender+"','"+receiver+"','"+content+"','"+attachments+"')";
 
                                     con.query(sqlRequest,(err)=>{
 
                                         if(!err){
-                                            
-                                            console.log('point 4');
 
                                             mailer.sendByUUID({
                                                 'uuid':receiver,
@@ -117,7 +113,7 @@ sendmessages.post = (data,callback)=>{
 
                                         }else{
                                         //@TODO: Change this error message to a more friendly error
-                                        console.log(err);
+                                       
                                         callback(500,{'Error':err});
                                         
 									}

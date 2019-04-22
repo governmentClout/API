@@ -400,6 +400,94 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/sendmessages",
+    "title": "Send New Message",
+    "name": "sendNewMessage",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint allows you to send a message to another user</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sender",
+            "description": "<p>uuid of the user sending the message</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receiver",
+            "description": "<p>uuid of the user to receive the message</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>content of the message to be sent</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "attachments",
+            "description": "<p>coma separated url of the images attached to this message</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Message Sent\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": \"No relationship between sender and receiver\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": [\n        \"Required Parameter sender is missing or invalid\",\n        \"Required Parameter receiver is missing or invalid\",\n        \"Required Parameter content is missing or invalid\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/sendmessages.js",
+    "groupTitle": "Messages"
+  },
+  {
+    "type": "post",
     "url": "/petitions",
     "title": "Create Petition",
     "name": "createPetition",
