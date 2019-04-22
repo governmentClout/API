@@ -3,6 +3,8 @@ const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const tokens = require('./../lib/tokenization');
+const async = require('async');
+const mailer = require('./mailer');
 
 const con = require('./../lib/db');
 
