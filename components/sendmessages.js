@@ -437,8 +437,93 @@ sendmessages.get = (data,callback)=>{
  */
 
 sendmessages.delete = (data,callback)=>{
-    callback(200,{'Success':'You have hit delete endpoint'});
-    //delete message sent by this user
+    let message = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+
+	if( 
+		token && 
+		uuidHeader &&
+        message
+         
+		){
+
+            let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
+		
+		con.query(headerChecker,(err,results)=>{
+			
+			if(!err && 
+				results && 
+				results[0].token.length > 0 &&
+                results[0].token == token                 
+
+				){
+                    let postQuery = "SELECT * FROM sendmessages WHERE uuid='" + message + "'";
+			
+                    con.query(postQuery, (err,result)=>{
+                        
+                        if(!err && result.length > 0 && result.sender == results[0].uuid){
+
+                            let deletePost = "DELETE FROM friendrequests WHERE uuid='"+request+"'";
+
+						con.query(deletePost,(err)=>{
+
+							
+                            if(!err){
+                                callback(200,{'Success':'Message Deleted'});
+                            }else{
+                                callback(500,{'Error':err});
+                            }
+								
+							
+						});
+
+                        }else{
+
+                            let errorObject = [];
+    
+                            if(err){
+                                errorObject.push(err);
+                            }
+
+                            if(result.sender != results[0].uuid){
+                                errorObject.push('Unauthorized! You can only deleted your own messages');
+                            }
+
+                            if(result.length < 1){
+
+                                errorObject.push('Message not found');
+                               
+                            }
+
+                            callback(400,{'Error':errorObject});
+                        }
+
+                    });
+
+                }else{
+                    console.log(err);
+                    callback(404,{'Error':'Token Invalid or Expired'});
+                }
+
+
+        }else{
+
+            let errorObject = [];
+    
+            if(!token){
+                errorObject.push('Token you supplied is not valid or expired');
+            }
+            if(!uuidHeader){
+                errorObject.push('uuid in the header not found');
+            }
+            if(!message){
+                errorObject.push('Message uuid not valid');
+            }
+    
+            callback(400,{'Error':errorObject});
+        }
+    
 }
 
 
