@@ -586,10 +586,14 @@ friendrequests.delete = (data,callback)=>{
 
 						let deletePost = "DELETE FROM friendrequests WHERE uuid='"+request+"'";
 
-						con.query(deletePost,(err,result)=>{
+						con.query(deletePost,(err)=>{
 
+                            if(!err){
+                                callback(200,{'Success':'Friend Request Deleted'});
+                            }else{
+                                callback(500,{'Error':err});
+                            }
 							
-							callback(200,{'Success':'Friend Request Deleted'});
 								
 							
 						});
