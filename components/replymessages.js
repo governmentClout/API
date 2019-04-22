@@ -204,7 +204,7 @@ replymessages.post = (data,callback)=>{
 /**
  * @api {get} /replymessages/:uuid Get Reply   
  *
- * @apiName getSentMessages
+ * @apiName getSentReplies
  * @apiGroup Messages
  * @apiHeader {String} uuid Authorization UUID .
  * @apiHeader {String} Token Authorization Token.
@@ -405,44 +405,44 @@ replymessages.get = (data,callback)=>{
 }
 
 /**
- * @api {delete} /sendmessages/:uuid Delete Message 
- * @apiName deleteMessage
+ * @api {delete} /replymessages/:uuid Delete Reply 
+ * @apiName deleteReply
  * @apiGroup Messages
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint deletes a message from the sender and the receiver
- * @apiParam {String} uuid uuid of the Message to be deleted 
+ * @apiDescription The endpoint deletes a reply from the sender and the receiver
+ * @apiParam {String} uuid uuid of the Reply to be deleted 
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
  *{
- *   "Success": "Message permanently Deleted"
+ *   "Success": "Reply permanently Deleted"
  *}
  *@apiErrorExample Error-Response:
  *HTTP/1.1 400 Bad Request
  *{
  *   "Error": [
- *       "Message uuid not valid"
+ *       "Reply uuid not valid"
  *   ]
  *}
  * @apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request
  *{
  *   "Error": [
- *       "Message not found"
+ *       "Reply not found"
  *   ]
  *}
  */
 
 replymessages.delete = (data,callback)=>{
 
-    let message = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+    let reply = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 
 	if( 
 		token && 
 		uuidHeader &&
-        message
+        reply
          
 		){
 
@@ -456,19 +456,19 @@ replymessages.delete = (data,callback)=>{
                 results[0].token == token                 
 
 				){
-                    let postQuery = "SELECT * FROM messages WHERE uuid='" + message + "'";
+                    let postQuery = "SELECT * FROM replies WHERE uuid='" + reply + "'";
 			
                     con.query(postQuery, (err,result)=>{
                            
                         if(!err && result.length > 0 && result[0].sender == results[0].uuid){
 
-                            let deletePost = "DELETE FROM friendrequests WHERE uuid='"+message+"'";
+                            let deletePost = "DELETE FROM replies WHERE uuid='"+reply+"'";
 
 						con.query(deletePost,(err)=>{
 
 							
                             if(!err){
-                                callback(200,{'Success':'Message Deleted'});
+                                callback(200,{'Success':'Reply Deleted'});
                             }else{
                                 callback(500,{'Error':err});
                             }
@@ -489,11 +489,11 @@ replymessages.delete = (data,callback)=>{
                             }
                             else if(result.length < 1){
 
-                                errorObject.push('Message not found');
+                                errorObject.push('Reply not found');
                                
                             }else{
                                 if(result.sender != results[0].uuid){
-                                    errorObject.push('Unauthorized! You can only deleted your own messages');
+                                    errorObject.push('Unauthorized! You can only delete your own reply');
                                 }
                             }
 
@@ -519,8 +519,8 @@ replymessages.delete = (data,callback)=>{
 
                 errorObject.push('uuid in the header not found');
             }
-            if(!message){
-                errorObject.push('Message uuid not valid');
+            if(!reply){
+                errorObject.push('Reply uuid not valid');
             }
     
             callback(400,{'Error':errorObject});
