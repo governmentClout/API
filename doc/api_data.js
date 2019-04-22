@@ -399,6 +399,73 @@ define({ "api": [
     "groupTitle": "Friends"
   },
   {
+    "type": "delete",
+    "url": "/sendmessages/:uuid",
+    "title": "Delete Message",
+    "name": "deleteMessage",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint deletes a message from the sender and the receiver</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the Message to be deleted</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Message permanently Deleted\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Message uuid not valid\"\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n  \"Error\": [\n      \"Message not found\"\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/sendmessages.js",
+    "groupTitle": "Messages"
+  },
+  {
     "type": "get",
     "url": "/sendmessages/:uuid",
     "title": "Get Sent Messages",

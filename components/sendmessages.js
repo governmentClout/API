@@ -409,8 +409,8 @@ sendmessages.get = (data,callback)=>{
 
 /**
  * @api {delete} /sendmessages/:uuid Delete Message 
- * @apiName deleteFriendRequest
- * @apiGroup Friends
+ * @apiName deleteMessage
+ * @apiGroup Messages
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint deletes a message from the sender and the receiver
