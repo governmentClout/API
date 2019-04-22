@@ -40,13 +40,17 @@ sendmessages.options = (data,callback)=>{
  *@apiErrorExample Error-Response:
  *HTTP/1.1 405 Bad Request
 {
-    "Error": "sender and receiver cannot be the same person"
+    "Error": [
+        "Required Parameter sender is missing or invalid",
+        "Required Parameter receiver is missing or invalid",
+        "Required Parameter content is missing or invalid"
+    ]
 }
 
  */
 
 sendmessages.post = (data,callback)=>{
-
+    console.log('point 0');
     let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
     let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
     
@@ -63,37 +67,43 @@ sendmessages.post = (data,callback)=>{
         content 
 
 		){
-
+            console.log('point 1');
             if(sender == receiver){
                 callback(401,{'Error':'You cannot send message to yourself'});
             }
 
-            let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
+            let verifyToken = "SELECT token,uuid FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
             con.query(verifyToken, (err,result)=>{
-
+                console.log(result);
                 if(
                     !err && 
                     result[0] && 
-                    result[0].token == token 
+                    result[0].token == token &&
+                    result[0].uuid == sender 
+
     
                     ){
+                        console.log('point 2');
 
                         let checkRequest = "SELECT * FROM friends WHERE user_a='"+receiver+"' AND user_b='"+sender+"'; SELECT * FROM friends WHERE user_b='"+receiver+"' AND user_a='"+sender+"'";
 
                         con.query(checkRequest,(err,result)=>{
-
+                            console.log(result);
                             if(!err && 
-                                result[0].length > 0 && 
+                                result[0].length > 0 || 
                                 result[1].length > 0  
                                                                
                                 ){
+                                    console.log('point 3');
 
                                     let sqlRequest = "INSERT INTO messages (uuid,sender,receiver,content,attachments) VALUES('"+ uuidV1() +"','"+sender+"','"+receiver+"','"+content+"','"+attachments+"')";
 
                                     con.query(sqlRequest,(err)=>{
 
                                         if(!err){
+                                            
+                                            console.log('point 4');
 
                                             mailer.sendByUUID({
                                                 'uuid':receiver,
@@ -120,7 +130,7 @@ sendmessages.post = (data,callback)=>{
                                         errorObject.push(err);
                                     }
     
-                                    if(result[0].length < 0 || result[1].length < 0){
+                                    if(result[0].length < 1 || result[1].length < 1){
                                         errorObject.push('No relationship between sender and receiver');
                                     }
     
