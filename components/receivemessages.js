@@ -116,6 +116,13 @@ receivemessages.options = (data,callback)=>{
         "You need to provide user uuid as a parameter"
     ]
 }
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "Error": [
+        "Unautorized! You can only view your own received messages"
+    ]
+}
  */
 
 
@@ -230,7 +237,7 @@ receivemessages.get = (data,callback)=>{
                             errorObject.push('Token Mismatch or expired');
                         }else{
                             if(result[0].uuid != param){
-                                errorObject.push('Unautorized! You can only view your own sent messages');
+                                errorObject.push('Unautorized! You can only view your own received messages');
                             }
                         }
 
