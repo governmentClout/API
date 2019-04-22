@@ -106,7 +106,7 @@ replymessages.post = (data,callback)=>{
                                    let checkMessage = "SELECT * FROM messages WHERE uuid='"+message+"'";
 
                                    con.query(checkMessage,(err,result)=>{
-                                    console.log(result);
+                                    
                                     if(!err && 
                                         result.length > 0 &&
                                         ( result[0].sender == sender ||

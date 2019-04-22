@@ -466,6 +466,73 @@ define({ "api": [
     "groupTitle": "Messages"
   },
   {
+    "type": "delete",
+    "url": "/sendmessages/:uuid",
+    "title": "Delete Message",
+    "name": "deleteMessage",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint deletes a message from the sender and the receiver</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the Message to be deleted</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Message permanently Deleted\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Message uuid not valid\"\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n  \"Error\": [\n      \"Message not found\"\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/replymessages.js",
+    "groupTitle": "Messages"
+  },
+  {
     "type": "get",
     "url": "/receivemessages/:uuid",
     "title": "Get Received Messages",
@@ -530,6 +597,68 @@ define({ "api": [
     },
     "version": "0.0.0",
     "filename": "components/receivemessages.js",
+    "groupTitle": "Messages"
+  },
+  {
+    "type": "get",
+    "url": "/sendmessages/:uuid",
+    "title": "Get Sent Messages",
+    "name": "getSentMessages",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all messages this user has sent</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the user</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n {\n    \"success\": [\n        {\n            \"message\": {\n                \"id\": 4,\n                \"uuid\": \"bbf08854-f516-4b5a-9823-8c9be00573a6\",\n                \"sender\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                \"receiver\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                \"content\": \"This is a message sent to you brah!!\",\n                \"attachments\": \"\",\n                \"created_at\": \"2019-04-22T19:02:25.000Z\",\n                \"updated_at\": \"2019-04-22T19:02:25.000Z\",\n                \"status\": 0\n            },\n            \"user\": [\n                {\n                    \"id\": 5,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"email\": \"everistusolumese@gmail.com\",\n                    \"password\": \"2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb\",\n                    \"phone\": \"09031866339\",\n                    \"dob\": \"1980-01-31T23:00:00.000Z\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"updated_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": [\n                {\n                    \"id\": 3,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"nationality_origin\": \"Vanuatu\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"N/A\",\n                    \"lga\": \"N/A\",\n                    \"firstName\": \"Everistus\",\n                    \"lastName\": \"Olumese\",\n                    \"photo\": \"https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png\",\n                    \"created_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"updated_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"background\": \"false\"\n                }\n            ]\n        },\n        {\n            \"message\": {\n                \"id\": 3,\n                \"uuid\": \"75913c96-4a5a-4b57-8e09-fef619fd9e01\",\n                \"sender\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                \"receiver\": \"48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf\",\n                \"content\": \"This is a message sent to you bro!\",\n                \"attachments\": \"\",\n                \"created_at\": \"2019-04-22T18:32:46.000Z\",\n                \"updated_at\": \"2019-04-22T18:32:46.000Z\",\n                \"status\": 0\n            },\n            \"user\": [\n                {\n                    \"id\": 3,\n                    \"uuid\": \"48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf\",\n                    \"email\": \"frank4merry@gmail.com\",\n                    \"password\": \"70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6\",\n                    \"phone\": \"07037219054\",\n                    \"dob\": \"04/05/2018\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-02-21T02:14:54.000Z\",\n                    \"updated_at\": \"2019-02-21T02:14:54.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"profile\": []\n        }\n       \n                   \n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"Error\": [\n        \"You need to provide user uuid as a parameter\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/replymessages.js",
     "groupTitle": "Messages"
   },
   {
@@ -680,6 +809,99 @@ define({ "api": [
     },
     "version": "0.0.0",
     "filename": "components/sendmessages.js",
+    "groupTitle": "Messages"
+  },
+  {
+    "type": "post",
+    "url": "/replymessages",
+    "title": "Send New Reply",
+    "name": "sendNewReply",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint allows you to reply message</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sender",
+            "description": "<p>uuid of the user sending the reply</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receiver",
+            "description": "<p>uuid of the user to receive the reply</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>uuid of the message this reply is associated with</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>content of the reply to be sent</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Reply Sent\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": \"No relationship between sender and receiver\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 405 Bad Request\n{\n    \"Error\": [\n        \"Required Parameter sender is missing or invalid\",\n        \"Required Parameter receiver is missing or invalid\",\n        \"Required Parameter content is missing or invalid\"\n    ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n    \"Error\": \"Message not found\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/replymessages.js",
     "groupTitle": "Messages"
   },
   {
