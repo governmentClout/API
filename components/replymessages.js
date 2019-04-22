@@ -17,22 +17,22 @@ replymessages.options = (data,callback)=>{
 	
 }
 /**
- * @api {post} /sendmessages Send New Message 
+ * @api {post} /replymessages Send New Reply  
  *
- * @apiName sendNewMessage
+ * @apiName sendNewReply
  * @apiGroup Messages
  * @apiHeader {String} uuid Authorization UUID .
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint allows you to send a message to another user
- * @apiParam {String} sender uuid of the user sending the message  
- * @apiParam {String} receiver uuid of the user to receive the message
- * @apiParam {String} content content of the message to be sent
- * @apiParam {String} attachments coma separated url of the images attached to this message
+ * @apiDescription The endpoint allows you to reply message
+ * @apiParam {String} sender uuid of the user sending the reply  
+ * @apiParam {String} receiver uuid of the user to receive the reply
+ * @apiParam {String} message uuid of the message this reply is associated with
+ * @apiParam {String} content content of the reply to be sent
  *
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
 {
-    "Success": "Message Sent"
+    "Success": "Reply Sent"
 }
  *@apiErrorExample Error-Response:
  *HTTP/1.1 405 Bad Request
@@ -48,6 +48,11 @@ replymessages.options = (data,callback)=>{
         "Required Parameter content is missing or invalid"
     ]
 }
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+    "Error": "Message not found"
+}
 
  */
 
@@ -59,19 +64,20 @@ replymessages.post = (data,callback)=>{
     let sender = typeof(data.payload.sender) == 'string' && data.payload.sender.trim().length > 0 ? data.payload.sender.trim() : false;
     let receiver = typeof(data.payload.receiver) == 'string' && data.payload.receiver.trim().length > 0 ? data.payload.receiver.trim() : false;
     let content = typeof(data.payload.content) == 'string' && data.payload.content.trim().length > 0 ? data.payload.content.trim() : false;
-    let attachments = typeof(data.payload.attachments) == 'string' && data.payload.attachments.trim().length > 0 ? data.payload.attachments.trim() : '';
+    let message = typeof(data.payload.message) == 'string' && data.payload.message.trim().length > 0 ? data.payload.message.trim() : '';
 
     if( 
 		token && 
         uuid &&
         sender &&
         receiver &&
-        content 
+        content &&
+        message
 
 		){
           
             if(sender == receiver){
-                callback(401,{'Error':'You cannot send message to yourself'});
+                callback(401,{'Error':'You cannot send reply to yourself'});
             }
 
             let verifyToken = "SELECT token,uuid FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
@@ -96,30 +102,44 @@ replymessages.post = (data,callback)=>{
                                 result[1].length > 0  
                                                                
                                 ){
-                                   
-                                    let sqlRequest = "INSERT INTO messages (uuid,sender,receiver,content,attachments) VALUES('"+ uuidV1() +"','"+sender+"','"+receiver+"','"+content+"','"+attachments+"')";
+                                   //check if message exists
+                                   let checkMessage = "SELECT * FROM messages WHERE uuid='"+message+"'";
 
-                                    con.query(sqlRequest,(err)=>{
+                                   con.query(checkMessage,(err,result)=>{
 
-                                        if(!err){
+                                    if(!err && result.length > 0){
 
-                                            mailer.sendByUUID({
-                                                'uuid':receiver,
-                                                'subject':'Notification: New Message',
-                                                'message':'You have a new message'
-                                                });
- 
-                                         callback(200,{'Success':'Message Sent'});
+                                        let sqlReply = "INSERT INTO replies (uuid,sender,receiver,content,message) VALUES('"+ uuidV1() +"','"+sender+"','"+receiver+"','"+content+"','"+message+"')";
 
-                                        }else{
-                                        //@TODO: Change this error message to a more friendly error
-                                       
-                                        callback(500,{'Error':err});
+                                        con.query(sqlReply,(err)=>{
+
+                                            if(!err){
+
+                                                mailer.sendByUUID({
+                                                    'uuid':receiver,
+                                                    'subject':'Notification: New Reply Message',
+                                                    'message':'You have a new message'
+                                                    });
+    
+                                            callback(200,{'Success':'Reply Sent'});
+
+                                            }else{
+                                            //@TODO: Change this error message to a more friendly error
                                         
-									}
+                                            callback(500,{'Error':err});
+                                            
+                                        }
 
-                                    });
+                                        });
 
+
+                                    }else{
+                                        console.log(err);
+                                        callback(404,{'Error':'Reply not found'});
+                                    }
+
+                                   });
+                                    
                                 }else{
 
                                     let errorObject = [];
@@ -164,6 +184,9 @@ replymessages.post = (data,callback)=>{
                 }
                 if(!content){
                     errorObject.push('Required Parameter content is missing or invalid');
+                }
+                if(!message){
+                    errorObject.push('Required Parameter message uuid is missing or invalid');
                 }
         
                 callback(400,{'Error':errorObject});       
