@@ -467,9 +467,9 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/sendmessages/:uuid",
-    "title": "Delete Message",
-    "name": "deleteMessage",
+    "url": "/replymessages/:uuid",
+    "title": "Delete Reply",
+    "name": "deleteReply",
     "group": "Messages",
     "header": {
       "fields": {
@@ -491,7 +491,7 @@ define({ "api": [
         ]
       }
     },
-    "description": "<p>The endpoint deletes a message from the sender and the receiver</p>",
+    "description": "<p>The endpoint deletes a reply from the sender and the receiver</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -500,7 +500,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "uuid",
-            "description": "<p>uuid of the Message to be deleted</p>"
+            "description": "<p>uuid of the Reply to be deleted</p>"
           }
         ]
       }
@@ -509,7 +509,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Message permanently Deleted\"\n}",
+          "content": "HTTP/1.1 200 OK\n{\n  \"Success\": \"Reply permanently Deleted\"\n}",
           "type": "json"
         }
       ]
@@ -518,12 +518,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Message uuid not valid\"\n  ]\n}",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"Error\": [\n      \"Reply uuid not valid\"\n  ]\n}",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 404 Bad Request\n{\n  \"Error\": [\n      \"Message not found\"\n  ]\n}",
+          "content": "HTTP/1.1 404 Bad Request\n{\n  \"Error\": [\n      \"Reply not found\"\n  ]\n}",
           "type": "json"
         }
       ]
@@ -601,68 +601,6 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/replymessages/:uuid",
-    "title": "Get Reply",
-    "name": "getSentMessages",
-    "group": "Messages",
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "uuid",
-            "description": "<p>Authorization UUID .</p>"
-          },
-          {
-            "group": "Header",
-            "type": "String",
-            "optional": false,
-            "field": "Token",
-            "description": "<p>Authorization Token.</p>"
-          }
-        ]
-      }
-    },
-    "description": "<p>The endpoint returns all replies associated with a message</p>",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "uuid",
-            "description": "<p>uuid of the message</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n {\n    \"success\": [\n        {\n            \"reply\": {\n                \"id\": 1,\n                \"uuid\": \"a00c13e2-c2e4-4bd7-bdd8-504881c3e383\",\n                \"sender\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                \"receiver\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                \"content\": \"This is a message sent to you bro as a reply!\",\n                \"message\": \"bbf08854-f516-4b5a-9823-8c9be00573a6\",\n                \"created_at\": \"2019-04-22T20:30:20.000Z\",\n                \"updated_at\": \"2019-04-22T20:30:20.000Z\",\n                \"status\": 0\n            },\n            \"sender\": [\n                {\n                    \"id\": 5,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"email\": \"everistusolumese@gmail.com\",\n                    \"password\": \"2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb\",\n                    \"phone\": \"09031866339\",\n                    \"dob\": \"1980-01-31T23:00:00.000Z\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"updated_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"sender_profile\": [\n                {\n                    \"id\": 3,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"nationality_origin\": \"Vanuatu\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"N/A\",\n                    \"lga\": \"N/A\",\n                    \"firstName\": \"Everistus\",\n                    \"lastName\": \"Olumese\",\n                    \"photo\": \"https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png\",\n                    \"created_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"updated_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"background\": \"false\"\n                }\n            ]\n        }\n    ]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "HTTP/1.1 400 Bad Request\n{\n    \"Error\": [\n        \"You need to provide user uuid as a parameter\"\n    ]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "version": "0.0.0",
-    "filename": "components/replymessages.js",
-    "groupTitle": "Messages"
-  },
-  {
-    "type": "get",
     "url": "/sendmessages/:uuid",
     "title": "Get Sent Messages",
     "name": "getSentMessages",
@@ -721,6 +659,68 @@ define({ "api": [
     },
     "version": "0.0.0",
     "filename": "components/sendmessages.js",
+    "groupTitle": "Messages"
+  },
+  {
+    "type": "get",
+    "url": "/replymessages/:uuid",
+    "title": "Get Reply",
+    "name": "getSentReplies",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all replies associated with a message</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>uuid of the message</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n {\n    \"success\": [\n        {\n            \"reply\": {\n                \"id\": 1,\n                \"uuid\": \"a00c13e2-c2e4-4bd7-bdd8-504881c3e383\",\n                \"sender\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                \"receiver\": \"84b98718-04df-4d4b-a6ac-e8b9981fb5ba\",\n                \"content\": \"This is a message sent to you bro as a reply!\",\n                \"message\": \"bbf08854-f516-4b5a-9823-8c9be00573a6\",\n                \"created_at\": \"2019-04-22T20:30:20.000Z\",\n                \"updated_at\": \"2019-04-22T20:30:20.000Z\",\n                \"status\": 0\n            },\n            \"sender\": [\n                {\n                    \"id\": 5,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"email\": \"everistusolumese@gmail.com\",\n                    \"password\": \"2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb\",\n                    \"phone\": \"09031866339\",\n                    \"dob\": \"1980-01-31T23:00:00.000Z\",\n                    \"tosAgreement\": 1,\n                    \"provider\": \"email\",\n                    \"created_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"updated_at\": \"2019-03-10T08:52:28.000Z\",\n                    \"status\": 1\n                }\n            ],\n            \"sender_profile\": [\n                {\n                    \"id\": 3,\n                    \"uuid\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n                    \"nationality_origin\": \"Vanuatu\",\n                    \"nationality_residence\": \"Nigeria\",\n                    \"state\": \"N/A\",\n                    \"lga\": \"N/A\",\n                    \"firstName\": \"Everistus\",\n                    \"lastName\": \"Olumese\",\n                    \"photo\": \"https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png\",\n                    \"created_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"updated_at\": \"2019-03-21T12:45:04.000Z\",\n                    \"background\": \"false\"\n                }\n            ]\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n    \"Error\": [\n        \"You need to provide user uuid as a parameter\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/replymessages.js",
     "groupTitle": "Messages"
   },
   {
