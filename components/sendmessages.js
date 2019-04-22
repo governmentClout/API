@@ -437,6 +437,7 @@ sendmessages.get = (data,callback)=>{
  */
 
 sendmessages.delete = (data,callback)=>{
+
     let message = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
@@ -458,13 +459,13 @@ sendmessages.delete = (data,callback)=>{
                 results[0].token == token                 
 
 				){
-                    let postQuery = "SELECT * FROM sendmessages WHERE uuid='" + message + "'";
+                    let postQuery = "SELECT * FROM messages WHERE uuid='" + message + "'";
 			
                     con.query(postQuery, (err,result)=>{
-                        
-                        if(!err && result.length > 0 && result.sender == results[0].uuid){
+                           
+                        if(!err && result.length > 0 && result[0].sender == results[0].uuid){
 
-                            let deletePost = "DELETE FROM friendrequests WHERE uuid='"+request+"'";
+                            let deletePost = "DELETE FROM friendrequests WHERE uuid='"+message+"'";
 
 						con.query(deletePost,(err)=>{
 
@@ -485,15 +486,18 @@ sendmessages.delete = (data,callback)=>{
                             if(err){
                                 errorObject.push(err);
                             }
-
-                            if(result.sender != results[0].uuid){
-                                errorObject.push('Unauthorized! You can only deleted your own messages');
+                            
+                            if(!result){
+                                errorObject.push('Message not found');
                             }
-
-                            if(result.length < 1){
+                            else if(result.length < 1){
 
                                 errorObject.push('Message not found');
                                
+                            }else{
+                                if(result.sender != results[0].uuid){
+                                    errorObject.push('Unauthorized! You can only deleted your own messages');
+                                }
                             }
 
                             callback(400,{'Error':errorObject});
@@ -505,7 +509,7 @@ sendmessages.delete = (data,callback)=>{
                     console.log(err);
                     callback(404,{'Error':'Token Invalid or Expired'});
                 }
-
+            });
 
         }else{
 
@@ -515,6 +519,7 @@ sendmessages.delete = (data,callback)=>{
                 errorObject.push('Token you supplied is not valid or expired');
             }
             if(!uuidHeader){
+
                 errorObject.push('uuid in the header not found');
             }
             if(!message){
