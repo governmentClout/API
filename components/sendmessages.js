@@ -173,7 +173,7 @@ sendmessages.post = (data,callback)=>{
 }
 
 /**
- * @api {get} /sendmessages/:uuid Get Messages this user has sent 
+ * @api {get} /sendmessages/:uuid Get Sent Messages  
  *
  * @apiName getSentMessages
  * @apiGroup Messages
@@ -184,15 +184,86 @@ sendmessages.post = (data,callback)=>{
  *
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
-{
-
-}
-
- *@apiSuccessExample Success-Response:
- *HTTP/1.1 200 OK
  {
-     []
- }
+    "success": [
+        {
+            "message": {
+                "id": 4,
+                "uuid": "bbf08854-f516-4b5a-9823-8c9be00573a6",
+                "sender": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                "receiver": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                "content": "This is a message sent to you brah!!",
+                "attachments": "",
+                "created_at": "2019-04-22T19:02:25.000Z",
+                "updated_at": "2019-04-22T19:02:25.000Z",
+                "status": 0
+            },
+            "user": [
+                {
+                    "id": 5,
+                    "uuid": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                    "email": "everistusolumese@gmail.com",
+                    "password": "2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb",
+                    "phone": "09031866339",
+                    "dob": "1980-01-31T23:00:00.000Z",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-03-10T08:52:28.000Z",
+                    "updated_at": "2019-03-10T08:52:28.000Z",
+                    "status": 1
+                }
+            ],
+            "profile": [
+                {
+                    "id": 3,
+                    "uuid": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                    "nationality_origin": "Vanuatu",
+                    "nationality_residence": "Nigeria",
+                    "state": "N/A",
+                    "lga": "N/A",
+                    "firstName": "Everistus",
+                    "lastName": "Olumese",
+                    "photo": "https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png",
+                    "created_at": "2019-03-21T12:45:04.000Z",
+                    "updated_at": "2019-03-21T12:45:04.000Z",
+                    "background": "false"
+                }
+            ]
+        },
+        {
+            "message": {
+                "id": 3,
+                "uuid": "75913c96-4a5a-4b57-8e09-fef619fd9e01",
+                "sender": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                "receiver": "48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf",
+                "content": "This is a message sent to you bro!",
+                "attachments": "",
+                "created_at": "2019-04-22T18:32:46.000Z",
+                "updated_at": "2019-04-22T18:32:46.000Z",
+                "status": 0
+            },
+            "user": [
+                {
+                    "id": 3,
+                    "uuid": "48e1f9d6-fc31-40db-bfa9-3ad41dbb9cdf",
+                    "email": "frank4merry@gmail.com",
+                    "password": "70d57cc1f61eeec2306a9775a369a1641bd8bee62751554f0e638c06974eb1d6",
+                    "phone": "07037219054",
+                    "dob": "04/05/2018",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-02-21T02:14:54.000Z",
+                    "updated_at": "2019-02-21T02:14:54.000Z",
+                    "status": 1
+                }
+            ],
+            "profile": []
+        }
+       
+                   
+        }
+    ]
+}
  *@apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request
 {
@@ -267,7 +338,7 @@ sendmessages.get = (data,callback)=>{
 									});
 						    	
 						    
-						    }function(arg, callback) {
+						    },function(arg, callback) {
                             
 						    	
                                 if(arg && arg.length > 0){
@@ -281,12 +352,12 @@ sendmessages.get = (data,callback)=>{
                                       con.query("SELECT * FROM profiles WHERE uuid='"+arg[i].receiver+"'; SELECT * FROM users WHERE uuid='"+arg[i].receiver+"'",(err, result)=>{
                                              
                                              
-                                        messages.splice(i,0,{'uuid':arg.receiver,'user':result[1],'profile':result[0]});
+                                        messages.splice(i,0,{'message':arg[i],'user':result[1],'profile':result[0]});
                                            
                                             if( 0 === --pending ) {
                                    
     
-                                                   callback(null,{'messages':messages});
+                                                   callback(null,{'success':messages});
     
                                             }
     
@@ -335,6 +406,35 @@ sendmessages.get = (data,callback)=>{
 	}
 
 }
+
+/**
+ * @api {delete} /sendmessages/:uuid Delete Message 
+ * @apiName deleteFriendRequest
+ * @apiGroup Friends
+ * @apiHeader {String} uuid Authorization UUID.
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint deletes a message from the sender and the receiver
+ * @apiParam {String} uuid uuid of the Message to be deleted 
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+ *{
+ *   "Success": "Message permanently Deleted"
+ *}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 400 Bad Request
+ *{
+ *   "Error": [
+ *       "Message uuid not valid"
+ *   ]
+ *}
+ * @apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+ *{
+ *   "Error": [
+ *       "Message not found"
+ *   ]
+ *}
+ */
 
 sendmessages.delete = (data,callback)=>{
     callback(200,{'Success':'You have hit delete endpoint'});
