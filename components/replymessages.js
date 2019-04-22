@@ -106,8 +106,14 @@ replymessages.post = (data,callback)=>{
                                    let checkMessage = "SELECT * FROM messages WHERE uuid='"+message+"'";
 
                                    con.query(checkMessage,(err,result)=>{
-
-                                    if(!err && result.length > 0){
+                                    console.log(result);
+                                    if(!err && 
+                                        result.length > 0 &&
+                                        ( result[0].sender == sender ||
+                                        result[0].sender == receiver ) && 
+                                        ( result[0].receiver == sender ||
+                                            result[0].receiver == receiver )                                        
+                                        ){
 
                                         let sqlReply = "INSERT INTO replies (uuid,sender,receiver,content,message) VALUES('"+ uuidV1() +"','"+sender+"','"+receiver+"','"+content+"','"+message+"')";
 
@@ -135,7 +141,7 @@ replymessages.post = (data,callback)=>{
 
                                     }else{
                                         console.log(err);
-                                        callback(404,{'Error':'Reply not found'});
+                                        callback(404,{'Error':'Message not found'});
                                     }
 
                                    });
