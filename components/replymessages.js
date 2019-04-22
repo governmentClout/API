@@ -213,7 +213,54 @@ replymessages.post = (data,callback)=>{
  *
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
- 
+ {
+    "success": [
+        {
+            "reply": {
+                "id": 1,
+                "uuid": "a00c13e2-c2e4-4bd7-bdd8-504881c3e383",
+                "sender": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                "receiver": "84b98718-04df-4d4b-a6ac-e8b9981fb5ba",
+                "content": "This is a message sent to you bro as a reply!",
+                "message": "bbf08854-f516-4b5a-9823-8c9be00573a6",
+                "created_at": "2019-04-22T20:30:20.000Z",
+                "updated_at": "2019-04-22T20:30:20.000Z",
+                "status": 0
+            },
+            "sender": [
+                {
+                    "id": 5,
+                    "uuid": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                    "email": "everistusolumese@gmail.com",
+                    "password": "2231306d33a58824b362898c6a1a0eb5907c74cd76928960df85d501eba90fcb",
+                    "phone": "09031866339",
+                    "dob": "1980-01-31T23:00:00.000Z",
+                    "tosAgreement": 1,
+                    "provider": "email",
+                    "created_at": "2019-03-10T08:52:28.000Z",
+                    "updated_at": "2019-03-10T08:52:28.000Z",
+                    "status": 1
+                }
+            ],
+            "sender_profile": [
+                {
+                    "id": 3,
+                    "uuid": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+                    "nationality_origin": "Vanuatu",
+                    "nationality_residence": "Nigeria",
+                    "state": "N/A",
+                    "lga": "N/A",
+                    "firstName": "Everistus",
+                    "lastName": "Olumese",
+                    "photo": "https://res.cloudinary.com/xyluz/image/upload/v1553172303/WEB/chelsea_ksbydb.png",
+                    "created_at": "2019-03-21T12:45:04.000Z",
+                    "updated_at": "2019-03-21T12:45:04.000Z",
+                    "background": "false"
+                }
+            ]
+        }
+    ]
+}
  *@apiErrorExample Error-Response:
  *HTTP/1.1 400 Bad Request
 {
