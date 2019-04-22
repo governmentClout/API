@@ -158,7 +158,7 @@ friendrequests.post = (data,callback)=>{
  * @apiGroup Friends
  * @apiHeader {String} uuid Authorization UUID .
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint send friend request
+ * @apiDescription The endpoint returns all pending request sent by this user
  * @apiParam {String} uuid uuid of the user  
  *
  *@apiSuccessExample Success-Response:
