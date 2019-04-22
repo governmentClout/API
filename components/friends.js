@@ -63,6 +63,7 @@ friends.post = (data,callback)=>{
                     result[0].token == token 
     
                     ){
+                        //@TODO: Check if they are already friends
                         let checkRequest = "SELECT * FROM friendrequests WHERE uuid='"+request_uuid+"'";
 
 						con.query(checkRequest,(err,result)=>{
