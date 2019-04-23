@@ -131,8 +131,7 @@ executives.post = (data,callback)=>{
 				result[0].uuid == user
 
 				){
-				//check that this request does not already exist
-
+				
 				let sqlCheckRequest = "SELECT * FROM executives WHERE user='"+user+"'";
 
 				con.query(sqlCheckRequest,(err,result)=>{
@@ -178,11 +177,11 @@ executives.post = (data,callback)=>{
 
 						}
 
-						if(result.status = 0){
+						if(result.status = 1){
 							errorObject.push('Request already pending');
 						}
 
-						if(result.status = 1){
+						if(result.status = 0){
 							errorObject.push('User already an executive');
 						}
 
