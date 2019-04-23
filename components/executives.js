@@ -6,7 +6,7 @@ const mysql = require('mysql');
 const mailer = require('./mailer');
 const con = require('../lib/db');
 
-executives = {};
+executives = {}; 
 
 executives.options = (data,callback)=>{
 
@@ -77,6 +77,37 @@ executives.get = (data,callback)=>{
 
 }
 
+/**
+ * @api {post} /executives Request Upgrade 
+ *
+ * @apiName requestUpgrade
+ * @apiGroup Executives
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint create a new upgrade request for user to become an executive
+ * @apiParam {String} user the uuid of the user submitting the request
+ * @apiParam {String} party the party the user belongs to
+ * @apiParam {String} about_you information about this user
+ * @apiParam {String} about_party say something about this party in this user's perspective
+ * @apiParam {String} office Position user holds in party  
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+{
+    "Success": "Upgrade Request Sen"
+}
+
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 401 Bad Request
+{
+    "Error": [
+        "User already an executive"
+    ]
+}
+
+ */
+
+
 executives.post = (data,callback)=>{
 	//request to become an executve
 	let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
@@ -89,14 +120,15 @@ executives.post = (data,callback)=>{
 
 	if(user && token){
 
-		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+		let verifyToken = "SELECT token,uuid FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
 
 		con.query(verifyToken, (err,result)=>{
 			
 			if(
 				!err && 
 				result[0] && 
-				result[0].token == token 
+				result[0].token == token &&
+				result[0].uuid == user
 
 				){
 				//check that this request does not already exist
