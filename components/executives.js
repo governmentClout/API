@@ -14,6 +14,45 @@ executives.options = (data,callback)=>{
 	
 }
 
+
+/**
+ * @api {get} /executives/:uuid Get Executive Status
+ *
+ * @apiName getUpgradeStatus
+ * @apiGroup Executives
+ * @apiHeader {String} uuid Authorization UUID .
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint checks if user is already an executive or if the user request is already pending 
+ * @apiParam {String} uuid the uuid of the user 
+ *
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+[
+    {
+        "id": 2,
+        "uuid": "3e6cd047-3185-410f-8c53-bab4d897f5af",
+        "user": "9b494e70-3f93-4181-bcd3-87f0ce1332ec",
+        "party": "testparty",
+        "admin": "null",
+        "about_you": "Just here to test if i can become an exco",
+        "about_party": "this should actually be just one",
+        "office": "Chairman",
+        "created_at": "2019-04-23T18:08:30.000Z",
+        "updated_at": "2019-04-23T18:08:30.000Z",
+        "status": 0
+    }
+]
+
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 401 Bad Request
+{
+    "Error": [
+        "User already an executive"
+    ]
+}
+
+ */
+
 executives.get = (data,callback)=>{
 
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
@@ -41,7 +80,7 @@ executives.get = (data,callback)=>{
 
 								if(!err && result.length > 0){
 
-									callback(200,{'executive':result});
+									callback(200,result);
 
 								}else{
 									callback(404,{});
