@@ -1,5 +1,157 @@
 define({ "api": [
   {
+    "type": "get",
+    "url": "/executives/:uuid",
+    "title": "Get Executive Status",
+    "name": "getUpgradeStatus",
+    "group": "Executives",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint checks if user is already an executive or if the user request is already pending</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>the uuid of the user</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        \"id\": 2,\n        \"uuid\": \"3e6cd047-3185-410f-8c53-bab4d897f5af\",\n        \"user\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n        \"party\": \"testparty\",\n        \"admin\": \"null\",\n        \"about_you\": \"Just here to test if i can become an exco\",\n        \"about_party\": \"this should actually be just one\",\n        \"office\": \"Chairman\",\n        \"created_at\": \"2019-04-23T18:08:30.000Z\",\n        \"updated_at\": \"2019-04-23T18:08:30.000Z\",\n        \"status\": 0\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Bad Request\n{\n    \"Error\": [\n        \"User already an executive\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/executives.js",
+    "groupTitle": "Executives"
+  },
+  {
+    "type": "post",
+    "url": "/executives",
+    "title": "Request Upgrade",
+    "name": "requestUpgrade",
+    "group": "Executives",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint create a new upgrade request for user to become an executive</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>the uuid of the user submitting the request</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "party",
+            "description": "<p>the party the user belongs to</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "about_you",
+            "description": "<p>information about this user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "about_party",
+            "description": "<p>say something about this party in this user's perspective</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "office",
+            "description": "<p>Position user holds in party</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Upgrade Request Sen\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Bad Request\n{\n    \"Error\": [\n        \"User already an executive\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/executives.js",
+    "groupTitle": "Executives"
+  },
+  {
     "type": "post",
     "url": "/friends",
     "title": "Accept Friend Request",

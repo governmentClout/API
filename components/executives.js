@@ -42,7 +42,6 @@ executives.options = (data,callback)=>{
         "status": 0
     }
 ]
-
  *@apiErrorExample Error-Response:
  *HTTP/1.1 401 Bad Request
 {
