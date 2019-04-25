@@ -6,9 +6,9 @@ const mysql = require('mysql');
 const mailer = require('./mailer');
 const con = require('../lib/db');
 
-executives = {}; 
+adminexecutives = {}; 
 
-executives.options = (data,callback)=>{
+adminexecutives.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
@@ -16,14 +16,14 @@ executives.options = (data,callback)=>{
 
 
 /**
- * @api {get} /executives/:uuid Get Executive Status
+ * @api {get} /executives/:uuid Get Executives (Admin)
  *
  * @apiName getUpgradeStatus
  * @apiGroup Executives
  * @apiHeader {String} uuid Authorization UUID .
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint checks if user is already an executive or if the user request is already pending 
- * @apiParam {String} uuid the uuid of the user 
+ * @apiParam {String} uuid the uuid of the executive 
  *
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
@@ -50,7 +50,7 @@ executives.options = (data,callback)=>{
 
  */
 
-executives.get = (data,callback)=>{
+adminexecutives.get = (data,callback)=>{
 
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
@@ -114,7 +114,7 @@ executives.get = (data,callback)=>{
 }
 
 /**
- * @api {post} /executives Request Upgrade 
+ * @api {post} /executives Request Upgrade (Admin)
  *
  * @apiName requestUpgrade
  * @apiGroup Executives
@@ -125,9 +125,6 @@ executives.get = (data,callback)=>{
  * @apiParam {String} party the party the user belongs to
  * @apiParam {String} about_you information about this user
  * @apiParam {String} about_party say something about this party in this user's perspective
- * @apiParam {String} constituency constituency if applicable
- * @apiParam {String} state Which state
- * @apiParam {String} lga Which lga
  * @apiParam {String} office Position user holds in party  
  *
  *@apiSuccessExample Success-Response:
