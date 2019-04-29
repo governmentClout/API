@@ -13,18 +13,58 @@ states.options = (data,callback)=>{
 
 
 /**
- * @api {get} /lga/:uuid get LGAs 
+ * @api {get} /lga/:uuid?sort=:sort&limi=:limit&page=:page get LGAs 
  * @apiName getLga
  * @apiGroup LGA
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint deletes a petition
+ * @apiDescription The endpoint returns all states lga
  * @apiParam {String} uuid UUID of the state
- *
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
 {
-    
+    "lga": [
+        {
+            "id": 17,
+            "state_id": 2,
+            "name": "Fufure"
+        },
+        {
+            "id": 18,
+            "state_id": 2,
+            "name": "Ganye"
+        },
+        {
+            "id": 19,
+            "state_id": 2,
+            "name": "Gayuk"
+        },
+        {
+            "id": 20,
+            "state_id": 2,
+            "name": "Gombi"
+        },
+        {
+            "id": 21,
+            "state_id": 2,
+            "name": "Grie"
+        },
+        {
+            "id": 22,
+            "state_id": 2,
+            "name": "Hong"
+        },
+        {
+            "id": 23,
+            "state_id": 2,
+            "name": "Jada"
+        }
+       
+    ]
+
 }
  *@apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request

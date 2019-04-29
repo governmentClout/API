@@ -12,14 +12,15 @@ states.options = (data,callback)=>{
 }
 
 /**
- * @api {get} /states get States 
+ * @api {get} /states?sort=:sort&limi=:limit&page=:page get States 
  * @apiName getStates
  * @apiGroup States
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint deletes a petition
- * @apiParam {String} uuid UUID of the pedition
- *
+ * @apiDescription The endpoint returns all states
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
 {
