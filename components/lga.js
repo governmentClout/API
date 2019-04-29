@@ -62,9 +62,9 @@ lga.get = (data,callback)=>{
 
                             ){
                                     let sql = "SELECT * FROM lga";
-
+                                    
                                     if(state){
-                                        sql += " WHERE state_id " + state;
+                                        sql += " WHERE state_id = " + state;
                                     }
                                     if(sort){
                                             sql += " ORDER BY id " + sort;
@@ -83,16 +83,16 @@ lga.get = (data,callback)=>{
 
                                     con.query(sql,(err,result)=>{
                                         
-                                                    if(!err && result.length > 0){
+                                            if(!err && result.length > 0){
 
-                                                            callback(200,{'states':result});
+                                                    callback(200,{'lga':result});
 
-                                                    }else{
-                                                            console.log(err);
-                                                            callback(500,{'Error':err});
-                                                    }
+                                            }else{
+                                                    console.log(err);
+                                                    callback(500,{'Error':err});
+                                            }
 
-                                            });
+                                    });
 
                             }else{
                                     console.log(err);
