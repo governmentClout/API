@@ -2,6 +2,68 @@
   {
     "type": "get",
     "url": "/executives/:uuid",
+    "title": "Get Executives (Admin)",
+    "name": "getUpgradeStatus",
+    "group": "Executives",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint checks if user is already an executive or if the user request is already pending</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>the uuid of the executive</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n[\n    {\n        \"id\": 2,\n        \"uuid\": \"3e6cd047-3185-410f-8c53-bab4d897f5af\",\n        \"user\": \"9b494e70-3f93-4181-bcd3-87f0ce1332ec\",\n        \"party\": \"testparty\",\n        \"admin\": \"null\",\n        \"about_you\": \"Just here to test if i can become an exco\",\n        \"about_party\": \"this should actually be just one\",\n        \"office\": \"Chairman\",\n        \"created_at\": \"2019-04-23T18:08:30.000Z\",\n        \"updated_at\": \"2019-04-23T18:08:30.000Z\",\n        \"status\": 0\n    }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   {}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/adminexecutives.js",
+    "groupTitle": "Executives"
+  },
+  {
+    "type": "get",
+    "url": "/executives/:uuid",
     "title": "Get Executive Status",
     "name": "getUpgradeStatus",
     "group": "Executives",
@@ -52,13 +114,103 @@
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "HTTP/1.1 401 Bad Request\n{\n    \"Error\": [\n        \"User already an executive\"\n    ]\n}",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   {}\n}",
           "type": "json"
         }
       ]
     },
     "version": "0.0.0",
     "filename": "components/executives.js",
+    "groupTitle": "Executives"
+  },
+  {
+    "type": "post",
+    "url": "/executives",
+    "title": "Request Upgrade (Admin)",
+    "name": "requestUpgrade",
+    "group": "Executives",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID .</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint create a new upgrade request for user to become an executive</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "user",
+            "description": "<p>the uuid of the user submitting the request</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "party",
+            "description": "<p>the party the user belongs to</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "about_you",
+            "description": "<p>information about this user</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "about_party",
+            "description": "<p>say something about this party in this user's perspective</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "office",
+            "description": "<p>Position user holds in party</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"Success\": \"Upgrade Request Sen\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 401 Bad Request\n{\n    \"Error\": [\n        \"User already an executive\"\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/adminexecutives.js",
     "groupTitle": "Executives"
   },
   {
@@ -118,6 +270,27 @@
             "optional": false,
             "field": "about_party",
             "description": "<p>say something about this party in this user's perspective</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "constituency",
+            "description": "<p>constituency if applicable</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "state",
+            "description": "<p>Which state</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "lga",
+            "description": "<p>Which lga</p>"
           },
           {
             "group": "Parameter",
@@ -549,6 +722,89 @@
     "version": "0.0.0",
     "filename": "components/friendrequests.js",
     "groupTitle": "Friends"
+  },
+  {
+    "type": "get",
+    "url": "/lga/:uuid?sort=:sort&limi=:limit&page=:page",
+    "title": "get LGAs",
+    "name": "getLga",
+    "group": "LGA",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all states lga</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>UUID of the state</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"lga\": [\n        {\n            \"id\": 17,\n            \"state_id\": 2,\n            \"name\": \"Fufure\"\n        },\n        {\n            \"id\": 18,\n            \"state_id\": 2,\n            \"name\": \"Ganye\"\n        },\n        {\n            \"id\": 19,\n            \"state_id\": 2,\n            \"name\": \"Gayuk\"\n        },\n        {\n            \"id\": 20,\n            \"state_id\": 2,\n            \"name\": \"Gombi\"\n        },\n        {\n            \"id\": 21,\n            \"state_id\": 2,\n            \"name\": \"Grie\"\n        },\n        {\n            \"id\": 22,\n            \"state_id\": 2,\n            \"name\": \"Hong\"\n        },\n        {\n            \"id\": 23,\n            \"state_id\": 2,\n            \"name\": \"Jada\"\n        }\n       \n    ]\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/lga.js",
+    "groupTitle": "LGA"
   },
   {
     "type": "delete",
@@ -1600,6 +1856,82 @@
     "version": "0.0.0",
     "filename": "components/signatures.js",
     "groupTitle": "Petitions"
+  },
+  {
+    "type": "get",
+    "url": "/states?sort=:sort&limi=:limit&page=:page",
+    "title": "get States",
+    "name": "getStates",
+    "group": "States",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all states</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"states\": [\n        {\n            \"id\": 1,\n            \"name\": \"Abia State\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Adamawa State\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Akwa Ibom State\"\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Anambra State\"\n        }\n        .\n        .\n        .\n        .\n        ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/states.js",
+    "groupTitle": "States"
   },
   {
     "type": "post",

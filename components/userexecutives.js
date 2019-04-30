@@ -33,11 +33,22 @@ userexecutives.get = (data,callback)=>{
              * - president
              * - governor
              * - council chairman
-             * - senator
+             * - senator --> select * from executive where office is senator, then go to profile, and select * from
              * - federal rep
              * - state rep 
-             * - councillor
+             * 
              */
+
+             
+
+             callback(200,{'executives':{
+                 'president':president,
+                 'governor': governor,
+                 'chairman': chairman,
+                 'senator': senator,
+                 'fed_rep':fed_rep,
+                 'state_rep':state_rep
+             }})
             
 
 
