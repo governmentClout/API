@@ -3,23 +3,26 @@ const config = require('./../lib/config');
 const con = require('./../lib/db');
 
 
-parties = {};
+districts = {};
 
-parties.options = (data,callback)=>{
+districts.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
+//get all districts
+//get all districts inside a state
+//get all lgas inside a district
 
 /**
- * @api {get} /parties/:id?sort=:sort&limi=:limit&page=:page get Single Party 
+ * @api {get} /districts/:id?sort=:sort&limi=:limit&page=:page get Single Party 
  * @apiName getSingleParty
  * @apiGroup LGA
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint returns all states lga
- * @apiParam {String} uuid id of the party
+ * @apiParam {String} id id of the party
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)

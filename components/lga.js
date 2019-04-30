@@ -13,13 +13,12 @@ states.options = (data,callback)=>{
 
 
 /**
- * @api {get} /lga/:uuid?sort=:sort&limi=:limit&page=:page get LGAs 
- * @apiName getLga
+ * @api {get} /lga/:uuid?sort=:sort&limi=:limit&page=:page get All LGAs 
+ * @apiName getAllLga
  * @apiGroup LGA
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
  * @apiDescription The endpoint returns all states lga
- * @apiParam {String} uuid UUID of the state
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)
@@ -62,6 +61,42 @@ states.options = (data,callback)=>{
             "state_id": 2,
             "name": "Jada"
         }
+       
+    ]
+
+}
+ *@apiErrorExample Error-Response:
+ *HTTP/1.1 404 Bad Request
+{
+   
+}
+
+*/
+
+/**
+ * @api {get} /lga/:uuid?sort=:sort&limi=:limit&page=:page get State LGAs 
+ * @apiName getStateLgas
+ * @apiGroup LGA
+ * @apiHeader {String} uuid Authorization UUID.
+ * @apiHeader {String} Token Authorization Token.
+ * @apiDescription The endpoint returns all states lga
+ * @apiParam {String} uuid UUID of the state
+ * @apiParam {String} page page you wish to get (pagination)
+ * @apiParam {String} limit result count per page you wish to get (pagination)
+ * @apiParam {String} sort result sort [ASC | DESC] (pagination)
+ *@apiSuccessExample Success-Response:
+ *HTTP/1.1 200 OK
+{
+    "lga": [
+        {
+            "id": 17,
+            "state_id": 2,
+            "name": "Fufure"
+        },
+      
+       .
+       .
+       .
        
     ]
 
