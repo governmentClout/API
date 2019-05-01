@@ -276,7 +276,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "constituency",
-            "description": "<p>constituency if applicable</p>"
+            "description": "<p>constituency/location if applicable</p>"
           },
           {
             "group": "Parameter",
@@ -726,8 +726,250 @@ define({ "api": [
   {
     "type": "get",
     "url": "/lga/:uuid?sort=:sort&limi=:limit&page=:page",
-    "title": "get LGAs",
-    "name": "getLga",
+    "title": "get All LGAs",
+    "name": "getAllLga",
+    "group": "LGA",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all states lga</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n    \"lga\": [\n        {\n            \"id\": 17,\n            \"state_id\": 2,\n            \"name\": \"Fufure\"\n        },\n        {\n            \"id\": 18,\n            \"state_id\": 2,\n            \"name\": \"Ganye\"\n        },\n        {\n            \"id\": 19,\n            \"state_id\": 2,\n            \"name\": \"Gayuk\"\n        },\n        {\n            \"id\": 20,\n            \"state_id\": 2,\n            \"name\": \"Gombi\"\n        },\n        {\n            \"id\": 21,\n            \"state_id\": 2,\n            \"name\": \"Grie\"\n        },\n        {\n            \"id\": 22,\n            \"state_id\": 2,\n            \"name\": \"Hong\"\n        },\n        {\n            \"id\": 23,\n            \"state_id\": 2,\n            \"name\": \"Jada\"\n        }\n       \n    ]\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/lga.js",
+    "groupTitle": "LGA"
+  },
+  {
+    "type": "get",
+    "url": "/districts/:id?sort=:sort&limi=:limit&page=:page",
+    "title": "get Single Party",
+    "name": "getSingleParty",
+    "group": "LGA",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all states lga</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>id of the party</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/districts.js",
+    "groupTitle": "LGA"
+  },
+  {
+    "type": "get",
+    "url": "/parties/:id?sort=:sort&limi=:limit&page=:page",
+    "title": "get Single Party",
+    "name": "getSingleParty",
+    "group": "LGA",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns a single political party's details</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>id of the party</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/parties.js",
+    "groupTitle": "LGA"
+  },
+  {
+    "type": "get",
+    "url": "/lga/:uuid?sort=:sort&limi=:limit&page=:page",
+    "title": "get State LGAs",
+    "name": "getStateLgas",
     "group": "LGA",
     "header": {
       "fields": {
@@ -788,7 +1030,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n    \"lga\": [\n        {\n            \"id\": 17,\n            \"state_id\": 2,\n            \"name\": \"Fufure\"\n        },\n        {\n            \"id\": 18,\n            \"state_id\": 2,\n            \"name\": \"Ganye\"\n        },\n        {\n            \"id\": 19,\n            \"state_id\": 2,\n            \"name\": \"Gayuk\"\n        },\n        {\n            \"id\": 20,\n            \"state_id\": 2,\n            \"name\": \"Gombi\"\n        },\n        {\n            \"id\": 21,\n            \"state_id\": 2,\n            \"name\": \"Grie\"\n        },\n        {\n            \"id\": 22,\n            \"state_id\": 2,\n            \"name\": \"Hong\"\n        },\n        {\n            \"id\": 23,\n            \"state_id\": 2,\n            \"name\": \"Jada\"\n        }\n       \n    ]\n\n}",
+          "content": "HTTP/1.1 200 OK\n{\n    \"lga\": [\n        {\n            \"id\": 17,\n            \"state_id\": 2,\n            \"name\": \"Fufure\"\n        },\n      \n       .\n       .\n       .\n       \n    ]\n\n}",
           "type": "json"
         }
       ]
@@ -1311,6 +1553,158 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "components/replymessages.js",
     "groupTitle": "Messages"
+  },
+  {
+    "type": "get",
+    "url": "/parties?sort=:sort&limi=:limit&page=:page",
+    "title": "get Parties",
+    "name": "getAllParties",
+    "group": "Parties",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all  lga</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/districts.js",
+    "groupTitle": "Parties"
+  },
+  {
+    "type": "get",
+    "url": "/parties?sort=:sort&limi=:limit&page=:page",
+    "title": "get Parties",
+    "name": "getAllParties",
+    "group": "Parties",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "uuid",
+            "description": "<p>Authorization UUID.</p>"
+          },
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>Authorization Token.</p>"
+          }
+        ]
+      }
+    },
+    "description": "<p>The endpoint returns all political parties</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "page",
+            "description": "<p>page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>result count per page you wish to get (pagination)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sort",
+            "description": "<p>result sort [ASC | DESC] (pagination)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 404 Bad Request\n{\n   \n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "components/parties.js",
+    "groupTitle": "Parties"
   },
   {
     "type": "post",
