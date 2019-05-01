@@ -18,7 +18,7 @@ parties.options = (data,callback)=>{
  * @apiGroup LGA
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint returns all states lga
+ * @apiDescription The endpoint returns a single political party's details
  * @apiParam {String} uuid id of the party
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
@@ -42,7 +42,7 @@ parties.options = (data,callback)=>{
  * @apiGroup Parties
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint returns all states lga
+ * @apiDescription The endpoint returns all political parties
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)
@@ -89,7 +89,7 @@ parties.get = (data,callback)=>{
                             ){
                                     let sql = "SELECT * FROM parties";
                                     
-                                    if(state){
+                                    if(party){
                                         sql += " WHERE id = " + party;
                                     }
                                     if(sort){
@@ -108,7 +108,7 @@ parties.get = (data,callback)=>{
                                     }
 
                                     con.query(sql,(err,result)=>{
-                                        
+                                        // console.log(result);
                                             if(!err && result.length > 0){
 
                                                     callback(200,{'parties':result});

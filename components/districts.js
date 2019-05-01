@@ -45,7 +45,7 @@ districts.options = (data,callback)=>{
  * @apiGroup Parties
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint returns all states lga
+ * @apiDescription The endpoint returns all  lga
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)
