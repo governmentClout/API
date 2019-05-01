@@ -3,84 +3,73 @@ const config = require('./../lib/config');
 const con = require('./../lib/db');
 
 
-parties = {};
+districtlga = {};
 
-parties.options = (data,callback)=>{
+districtlga.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
 
+//get all lga's inside district
 
 /**
- * @api {get} /parties/:id?sort=:sort&limi=:limit&page=:page get Single Party 
- * @apiName getSingleParty
+ * @api {get} /districtlga/:id?sort=:sort&limi=:limit&page=:page get Dist Party 
+ * @apiName getDistrictLGAs
  * @apiGroup LGA
  * @apiHeader {String} uuid Authorization UUID.
  * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint returns a single political party's details
- * @apiParam {String} uuid id of the party
+ * @apiDescription The endpoint returns all states lga
+ * @apiParam {String} id id of the district
  * @apiParam {String} page page you wish to get (pagination)
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)
  *@apiSuccessExample Success-Response:
  *HTTP/1.1 200 OK
 {
-    "parties": [
+    "lgas": [
         {
-            "id": 1,
-            "name": "PDP",
-            "motto": "Power and Progress",
-            "other_details": "Address location etc"
-        }
-    ]
-}
- *@apiErrorExample Error-Response:
- *HTTP/1.1 404 Bad Request
-{
-    "Error": null
-}
-
-*/
-
-/**
- * @api {get} /parties?sort=:sort&limi=:limit&page=:page get Parties 
- * @apiName getAllParties
- * @apiGroup Parties
- * @apiHeader {String} uuid Authorization UUID.
- * @apiHeader {String} Token Authorization Token.
- * @apiDescription The endpoint returns all political parties
- * @apiParam {String} page page you wish to get (pagination)
- * @apiParam {String} limit result count per page you wish to get (pagination)
- * @apiParam {String} sort result sort [ASC | DESC] (pagination)
- *@apiSuccessExample Success-Response:
- *HTTP/1.1 200 OK
-{
-    "parties": [
-        {
-            "id": 2,
-            "name": "APC",
-            "motto": "Apocalypso",
-            "other_details": "Testing"
+            "id": 15,
+            "state_id": 1,
+            "name": "Umuahia South",
+            "district_id": 2
         },
         {
-            "id": 1,
-            "name": "PDP",
-            "motto": "Power and Progress",
-            "other_details": "Address location etc"
+            "id": 14,
+            "state_id": 1,
+            "name": "Umuahia North",
+            "district_id": 2
+        },
+        {
+            "id": 6,
+            "state_id": 1,
+            "name": "Isiala Ngwa South",
+            "district_id": 2
+        },
+        {
+            "id": 5,
+            "state_id": 1,
+            "name": "Isiala Ngwa North",
+            "district_id": 2
+        },
+        {
+            "id": 4,
+            "state_id": 1,
+            "name": "Ikwuano",
+            "district_id": 2
         }
     ]
 }
  *@apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request
 {
-   "Error":null
+   "Error": null
 }
 
 */
 
 
-parties.get = (data,callback)=>{
+districtlga.get = (data,callback)=>{
 
     let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
@@ -88,12 +77,12 @@ parties.get = (data,callback)=>{
     let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
     let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
-	let party = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let district = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
         
         if( 
 		token && 
-		user 
-
+		user &&
+        district
 		){
 
             let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
@@ -107,11 +96,9 @@ parties.get = (data,callback)=>{
                             result[0].token == token 
 
                             ){
-                                    let sql = "SELECT * FROM parties";
+                                    let sql = "SELECT * FROM lga WHERE district_id = " + district;
                                     
-                                    if(party){
-                                        sql += " WHERE id = " + party;
-                                    }
+                                  
                                     if(sort){
                                             sql += " ORDER BY id " + sort;
                                     }
@@ -128,10 +115,10 @@ parties.get = (data,callback)=>{
                                     }
 
                                     con.query(sql,(err,result)=>{
-                                       
+                                        
                                             if(!err && result.length > 0){
 
-                                                    callback(200,{'parties':result});
+                                                    callback(200,{'lgas':result});
 
                                             }else{
                                                     console.log(err);
@@ -153,6 +140,9 @@ parties.get = (data,callback)=>{
 
 		if(!token){
 			errorObject.push('Token you supplied is not valid or has expired');
+        }
+        if(!district){
+			errorObject.push('District ID is required');
 		}
 		if(!user){
 			errorObject.push('uuid in the header not found');
@@ -164,4 +154,4 @@ parties.get = (data,callback)=>{
 }
 
 
-module.exports = parties;
+module.exports = districtlga;

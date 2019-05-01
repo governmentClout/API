@@ -68,7 +68,7 @@ states.options = (data,callback)=>{
  *@apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request
 {
-   
+    "Error": null
 }
 
 */
@@ -104,9 +104,8 @@ states.options = (data,callback)=>{
  *@apiErrorExample Error-Response:
  *HTTP/1.1 404 Bad Request
 {
-   
+    "Error": null
 }
-
 */
 
 
