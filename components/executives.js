@@ -125,7 +125,7 @@ executives.get = (data,callback)=>{
  * @apiParam {String} party the party the user belongs to
  * @apiParam {String} about_you information about this user
  * @apiParam {String} about_party say something about this party in this user's perspective
- * @apiParam {String} constituency constituency/location if applicable
+ * @apiParam {String} district constituency/location if applicable
  * @apiParam {String} state Which state
  * @apiParam {String} lga Which lga
  * @apiParam {String} office Position user holds in party  
