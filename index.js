@@ -24,7 +24,7 @@ httpServer.listen(config.httpPort, ()=>{
 });
 
 var unifiedServer = (req,res)=>{
-	
+
 	const parsedUrl = url.parse(req.url,true);
 	const path = parsedUrl.pathname; 
 	const trimmedPath = path.replace(/^\/+|\/+$/g,'');
@@ -74,8 +74,8 @@ var unifiedServer = (req,res)=>{
 				res.setHeader("Content-Control-Request-Headers","content-type");
 				res.setHeader("Access-Control-Max-Age",2592000);
 
-				res.writeHead(statusCode);
-
+				res.writeHead(statusCode,{'Content-Type': 'application/json'});
+			
 				res.end(payloadString);
 
 
