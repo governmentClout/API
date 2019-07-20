@@ -1,0 +1,4 @@
+module.exports = {
+    "up": "CREATE TABLE IF NOT EXISTS petition_signs (id INT NOT NULL AUTO_INCREMENT, petition VARCHAR(255) NOT NULL, user VARCHAR(255) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, status INT(1) NOT NULL DEFAULT '0' , PRIMARY KEY (id)) ENGINE = InnoDB;",
+    "down": "DRIO TABLE petition_signs"
+}
