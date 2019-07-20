@@ -1,6 +1,6 @@
 const migration = require('mysql-migrations');
 const mysql = require('mysql');
-const config = require('./../lib/config');
+const config = require('./lib/config');
 const path = require('path');
 
 
@@ -12,7 +12,7 @@ let connection = mysql.createPool({
   database: config.db_name
 });
 
-migration.init(connection, './migrations');
+migration.init(connection, __dirname + '/migrations');
 
 // //test that mysql is connection
 // module.exports = dbconnect.connect( (err) => {
