@@ -1,7 +1,7 @@
 // Mainly to check if mysql is installed and connected correctly
 
 const mysql = require('mysql');
-const config = require('./config.js');
+const config = require('./../lib/config');
 
 
 let db = mysql.createConnection({

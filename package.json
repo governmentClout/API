@@ -13,8 +13,9 @@
   "dependencies": {
     "async": "^2.6.1",
     "cloudinary": "^1.13.2",
-    "handlebars": "^4.0.12",
+    "handlebars": "^4.1.2",
     "mysql": "^2.16.0",
+    "mysql-migrations": "^1.0.6",
     "node-mysql-wrapper": "^2.9.3",
     "nodemailer": "^4.6.8",
     "randomstring": "^1.1.5",
