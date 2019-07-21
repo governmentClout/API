@@ -32,15 +32,15 @@ cloudinary.config({
 // });
 
 
-let con = mysql.createPool({
+// let con = mysql.createPool({
 
-  host: config.db_host,
-  user: config.db_username,
-  password: config.db_password,
-  database: config.db_name,
-  multipleStatements: true
+//   host: config.db_host,
+//   user: config.db_username,
+//   password: config.db_password,
+//   database: config.db_name,
+//   multipleStatements: true
 
-});
+// });
 
 
 
