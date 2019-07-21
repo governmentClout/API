@@ -6,8 +6,6 @@ const tokens = require('./../lib/tokenization');
 const async = require('async');
 const mailer = require('./mailer');
 
-const con = require('./../lib/db');
-
 
 sendmessages = {};
 

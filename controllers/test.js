@@ -1,9 +1,8 @@
 const async = require('async');
 
 const config = require('./../lib/config');
-const mysql = require('mysql'); 
 
-const dbhelper = require('./../lib/db_helper');
+
 const mailer = require('./mailer');
 
 const cloudinary = require('cloudinary');

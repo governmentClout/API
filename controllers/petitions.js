@@ -1,9 +1,7 @@
 const _db = require('./../lib/migrations');
 const helpers = require('./../lib/helpers');
-const con = require('./../lib/db');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
-const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const async = require('async');
 

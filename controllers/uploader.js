@@ -2,7 +2,6 @@
 
 const config = require('./../lib/config');
 const cloudinary = require('cloudinary');
-const mysql = require('mysql');
 
 cloudinary.config({ 
   cloud_name: 'staybusy', 
@@ -10,7 +9,6 @@ cloudinary.config({
   api_secret: 'NJCsxMKkJ1H6-5QsfPd3HkLohHA' 
 });
 
-const con = require('./../lib/db');
 
 uploader = {};
 

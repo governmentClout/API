@@ -1,6 +1,6 @@
 
 const config = require('./../lib/config');
-const con = require('./../lib/db');
+
 
 
 districts = {};

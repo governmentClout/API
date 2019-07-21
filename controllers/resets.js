@@ -5,7 +5,7 @@ const config = require('./../lib/config');
 const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
-const con = require('./../lib/db');
+
 
 resets = {};
 

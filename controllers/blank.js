@@ -4,8 +4,6 @@ const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
 const tokens = require('./../lib/tokenization');
 
-const con = require('./../lib/db');
-
 
 blank = {};
 
