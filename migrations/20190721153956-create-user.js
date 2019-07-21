@@ -9,22 +9,28 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       uuid: {
-        type: Sequelize.STRING
+        type: Sequelize.uuid,
+        allowNull: false 
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false        
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       phone: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       dob: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       tosAgreement: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING, //TODO: check proper data type for boolean.
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

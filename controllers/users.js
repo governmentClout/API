@@ -1,6 +1,7 @@
+'use strict';
+
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
-const mysql = require('mysql');
 const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
 
@@ -128,7 +129,7 @@ users.post = (data,callback)=>{
 										   	}else{
 										   		console.log(err);
 										   		callback(400, {'Error':'User Not created, mysql error ---> check server log'});
-										   		// callback(500, {'Error':'Table creation failed, its possible this table already exists'});
+										   	
 										   	}
 
 										  });
