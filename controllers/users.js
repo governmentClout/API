@@ -4,6 +4,7 @@ const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
+const models = require('./../models/index');
 
 let users = {};
 
@@ -305,79 +306,83 @@ users.post = (data,callback)=>{
 
 users.get = (data,callback) => {
 
-	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
-	let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
-	let query = data.queryStringObject;
+	let user = models.User.findAll().then((data)=>callback(200,{'Data':data}));
+	// console.log(user);
+	// callback(200,{'Data':user});
+
+	// let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	// let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+	// let query = data.queryStringObject;
 	
-	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	// let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
-	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
-	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
-	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+	// let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	// let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	// let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
 
-	if(token && uuid){
+	// if(token && uuid){
 
-		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
+	// 	let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
-		con.query(verifyToken, (err,result)=>{
-			console.log('result ' + result);
-			if(
-				!err && 
-				result[0] && 
-				result[0].token == token 
+	// 	con.query(verifyToken, (err,result)=>{
+	// 		console.log('result ' + result);
+	// 		if(
+	// 			!err && 
+	// 			result[0] && 
+	// 			result[0].token == token 
 
-				){
+	// 			){
 
-				let check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid)";
+	// 			let check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid)";
 
-				if(param){
+	// 			if(param){
 					
-					check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
-				}
+	// 				check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
+	// 			}
 
-						if(sort){
-					    		check += " ORDER BY id " + sort;
- 					    	}
+	// 					if(sort){
+	// 				    		check += " ORDER BY id " + sort;
+ 	// 				    	}
 
-					    	if(limit){
-					    		check += " LIMIT " + limit;
-					    	}
+	// 				    	if(limit){
+	// 				    		check += " LIMIT " + limit;
+	// 				    	}
 
-					    	if(page){
+	// 				    	if(page){
 					    		
-					    		let skip = page == '1' ? 0 : page * limit;
-					    		check += " OFFSET " + skip;
+	// 				    		let skip = page == '1' ? 0 : page * limit;
+	// 				    		check += " OFFSET " + skip;
 
-					    	}
+	// 				    	}
 		
 
-					con.query(check,  (err,result) => {
+	// 				con.query(check,  (err,result) => {
 
-					   	if(!err && result.length > 0){
+	// 				   	if(!err && result.length > 0){
 
-					   		callback(200,result);
+	// 				   		callback(200,result);
 
-					   	}else{
-					   		console.log(err);
-					   		callback(500,{'Error':'sql server error, could not fetch users'});
+	// 				   	}else{
+	// 				   		console.log(err);
+	// 				   		callback(500,{'Error':'sql server error, could not fetch users'});
 
-					   	}
+	// 				   	}
 
-				   });
+	// 			   });
 
-				}else{
+	// 			}else{
 
-					callback(400,{'Error':'Token Mismatch or expired'});
+	// 				callback(400,{'Error':'Token Mismatch or expired'});
 
-				}
+	// 			}
 
-		});
+	// 	});
 
-	}else{
+	// }else{
 
-		callback(400,{'Error':'Token Invalid or expired'});
+	// 	callback(400,{'Error':'Token Invalid or expired'});
 
-	}
+	// }
 	
 
 }

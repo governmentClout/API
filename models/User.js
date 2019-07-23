@@ -1,5 +1,7 @@
 'use strict';
 
+const models = require('./index');
+
 module.exports = (sequelize, DataTypes) => {
 
   const User = sequelize.define('User', {
@@ -15,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   
   User.associate = function(models) {
     // associations can be defined here
-    User.hasOne(Token);
+    User.hasOne(models.Token);
   };
   return User;
 };
