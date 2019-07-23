@@ -1,17 +1,12 @@
-const async = require('async');
+
 
 const config = require('./../lib/config');
 
 
 const mailer = require('./mailer');
 
-const cloudinary = require('cloudinary');
 
-cloudinary.config({ 
-  cloud_name: 'staybusy', 
-  api_key: '513764555178418', 
-  api_secret: 'NJCsxMKkJ1H6-5QsfPd3HkLohHA' 
-});
+
 // function getStudents(ids, cb) { 
 //     var students = [];
 //     var pending = ids.length;

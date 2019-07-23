@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const handlebars = require('handlebars'); 
 const fs = require('fs');
 const async = require('async');
-const mysql = require('mysql');
+
 
 
 let readHTMLFile = function(path, callback) {
