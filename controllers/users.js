@@ -307,6 +307,7 @@ users.post = (data,callback)=>{
 users.get = (data,callback) => {
 
 	let user = models.User.findAll().then((data)=>callback(200,{'Data':data}));
+	
 	// console.log(user);
 	// callback(200,{'Data':user});
 

@@ -10,11 +10,19 @@ module.exports = {
       },
       uuid: {
         type: Sequelize.UUID,
-        allowNull: false 
+        allowNull: false,
+        defaultValue: Sequelize.UUIDV4,
+        validate: {
+          isUUID: 4
+        } 
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false        
+        allowNull: false ,
+        unique: true,
+        validae: {
+          isEmail: true
+        }
       },
       password: {
         type: Sequelize.STRING,
@@ -22,19 +30,24 @@ module.exports = {
       },
       phone: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: {
+          not: ["[a-z]",'i']
+        }
       },
       dob: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATE,
         allowNull: false
       },
       tosAgreement: {
-        type: Sequelize.STRING, //TODO: check proper data type for boolean.
+        type: Sequelize.BOOLEAN, 
         allowNull: false
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
       updatedAt: {
         allowNull: false,
