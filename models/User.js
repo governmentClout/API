@@ -5,20 +5,23 @@ const models = require('./index');
 module.exports = (sequelize, DataTypes) => {
 
   const User = sequelize.define('User', {
-
-    uuid: DataTypes.UUID,
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     phone: DataTypes.STRING,
-    dob: DataTypes.STRING,
-    tosAgreement: DataTypes.STRING
+    provider: DataTypes.STRING,
+    dob: DataTypes.DATEONLY
 
   }, {});
   
   User.associate = function(models) {
     // associations can be defined here
-    Users.hasOne(models.Token, {
-      foreignKey: 'user'
+    User.hasOne(models.Token, {
+      foreignKey: 'userId'
     });
 
   };

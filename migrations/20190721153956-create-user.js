@@ -3,24 +3,16 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Users', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        allowNull: false,      
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      uuid: {
         type: Sequelize.UUID,
-        allowNull: false,
-        defaultValue: Sequelize.UUIDV4,
-        validate: {
-          isUUID: 4
-        } 
+        defaultValue: Sequelize.UUIDV4
       },
       email: {
         type: Sequelize.STRING,
         allowNull: false ,
         unique: true,
-        validae: {
+        validate: {
           isEmail: true
         }
       },
@@ -37,12 +29,15 @@ module.exports = {
         }
       },
       dob: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false
       },
-      tosAgreement: {
-        type: Sequelize.BOOLEAN, 
-        allowNull: false
+      provider: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          is: ["^[a-z]+$",'i']
+        }
       },
       createdAt: {
         allowNull: false,

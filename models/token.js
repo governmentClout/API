@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
 
   const Token = sequelize.define('Token', {
 
-    uuid: DataTypes.UUID,
+    userId: DataTypes.UUID,
     token: DataTypes.STRING
 
   }, {});

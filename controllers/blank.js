@@ -5,7 +5,7 @@ const config = require('./../lib/config');
 const tokens = require('./../lib/tokenization');
 
 
-blank = {};
+blank = {}; 
 
 blank.options = (data,callback)=>{
 

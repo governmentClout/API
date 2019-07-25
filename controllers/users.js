@@ -2,9 +2,9 @@
 
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
-const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
 const models = require('./../models/index');
+const token = require('./../controllers/tokens');
 
 let users = {};
 
@@ -54,7 +54,6 @@ users.options = (data,callback)=>{
 
 users.post = (data,callback)=>{
 
-
 	let phone = null;
 	let email = null;
 	let dob = null;
@@ -62,9 +61,9 @@ users.post = (data,callback)=>{
 	let initialProvider = data.payload.provider;
 	let tosAgreement = typeof(data.payload.tosAgreement) == 'boolean' && data.payload.tosAgreement == true ? 1 : false;
 	let provider = typeof(data.payload.provider) == 'string' && (data.payload.provider == 'email' || data.payload.provider == 'facebook' || data.payload.provider == 'twitter' || data.payload.provider == 'linkedin' || data.payload.provider == 'google'  ) ? data.payload.provider : false;
-	let uuid = uuidV1();
 	let proceed = false;
-	
+
+
 	if(provider){
 
 		if(provider == 'email'){
@@ -74,90 +73,40 @@ users.post = (data,callback)=>{
 		let email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length >= 10 ? data.payload.email.trim() : false;
 	 	let dob = typeof(data.payload.dob) == 'string' ? data.payload.dob.trim() : false;
 
-	 	if(tosAgreement && password && email && phone && dob){
+	 	if(password && email && phone && dob){
 
-	 		const checkPhone = "SELECT * FROM users WHERE phone='" + phone + "'";
-		
+			let hashedPassword = helpers.hash(password);
 
-			con.query(checkPhone,  (err,result) => {
-				
-				   	if(!err && result.length == 0){
+			let data = {
+				phone: phone,
+				email: email,
+				dob: dob,
+				password: dob,
+				provider: provider
+			}
+			//TODO:use transaction here
 
-				   		const checkEmail = "SELECT * FROM users WHERE email='" + email + "'";
-
-				   		con.query(checkEmail,  (err,result) => {
-
-				   				if(!err && result.length == 0){
-
-				   					let hashedPassword = helpers.hash(password);
-				   					
+			 models.User
+				.findOrCreate({where: {phone: phone,email:email}, defaults: data })
+				.then(([user, created]) => {					
 					
-									if(hashedPassword){
+					if(created){
+						//create token here
+						token.generate(user.id).then(([result, created]) => {
 
-										let sql = "INSERT INTO users (uuid,phone, email, dob, password, tosAgreement, provider) VALUES ( '" + uuid + "','" +phone+ "', '" + email + "' , '" + dob +"' ,'"+hashedPassword +"', '" + tosAgreement + "','" + provider +"' )";
-
-										// const createUser = con.query(sql);
-
-										con.query(sql,  (err,result) => {
-
-										   	if(!err){
-										   		let userToken = tokens.generate(uuid);
-
-										   		let tokenInsert = "INSERT INTO tokens (uuid,token) VALUES ('" + uuid +"','" + userToken + "')"
-										   		
-										   		con.query(tokenInsert,(err,result)=>{
-
-										   			if(!err){
-										   				console.log('done');
-										   				//send email here
-										   				mailer.sendByEmail({
-										   					'email':email,
-										   					'subject':'Welcome to GClout',
-										   					'message':'Your registration was successful, welcome to gclout.com'
-										   					});
-
-										   				callback(200, {'Token':userToken, 'uuid':uuid});
-
-										   			}else{
-
-										   				callback(500, {'Error':'User registration failed, token generation failed'});
-
-										   			}
-
-										   		});
-
-
-										   	}else{
-										   		console.log(err);
-										   		callback(400, {'Error':'User Not created, mysql error ---> check server log'});
-										   	
-										   	}
-
-										  });
+							if(created){
+								callback(200,{'Message':'User Created','Data':user});				 
+							}else{
+								callback(500,{'Error':'User already exists'});
+							}
 							
-
-										}else{
-											console.log(err);
-											callback(500, {'Error':'Password Hash Failed'});
-										}
-
-				   				}else{
-
-				   					console.log(err);
-				   					callback(400, {'Error':'User Not created, Email already in use'});
-				   				
-				   				}
-				   			});
-
-				   		}else{
-
-					   		console.log(err);
-					   		callback(400, {'Error':'User Not created, Phone number already in use'});
-				   		
-				   		}
-
-				   	});
-
+						 });
+						
+					}else {
+						callback(400,{'Error':'User Already exists'});
+					}
+				});
+			
 	 	}else{
 
 	 		let errorObject = [];
@@ -307,19 +256,19 @@ users.post = (data,callback)=>{
 users.get = (data,callback) => {
 
 	let user = models.User.findAll().then((data)=>callback(200,{'Data':data}));
-	
-	// console.log(user);
-	// callback(200,{'Data':user});
 
-	// let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
-	// let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
-	// let query = data.queryStringObject;
+	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+	let query = data.queryStringObject;
 	
-	// let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
-	// let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
-	// let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
-	// let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+
+
+
 
 	// if(token && uuid){
 
