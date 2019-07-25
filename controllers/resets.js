@@ -1,7 +1,6 @@
 
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
-const tokens = require('./../lib/tokenization');
 const mailer = require('./mailer');
 
 

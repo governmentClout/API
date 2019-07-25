@@ -1,7 +1,6 @@
 const helpers = require('./../lib/helpers');
 const uuidV1 = require('uuid/v4');
 const config = require('./../lib/config');
-const tokens = require('./../lib/tokenization');
 
 
 let login = {};
@@ -28,7 +27,7 @@ login.post = (data,callback)=>{
 			
 
 			con.query(login,  (err,result) => {
-				console.log(result);
+			
 				if(!err && result.length > 0){
 
 					let verifyToken = "SELECT token FROM tokens WHERE uuid='" + result[0].uuid + "'; SELECT * FROM profiles where uuid='" + result[0].uuid 	+"'";

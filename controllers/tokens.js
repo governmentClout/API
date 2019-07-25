@@ -4,18 +4,13 @@ const randomString = require("randomstring");
 const token = {}
 
 token.verify = (uuid,token)=>{
-    //verify that token is valid
-    //collect user uuid, and token
-    //check database for the details
-    //return true if found
-    //return false if not found
 
     return models.Token.findOne({where: {userId: uuid,token:token}}) ;
+    
 }
 
 token.generate = (uuid)=>{
-    //generate a new token
-    //return the generated token
+
     uuid = typeof(uuid) == 'string' && uuid.trim().length > 10 ? uuid.trim() : false;
 
    	let token = formToken(100,'alphanumeric');
@@ -34,6 +29,10 @@ token.generate = (uuid)=>{
 		return false;
 	}
 
+}
+
+token.reset = (uuid,oldToken)=>{
+    //once there is a passowrd reset done, reset the token too
 }
 
 let formToken = (len,char)=> randomString.generate({length: len,charset: char });

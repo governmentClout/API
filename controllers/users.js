@@ -253,13 +253,12 @@ users.post = (data,callback)=>{
 
 }
 
-
 users.get = (data,callback) => {
 
 	let tokenParam = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let query = data.queryStringObject;
-	
+	 
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
 	let page = typeof(query.page) == 'string'  ? query.page : '1'; 
@@ -280,7 +279,7 @@ users.get = (data,callback) => {
 			if(param){
 				models.User.findOne({where: {id:param},include:[{model:models.Token}]}).then(user=>callback(200,{user}));
 			}else {
-				models.User.findAndCountAll().then((users)=>callback(200,{users}));
+				models.User.findAndCountAll({offset: skip, limit: limit, order: [['createdAt', order]],include:[{model:models.Token}]}).then((users)=>callback(200,{users}));
 			}
 
 		});			

@@ -2,8 +2,6 @@
 const config = require('./../lib/config');
 
 
-
-
 let profiles = {};
 
 profiles.options = (data,callback)=>{
@@ -138,9 +136,6 @@ profiles.post = (data,callback)=>{
 		callback(400,{'Error':'Token Invalid or expired'});
 	}
 
-	
-
-	// callback(200,{'Success':'You have hit profile post endpoint'});
 }
 
 
