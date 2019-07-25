@@ -261,8 +261,8 @@ users.get = (data,callback) => {
 	 
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
-	let page = typeof(query.page) == 'string'  ? query.page : '1'; 
-	let limit = typeof(query.limit) == 'string' ? query.limit : '10';
+	let page = typeof(query.page) == 'string'  ? query.page : 1; 
+	let limit = typeof(query.limit) == 'string' ? query.limit : 10;
 	let sort = typeof(query.sort) == 'string' && query.sort.trim().length > 0 && (query.sort.trim() == 'ASC' || 'DESC') ? query.sort.trim() : 'DESC';
 
 
@@ -279,7 +279,7 @@ users.get = (data,callback) => {
 			if(param){
 				models.User.findOne({where: {id:param},include:[{model:models.Token}]}).then(user=>callback(200,{user}));
 			}else {
-				models.User.findAndCountAll({offset: skip, limit: limit, order: [['createdAt', order]],include:[{model:models.Token}]}).then((users)=>callback(200,{users}));
+				models.User.findAndCountAll({ offset: page, limit: limit, order: [['createdAt', sort]],include:[{model:models.Token}]}).then((users)=>callback(200,{users}));
 			}
 
 		});			
