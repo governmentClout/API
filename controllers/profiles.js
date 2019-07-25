@@ -1,6 +1,7 @@
 
 const config = require('./../lib/config');
 const token = require('./../controllers/tokens');
+const models = require('./../models/index');
 
 
 let profiles = {};
@@ -26,21 +27,21 @@ profiles.post = (data,callback)=>{
 	let lastName = typeof(data.payload.lastName) == 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName.trim() : false;
 	let photo = typeof(data.payload.photo) == 'string' && data.payload.photo.trim().length > 0 ? data.payload.photo.trim() : '';
 	let background = typeof(data.payload.background) == 'string' && data.payload.background.trim().length > 0 ? data.payload.background.trim() : false;
-	let uuid = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
-	let tokenParam = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+	let uuidParam = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	let tokenParam = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 
-
-	if(tokenParam && uuid){
-
-		token.verify(uuid,tokenParam).then((result)=>{
+	if(tokenParam && uuidParam){
+				
+		token.verify(uuidParam,tokenParam).then((result)=>{
 			
 			if(!result){
-				callback(400,{'Error':'Token Mismatch or expired'});
-			}	
-
+				callback(400,{'Error':'Token Mismarstch or expired'});
+			}else{
+				return callback(400,{'Error':'Bad Request'});	
+			}
 		})
 		.then(()=>{
-			
+		
 			if(
 				nationalityOrigin &&
 				nationalityResidence &&
@@ -50,7 +51,7 @@ profiles.post = (data,callback)=>{
 				lastName 
 
 				){
-
+		
 					let data = {
 						nationalityOrigin: nationalityOrigin,
 						nationalityResidence:nationalityResidence,
@@ -62,17 +63,32 @@ profiles.post = (data,callback)=>{
 						background:background
 					};
 
-					models.Profile.findOrCreate({where: {userId: uuid}, defaults: data})
+
+					models.Profile.findOrCreate({where: {userId: uuidParam}, defaults: data})
 					.then(([profile,created])=>{
 						//data was created here, do something's and send out response
-					}) 
+					
+						if(created){
+
+							callback(200,{profile});
+						}
+						callback(400,{'Error':'User profile already exists, update instread'});
+
+					}).catch((err)=>{
+
+						console.log("profile creation Error==>");
+						console.log(err);
+						callback(500,{'Error':err});
+						
+					});
 
 				}else{
+
 					let errorObject = [];
-					if(!nationality_residence){
+					if(!nationalityResidence){
 						errorObject.push('Nationality Residence is missing or invalid format');
 					}
-					if(!nationality_origin){
+					if(!nationalityOrigin){
 						errorObject.push('Nationality Origin is missing or invalid format');
 					}
 					if(!state){
@@ -87,10 +103,7 @@ profiles.post = (data,callback)=>{
 					if(!lastName){
 						errorObject.push('lastName is mising or invalide format');
 					}
-					// if(!photo){
-					// 	errorObject.push('Photo is missing or invalid format');
-					// }
-
+				
 					callback(400,{'Error':errorObject});
 				}
 			
@@ -101,111 +114,18 @@ profiles.post = (data,callback)=>{
 			callback(500,err);
 		});			
 
-		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
-
-		con.query(verifyToken, (err,result)=>{ 
-
-			if(
-				!err && 
-				result[0] && 
-				result[0].token == token 
-
-				){
-
-				if(
-					nationality_origin &&
-					nationality_residence &&
-					state &&
-					lga &&
-					firstName &&
-					lastName 
-
-					){
-
-					const checkUser = "SELECT * FROM users WHERE uuid='" + uuid + "'";
-					
-
-						con.query(checkUser,  (err,result) => {
-
-							//check if profule already exist
-							
-							if(!err && result.length > 0){
-
-								let checkProfile = "SELECT * FROM profiles WHERE uuid='" + uuid + "'";
-
-								con.query(checkProfile, (err,result)=>{
-									if(!err && 
-										result.length < 1
-										){
-										//upload to cloudinary
-
-										let sql = "INSERT INTO profiles (uuid, nationality_residence, nationality_origin, state, lga, firstName, lastName, photo, background) VALUES ( '" + uuid + "','" +nationality_residence+ "', '" +nationality_origin+ "','" + state + "' , '" + lga +"' ,'"+firstName +"', '" + lastName + "','" + photo +"','" + background + "' )";
-
-										con.query(sql,  (err,result) => {
-
-										   	if(!err){
-										   		
-										   		callback(200, {'Success':'Profile created'});
-
-										   	}else{
-										   		console.log(err);
-										   		callback(400, {'Error':'Profile Not created'});
-										   		// callback(500, {'Error':'Table creation failed, its possible this table already exists'});
-										   	}
-
-								 		});
-
-									}else{
-										callback(403,{'Error':'User profile already exists, you should be updating'});
-									}
-								});
-
-								
-							}else{
-								callback(404,{'Error':'User not found'});
-							}
-
-						});
-
-						
-
-					}else{
-						let errorObject = [];
-						if(!nationality_residence){
-							errorObject.push('Nationality Residence is missing or invalid format');
-						}
-						if(!nationality_origin){
-							errorObject.push('Nationality Origin is missing or invalid format');
-						}
-						if(!state){
-							errorObject.push('State is missing or invalid format');
-						}
-						if(!lga){
-							errorObject.push('lga is missing or invalide format');
-						}
-						if(!firstName){
-							errorObject.push('firstName is missing or invalide format');
-						}
-						if(!lastName){
-							errorObject.push('lastName is mising or invalide format');
-						}
-						// if(!photo){
-						// 	errorObject.push('Photo is missing or invalid format');
-						// }
-
-						callback(400,{'Error':errorObject});
-					}
-
-			}else{
-				callback(400,{'Error':'Token Mismatch or expired'});
-			}
-
-		});	
-
 	}else{
-		callback(400,{'Error':'Token Invalid or expired'});
-	}
+		let errorObject = [];
 
+		if(!tokenParam){
+			errorObject.push('Token Header is required');
+		}
+		if(!uuidParam){
+			errorObject.push('UUID header is required');
+		}
+		
+		callback(400,{'Error':errorObject});
+	}
 }
 
 
@@ -343,9 +263,7 @@ profiles.put = (data,callback)=>{
 								callback(404,{'Error':'User not found'});
 							}
 
-						});
-
-						
+						});						
 
 
 			}else{

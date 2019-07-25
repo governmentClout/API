@@ -4,7 +4,7 @@ const models = require('./index');
 module.exports = (sequelize, DataTypes) => {
 
   const Profile = sequelize.define('Profile', {
-
+    
     userId: DataTypes.UUID,
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
