@@ -12,16 +12,24 @@ token.verify = (uuid,token)=>{
 }
 
 token.generate = (uuid)=>{
-
+    //generate a new token
+    //return the generated token
     uuid = typeof(uuid) == 'string' && uuid.trim().length > 10 ? uuid.trim() : false;
 
-    let token = formToken(100,'alphanumeric');
+   	let token = formToken(100,'alphanumeric');
 
 	if(uuid && token){
 
-        return models.Token.findOrCreate({where: {userId: uuid}, defaults: {userId: uuid,token:token}});
+        let data = {
+            token:token,
+            userId:uuid
+        }
+
+        return models.Token.findOrCreate({where: {userId: uuid}, defaults: data}) 
        
 
+	}else{
+		return false;
 	}
 
 }

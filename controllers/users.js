@@ -92,12 +92,13 @@ users.post = (data,callback)=>{
 					
 					if(created){
 						//create token here
-						token.generate(user.id).then(([result, created]) => {
+						token.generate(user.id).then(([accessToken, created]) => {
 
 							if(created){
-								callback(200,{'Message':'User Created','Data':user});				 
+								//TODO: Send Email
+								callback(200,{user,accessToken});				 
 							}else{
-								callback(500,{'Error':'User already exists'});
+								callback(500,{'Error':'User already'});
 							}
 							
 						 });
