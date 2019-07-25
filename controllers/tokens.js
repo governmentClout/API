@@ -9,6 +9,8 @@ token.verify = (uuid,token)=>{
     //check database for the details
     //return true if found
     //return false if not found
+
+    return models.Token.findOne({where: {userId: uuid,token:token}}) ;
 }
 
 token.generate = (uuid)=>{

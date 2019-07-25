@@ -81,7 +81,7 @@ users.post = (data,callback)=>{
 				phone: phone,
 				email: email,
 				dob: dob,
-				password: dob,
+				password: hashedPassword,
 				provider: provider
 			}
 			//TODO:use transaction here
@@ -256,9 +256,7 @@ users.post = (data,callback)=>{
 
 users.get = (data,callback) => {
 
-	let user = models.User.findAll().then((data)=>callback(200,{'Data':data}));
-
-	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let tokenParam = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 	let uuid = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
 	let query = data.queryStringObject;
 	
@@ -269,74 +267,24 @@ users.get = (data,callback) => {
 	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
 
 
+	if(tokenParam && uuid){
 
+		let verifyToken = token.verify(uuid,tokenParam).then((result)=>{
+			console.log(result);
+			if(!result){
+				callback(400,{'Error':'Token Mismatch or expired'});
+			}			
+		})
+		.then(()=>{
+						
+			if(param){
+				models.User.findOne({where: {id:param}}).then(user=>callback(200,{user}));
+			}else {
+				models.User.findAll().then((users)=>callback(200,{users}));
+			}
+		});			
 
-	// if(token && uuid){
-
-	// 	let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
-
-	// 	con.query(verifyToken, (err,result)=>{
-	// 		console.log('result ' + result);
-	// 		if(
-	// 			!err && 
-	// 			result[0] && 
-	// 			result[0].token == token 
-
-	// 			){
-
-	// 			let check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid)";
-
-	// 			if(param){
-					
-	// 				check = "SELECT users.id,users.uuid,users.email,users.dob,users.phone,profiles.nationality_residence,profiles.nationality_origin,profiles.state,profiles.lga,profiles.firstName,profiles.lastName,profiles.photo FROM users LEFT JOIN profiles ON (users.uuid=profiles.uuid) WHERE users.uuid='"+param+"'";
-	// 			}
-
-	// 					if(sort){
-	// 				    		check += " ORDER BY id " + sort;
- 	// 				    	}
-
-	// 				    	if(limit){
-	// 				    		check += " LIMIT " + limit;
-	// 				    	}
-
-	// 				    	if(page){
-					    		
-	// 				    		let skip = page == '1' ? 0 : page * limit;
-	// 				    		check += " OFFSET " + skip;
-
-	// 				    	}
-		
-
-	// 				con.query(check,  (err,result) => {
-
-	// 				   	if(!err && result.length > 0){
-
-	// 				   		callback(200,result);
-
-	// 				   	}else{
-	// 				   		console.log(err);
-	// 				   		callback(500,{'Error':'sql server error, could not fetch users'});
-
-	// 				   	}
-
-	// 			   });
-
-	// 			}else{
-
-	// 				callback(400,{'Error':'Token Mismatch or expired'});
-
-	// 			}
-
-	// 	});
-
-	// }else{
-
-	// 	callback(400,{'Error':'Token Invalid or expired'});
-
-	// }
-	
-
+	}
 }
-
 
 module.exports = users;
