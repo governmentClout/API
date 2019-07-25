@@ -7,28 +7,48 @@ module.exports = {
         allowNull: false
       }, 
       firstName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          is: ["^[a-z]+$",'i']
+        }
       },
       lastName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          is: ["^[a-z]+$",'i']
+        }
       },
       nationalityOrigin: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       nationalityResidence: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       state: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       lga: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       photo: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: "",
+        validate: {
+          is: ["^[a-z]+$",'i']
+        }
       },
       background: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        defaultValue: "",
+        validate: {
+          is: ["^[a-z]+$",'i']
+        }
       },
       createdAt: {
         allowNull: false,

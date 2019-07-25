@@ -1,6 +1,11 @@
 'use strict';
+const models = require('./index');
+
 module.exports = (sequelize, DataTypes) => {
+
   const Profile = sequelize.define('Profile', {
+
+    userId: DataTypes.UUID,
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     nationalityOrigin: DataTypes.STRING,
@@ -9,10 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     lga: DataTypes.STRING,
     photo: DataTypes.STRING,
     background: DataTypes.TEXT
+
   }, {});
+
   Profile.associate = function(models) {
     // associations can be defined here
     Profile.belongsTo(models.User);
+
   };
   return Profile;
 };

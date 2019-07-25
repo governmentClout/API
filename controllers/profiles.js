@@ -1,5 +1,6 @@
 
 const config = require('./../lib/config');
+const token = require('./../controllers/tokens');
 
 
 let profiles = {};
@@ -17,8 +18,8 @@ profiles.post = (data,callback)=>{
 	let tokenHeader = data.headers.token;
 	let uuidHeader = data.headers.uuid;
 
-	let nationality_origin = typeof(data.payload.nationality_origin) == 'string' && data.payload.nationality_origin.trim().length >= 3 ? data.payload.nationality_origin.trim() : false;
-	let nationality_residence = typeof(data.payload.nationality_residence) == 'string' && data.payload.nationality_residence.trim().length >= 3 ? data.payload.nationality_residence.trim() : false;
+	let nationalityOrigin = typeof(data.payload.nationalityOrigin) == 'string' && data.payload.nationalityOrigin.trim().length >= 3 ? data.payload.nationalityOrigin.trim() : false;
+	let nationalityResidence = typeof(data.payload.nationalityResidence) == 'string' && data.payload.nationalityResidence.trim().length >= 3 ? data.payload.nationalityResidence.trim() : false;
 	let state = typeof(data.payload.state) == 'string' && data.payload.state.trim().length >= 2 ? data.payload.state.trim() : false;
 	let lga = typeof(data.payload.lga) == 'string' && data.payload.lga.trim().length >= 2 ? data.payload.lga.trim() : false;
 	let firstName = typeof(data.payload.firstName) == 'string' && data.payload.firstName.trim().length > 0 ? data.payload.firstName.trim() : false;
@@ -26,14 +27,83 @@ profiles.post = (data,callback)=>{
 	let photo = typeof(data.payload.photo) == 'string' && data.payload.photo.trim().length > 0 ? data.payload.photo.trim() : '';
 	let background = typeof(data.payload.background) == 'string' && data.payload.background.trim().length > 0 ? data.payload.background.trim() : false;
 	let uuid = typeof(uuidHeader) == 'string' && uuidHeader.trim().length > 0 ? uuidHeader.trim() : false;
-	let token = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
+	let tokenParam = typeof(tokenHeader) == 'string' && tokenHeader.trim().length > 0 ? tokenHeader.trim() : false;
 
 
-	if(token && uuid){
+	if(tokenParam && uuid){
+
+		token.verify(uuid,tokenParam).then((result)=>{
+			
+			if(!result){
+				callback(400,{'Error':'Token Mismatch or expired'});
+			}	
+
+		})
+		.then(()=>{
+			
+			if(
+				nationalityOrigin &&
+				nationalityResidence &&
+				state &&
+				lga &&
+				firstName &&
+				lastName 
+
+				){
+
+					let data = {
+						nationalityOrigin: nationalityOrigin,
+						nationalityResidence:nationalityResidence,
+						state:state,
+						lga:lga,
+						firstName:firstName,
+						lastName:lastName,
+						photo:photo,
+						background:background
+					};
+
+					models.Profile.findOrCreate({where: {userId: uuid}, defaults: data})
+					.then(([profile,created])=>{
+						//data was created here, do something's and send out response
+					}) 
+
+				}else{
+					let errorObject = [];
+					if(!nationality_residence){
+						errorObject.push('Nationality Residence is missing or invalid format');
+					}
+					if(!nationality_origin){
+						errorObject.push('Nationality Origin is missing or invalid format');
+					}
+					if(!state){
+						errorObject.push('State is missing or invalid format');
+					}
+					if(!lga){
+						errorObject.push('lga is missing or invalide format');
+					}
+					if(!firstName){
+						errorObject.push('firstName is missing or invalide format');
+					}
+					if(!lastName){
+						errorObject.push('lastName is mising or invalide format');
+					}
+					// if(!photo){
+					// 	errorObject.push('Photo is missing or invalid format');
+					// }
+
+					callback(400,{'Error':errorObject});
+				}
+			
+
+		}).catch((err)=>{
+			//TODO: This should be optimzed
+			console.log(err);
+			callback(500,err);
+		});			
 
 		let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + uuid + "'";
 
-		con.query(verifyToken, (err,result)=>{
+		con.query(verifyToken, (err,result)=>{ 
 
 			if(
 				!err && 

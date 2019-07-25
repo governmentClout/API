@@ -1,7 +1,6 @@
 'use strict';
 
 const helpers = require('./../lib/helpers');
-const uuidV1 = require('uuid/v4');
 const mailer = require('./mailer');
 const models = require('./../models/index');
 const token = require('./../controllers/tokens');
@@ -282,7 +281,11 @@ users.get = (data,callback) => {
 				models.User.findAndCountAll({ offset: page, limit: limit, order: [['createdAt', sort]],include:[{model:models.Token}]}).then((users)=>callback(200,{users}));
 			}
 
-		});			
+		}).catch((err)=>{
+			//TODO: This should be optimzed
+			console.log(err);
+			callback(500,err);
+		})	;		
 
 	}
 }
