@@ -262,15 +262,15 @@ users.get = (data,callback) => {
 	
 	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 	
-	let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
-	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
-	let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
+	let page = typeof(query.page) == 'string'  ? query.page : '1'; 
+	let limit = typeof(query.limit) == 'string' ? query.limit : '10';
+	let sort = typeof(query.sort) == 'string' && query.sort.trim().length > 0 && (query.sort.trim() == 'ASC' || 'DESC') ? query.sort.trim() : 'DESC';
 
 
 	if(tokenParam && uuid){
 
-		let verifyToken = token.verify(uuid,tokenParam).then((result)=>{
-			console.log(result);
+		token.verify(uuid,tokenParam).then((result)=>{
+			
 			if(!result){
 				callback(400,{'Error':'Token Mismatch or expired'});
 			}			
@@ -278,10 +278,11 @@ users.get = (data,callback) => {
 		.then(()=>{
 						
 			if(param){
-				models.User.findOne({where: {id:param}}).then(user=>callback(200,{user}));
+				models.User.findOne({where: {id:param},include:[{model:models.Token}]}).then(user=>callback(200,{user}));
 			}else {
-				models.User.findAll().then((users)=>callback(200,{users}));
+				models.User.findAndCountAll().then((users)=>callback(200,{users}));
 			}
+
 		});			
 
 	}
