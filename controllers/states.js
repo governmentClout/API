@@ -1,6 +1,6 @@
 
 const config = require('./../lib/config');
-
+const models = require('./../models/index');
 
 states = {};
 
@@ -57,75 +57,46 @@ states.options = (data,callback)=>{
 
 states.get = (data,callback)=>{
       
-        let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
-	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+        let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	let tokenHeader = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 
         let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
         let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
         
         if( 
-		token && 
-		user 
+		tokenHeader && 
+		uuidHeader 
 
 		){
 
-                        let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
-
-			con.query(verifyToken, (err,result)=>{
-				
-				if(
-
-                                !err && 
-                                result[0] && 
-                                result[0].token == token 
-
-                                ){
-                                        let sql = "SELECT * FROM states";
-
-                                        if(sort){
-                                                sql += " ORDER BY id " + sort;
-                                        }
-
-                                        if(limit){
-                                                sql += " LIMIT " + limit;
-                                        }
-
-                                        if(page){
-                                                
-                                                let skip = page == '1' ? 0 : page * limit;
-                                                sql += " OFFSET " + skip;
-
-                                        }
-
-                                        con.query(sql,(err,result)=>{
-                                               
-                                                        if(!err && result.length > 0){
-
-                                                                callback(200,{'states':result});
-
-                                                        }else{
-                                                                console.log(err);
-                                                                callback(500,{'Error':err});
-                                                        }
-
-                                                });
-
-                                }else{
-                                        console.log(err);
+                        token.verify(uuidHeader,tokenHeader).then((result)=>{
+			
+                                if(!result){
                                         callback(400,{'Error':'Token Mismatch or expired'});
-                                }
-                        });
-                        
+                                }			
+                        })
+                        .then(()=>{
+
+                                models.State
+                                .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]])
+                                .then((states)=>callback(200,{states}))
+
+                        }).catch((err)=>{
+                                //TODO: This should be optimzed
+                                console.log(err);
+                                callback(500,err);
+                        })	;		
+                 
 
                 }else{
 
 		let errorObject = [];
 
-		if(!token){
+		if(!tokenHeader){
 			errorObject.push('Token you supplied is not valid or has expired');
 		}
-		if(!user){
+		if(!uuidHeader){
 			errorObject.push('uuid in the header not found');
 		}
 
