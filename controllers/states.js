@@ -1,6 +1,7 @@
 
 const config = require('./../lib/config');
 const models = require('./../models/index');
+const token = require('./../controllers/tokens');
 
 states = {};
 
@@ -60,8 +61,8 @@ states.get = (data,callback)=>{
         let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let tokenHeader = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 
-        let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
-	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+        let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : 1; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : 10;
         let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
         
         if( 
@@ -79,7 +80,7 @@ states.get = (data,callback)=>{
                         .then(()=>{
 
                                 models.State
-                                .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]])
+                                .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]]})
                                 .then((states)=>callback(200,{states}))
 
                         }).catch((err)=>{
