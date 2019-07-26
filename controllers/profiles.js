@@ -163,7 +163,6 @@ profiles.get = (data,callback)=>{
 		callback(400,{'Error':errorObject});
 	}
 
-	// callback(200,{'Success':'You have hit profile get endpoint'});
 }
 
 profiles.put = (data,callback)=>{
@@ -184,9 +183,6 @@ profiles.put = (data,callback)=>{
 			models.Profile.findOne({where: {userId:uuidHeader}})
 			.then((profile)=>{
 
-				console.log('foubd orifuke');
-				console.log(profile);
-
 				if(profile){
 
 					let nationalityResidence = typeof(data.payload.nationalityResidence) == 'string' && data.payload.nationalityResidence.trim().length >= 3 ? data.payload.nationalityResidence.trim() : profile.nationalityResidence;
@@ -197,8 +193,7 @@ profiles.put = (data,callback)=>{
 					let lastName = typeof(data.payload.lastName) == 'string' && data.payload.lastName.trim().length > 0 ? data.payload.lastName.trim() : profile.lastName;
 					let photo = typeof(data.payload.photo) == 'string' && data.payload.photo.trim().length > 0 ? data.payload.photo.trim() : profile.photo;
 					let background = typeof(data.payload.background) == 'string' && data.payload.background.trim().length > 0 ? data.payload.background.trim() : profile.background;
-					// let updatedAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
+					
 					let dataObject = {						
 						nationalityOrigin: nationalityOrigin,
 						nationalityResidence:nationalityResidence,
@@ -209,10 +204,12 @@ profiles.put = (data,callback)=>{
 						photo:photo,
 						background:background
 					};
+
 					profile.update(dataObject)
 					.then(() => {
 						callback(200,{'Success':'Profile Update done'});
-					}).catch(err=>callback(500,err));
+					})
+					.catch(err=>callback(500,err));
 					
 
 				}else{
