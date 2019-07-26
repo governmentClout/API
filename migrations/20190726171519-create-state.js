@@ -10,10 +10,18 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          isAlpha: true
+        }
       },
       shortcode: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          isAlpha: true
+        }
       },
       createdAt: {
         allowNull: false,
