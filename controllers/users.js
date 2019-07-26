@@ -278,7 +278,7 @@ users.get = (data,callback) => {
 			if(param){
 				models.User.findOne({where: {id:param},include:[{model:models.Token}]}).then(user=>callback(200,{user}));
 			}else {
-				models.User.findAndCountAll({ offset: page, limit: limit, order: [['createdAt', sort]],include:[{model:models.Token}]}).then((users)=>callback(200,{users}));
+				models.User.findAndCountAll({ offset: page, limit: limit, order: [['createdAt', sort]],include:[{model:models.Token},{model:models.Profile}]}).then((users)=>callback(200,{users}));
 			}
 
 		}).catch((err)=>{

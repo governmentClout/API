@@ -15,10 +15,6 @@ profiles.options = (data,callback)=>{
 
 profiles.post = (data,callback)=>{
 
-//check header here for token, the uuid and token must match what we have in the database and must not have expired
-	let tokenHeader = data.headers.token;
-	let uuidHeader = data.headers.uuid;
-
 	let nationalityOrigin = typeof(data.payload.nationalityOrigin) == 'string' && data.payload.nationalityOrigin.trim().length >= 3 ? data.payload.nationalityOrigin.trim() : false;
 	let nationalityResidence = typeof(data.payload.nationalityResidence) == 'string' && data.payload.nationalityResidence.trim().length >= 3 ? data.payload.nationalityResidence.trim() : false;
 	let state = typeof(data.payload.state) == 'string' && data.payload.state.trim().length >= 2 ? data.payload.state.trim() : false;
@@ -69,13 +65,12 @@ profiles.post = (data,callback)=>{
 
 							callback(200,{profile});
 						}
+						//TODO: Do update here, since profile already exists
 
 						callback(400,{'Error':'User profile already exists, update instead'});
 
 					}).catch((err)=>{
 
-						console.log("profile creation Error==>");
-						console.log(err);
 						callback(500,{'Error':err});
 						
 					});
@@ -107,8 +102,7 @@ profiles.post = (data,callback)=>{
 			
 
 		}).catch((err)=>{
-			//TODO: This should be optimzed
-			console.log(err);
+			//TODO: This should be optimzed	
 			callback(500,err);
 		});			
 
@@ -128,44 +122,38 @@ profiles.post = (data,callback)=>{
 
 
 profiles.get = (data,callback)=>{
-//get a user profile
-	// let uuidQuery = typeof(data.queryStringObject.uuid) == 'string' && data.queryStringObject.uuid.trim().length > 0 ? data.queryStringObject.uuid.trim() : false;
-	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
-	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
-	let uuidQuery = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
 
-	if(data && 
-		token && 
-		uuidHeader &&
-		uuidQuery
+	let tokenHeader = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+	let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim() ? data.headers.uuid.trim() : false;
+	let param = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
+
+	if( tokenHeader && 
+		uuidHeader 	
 		){
+
+			token.verify(uuidHeader,tokenHeader).then((result)=>{
+			
+				if(!result){
+					callback(400,{'Error':'Token Mismatch or expired'});
+				}
+
+			}).then(()=>{
+
+				if(param){
+					models.Profile.findOne({where: {userId:param},include:[{model:models.User}]}).then(profile=>callback(200,{profile}));
+				}else {
+					models.Profile.findOne({ where:{userId:uuidHeader},include:[{model:models.User}]}).then((profile)=>callback(200,{profile}));
+				}
+	
+			}).catch((err)=>{
+				//TODO: This should be optimzed
+				console.log(err);
+				callback(500,err);
+			})	;		
 
 		let headerChecker = "SELECT * FROM tokens WHERE uuid='" + uuidHeader + "'";
 		
-		con.query(headerChecker,(err,results)=>{
-
-			if(!err && 
-				results && 
-				results[0].token.length > 0){
-
-				let profile = "SELECT * FROM profiles WHERE profiles.uuid='" + uuidQuery + "'";
-			
-				con.query(profile,(err,result)=>{
-					
-					if(!err && result[0]){
-						callback(200,{'profile':result});
-					}else{
-						callback(404,{'Error':'User profile not found'});
-					}
-
-				})
-
-			}else{
-				callback(404,{'Error':'Token Invalid or Expired'});
-			}
-
-		});
-
+		
 	}else{
 		let errorObject = [];
 		if(!token){
@@ -174,9 +162,7 @@ profiles.get = (data,callback)=>{
 		if(!uuidHeader){
 			errorObjet.push('UUID header is required');
 		}
-		if(!uuidQuery){
-			errorObject.push('Query uuid is required');
-		}
+	
 		callback(400,{'Error':errorObject});
 	}
 

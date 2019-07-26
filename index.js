@@ -55,6 +55,8 @@ var unifiedServer = (req,res)=>{
 			'payload': helpers.parseJsonToObject(buffer)
 		}
 
+		//TODO: Do token verification here -- consider this, might be a good idea,
+
 		chosenHandler(data, (statusCode,payload)=>{
 			
 			statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
