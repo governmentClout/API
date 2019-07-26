@@ -35,9 +35,7 @@ profiles.post = (data,callback)=>{
 		token.verify(uuidParam,tokenParam).then((result)=>{
 			
 			if(!result){
-				callback(400,{'Error':'Token Mismarstch or expired'});
-			}else{
-				return callback(400,{'Error':'Bad Request'});	
+				callback(400,{'Error':'Token Mismatch or expired'});
 			}
 		})
 		.then(()=>{
@@ -51,8 +49,9 @@ profiles.post = (data,callback)=>{
 				lastName 
 
 				){
-		
+				
 					let data = {
+						userId: uuidParam,
 						nationalityOrigin: nationalityOrigin,
 						nationalityResidence:nationalityResidence,
 						state:state,
@@ -62,17 +61,16 @@ profiles.post = (data,callback)=>{
 						photo:photo,
 						background:background
 					};
-
-
+				
 					models.Profile.findOrCreate({where: {userId: uuidParam}, defaults: data})
 					.then(([profile,created])=>{
-						//data was created here, do something's and send out response
-					
+										
 						if(created){
 
 							callback(200,{profile});
 						}
-						callback(400,{'Error':'User profile already exists, update instread'});
+
+						callback(400,{'Error':'User profile already exists, update instead'});
 
 					}).catch((err)=>{
 

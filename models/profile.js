@@ -1,5 +1,4 @@
 'use strict';
-const models = require('./index');
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -17,8 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {});
 
-  Profile.associate = function(models) {
-    // associations can be defined here
+  Profile.associate = function(models) { 
     Profile.belongsTo(models.User);
 
   };
