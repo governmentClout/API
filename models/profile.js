@@ -17,8 +17,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   Profile.associate = function(models) { 
+    
     Profile.belongsTo(models.User);
-
+    
   };
   return Profile;
 };

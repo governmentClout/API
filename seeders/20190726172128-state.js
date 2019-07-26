@@ -1,5 +1,7 @@
 'use strict';
 
+const models = require('../models/index');
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     /*
@@ -12,6 +14,13 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
+   return queryInterface.bulkInsert('states', [
+          { name: 'Lagos', shortcode: 'LA', createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
+          { name: 'Abuja', shortcode: 'ABJ', createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
+          { name: 'Ogun', shortcode: 'OG', createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
+          { name: 'Edo', shortcode: 'ED', createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
+          { name: 'Kwara', shortcode: 'KW', createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'}        
+        ], {});
   },
 
   down: (queryInterface, Sequelize) => {
@@ -22,5 +31,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
+    return queryInterface.bulkDelete('states', null, {});
   }
 };
