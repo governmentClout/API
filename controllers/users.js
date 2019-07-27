@@ -53,14 +53,9 @@ users.options = (data,callback)=>{
 
 users.post = (data,callback)=>{
 
-	let phone = null;
-	let email = null;
-	let dob = null;
-	let password = null;
 	let initialProvider = data.payload.provider;
 	let tosAgreement = typeof(data.payload.tosAgreement) == 'boolean' && data.payload.tosAgreement == true ? 1 : false;
 	let provider = typeof(data.payload.provider) == 'string' && (data.payload.provider == 'email' || data.payload.provider == 'facebook' || data.payload.provider == 'twitter' || data.payload.provider == 'linkedin' || data.payload.provider == 'google'  ) ? data.payload.provider : false;
-	let proceed = false;
 
 
 	if(provider){
