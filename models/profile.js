@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     lastName: DataTypes.STRING,
     nationalityOrigin: DataTypes.STRING,
     nationalityResidence: DataTypes.STRING,
-    state: DataTypes.STRING,
-    lga: DataTypes.STRING,
+    stateId: DataTypes.STRING,
+    lgaId: DataTypes.STRING,
     photo: DataTypes.STRING,
     background: DataTypes.TEXT
 
@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     
     Profile.belongsTo(models.User);
     Profile.belongsTo(models.State);
-    Profile.belongsTo(models.District);
-    Profile.belongsTo(models.FedRep);
+    // Profile.belongsTo(models.District);
+    // Profile.belongsTo(models.FedRep);
     Profile.belongsTo(models.Lga);
     
   };

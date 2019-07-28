@@ -1,5 +1,4 @@
 
-const config = require('./../lib/config');
 const token = require('./../controllers/tokens');
 const models = require('./../models/index');
 
@@ -140,9 +139,9 @@ profiles.get = (data,callback)=>{
 			}).then(()=>{
 
 				if(param){
-					models.Profile.findOne({where: {userId:param},include:[{model:models.User},{model:models.State},{model:models.Lga},{model:models.Dsitrict},{model:models.FedRep}]}).then(profile=>callback(200,{profile}));
+					models.Profile.findOne({where: {userId:param},include:[{model:models.User},{model:models.State},{model:models.Lga}]}).then(profile=>callback(200,{profile}));
 				}else {
-					models.Profile.findOne({ where:{userId:uuidHeader},include:[{model:models.User},{model:models.State},{model:models.Lga},{model:models.Dsitrict},{model:models.FedRep}]}).then((profile)=>callback(200,{profile}));
+					models.Profile.findOne({ where:{userId:uuidHeader},include:[{model:models.User},{model:models.State},{model:models.Lga}]}).then((profile)=>callback(200,{profile}));
 				}
 	
 			}).catch((err)=>{

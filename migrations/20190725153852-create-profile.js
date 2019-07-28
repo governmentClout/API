@@ -34,11 +34,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      state: {
+      stateId: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      lga: {
+      lgaId: {
         type: Sequelize.STRING,
         allowNull: false,
       },

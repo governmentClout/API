@@ -1,7 +1,8 @@
 'use strict'
 
-const config = require('./../lib/config');
-
+const token = require('./../controllers/tokens');
+const models = require('./../models/index');
+ 
 let lga = {};
 
 lga.options = (data,callback)=>{
@@ -116,55 +117,64 @@ lga.get = (data,callback)=>{
     let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : 1; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : 10;
     let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
-    let district = typeof(data.queryStringObject.district) == 'string' && data.queryStringObject.district.trim().length > 0 ? data.queryStringObject.district.trim() : 'DESC';
+    let district = typeof(data.queryStringObject.district) == 'string' && data.queryStringObject.district.trim().length > 0 ? data.queryStringObject.district.trim() : false;
 	let state = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
-        
+     console.log('point 1');   
         if( 
             tokenHeader && 
             uuidHeader 
 		){
+     console.log('point 2');   
 
             token.verify(uuidHeader,tokenHeader).then((result)=>{
-			
+                
                 if(!result){
                         callback(400,{'Error':'Token Mismatch or expired'});
                 }			
             })
             .then(()=>{
+     console.log('point 3');   
+
                     if(state && district){
+     console.log('point 4');   
 
                         models.Lga
-                        .findAndCountAll({ where: {stateId:state, districtId: district}, offset: page, limit: limit, order: [['name', sort]]})
+                        .findAndCountAll({ where: {stateId:state, districtId: district}, offset: page, limit: limit, order: [['name', sort]], include:[{model:models.State},{model:models.District}]})
                         .then((lgas)=>callback(200,{lgas})).catch((err)=>{
                             console.log(err);
                             callback(500,{err});
                         });
 
                     }else if(state && !district){
+                        console.log('point 5');   
 
                         models.Lga
-                        .findAndCountAll({ where: {stateId:state}, offset: page, limit: limit, order: [['name', sort]]})
+                        .findAndCountAll({ where: {stateId:state}, offset: page, limit: limit, order: [['name', sort]],include:[{model:models.State},{model:models.District}]})
                         .then((lgas)=>callback(200,{lgas})).catch((err)=>{
                             console.log(err);
                             callback(500,{err});
                         });
 
                     }else if(!state && district){
+     console.log('point 6');   
 
                         models.Lga
-                        .findAndCountAll({ where: {districtId:district}, offset: page, limit: limit, order: [['name', sort]]})
+                        .findAndCountAll({ where: {districtId:district}, offset: page, limit: limit, order: [['name', sort]],include:[{model:models.State},{model:models.District}]})
                         .then((lgas)=>callback(200,{lgas})).catch((err)=>{
                             console.log(err);
                             callback(500,{err});
                         });
 
                     }else{
+     console.log('point 7');   
+
                         models.Lga
-                        .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]]})
+                        .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]],include:[{model:models.State},{model:models.District}]})
                         .then((lgas)=>callback(200,{lgas})).catch((err)=>{
                             console.log(err);
                             callback(500,{err});
                         });
+
                     }
                    
 
@@ -181,10 +191,10 @@ lga.get = (data,callback)=>{
 
 		let errorObject = [];
 
-		if(!token){
+		if(!tokenHeader){
 			errorObject.push('Token you supplied is not valid or has expired');
 		}
-		if(!user){
+		if(!userHeader){
 			errorObject.push('uuid in the header not found');
 		}
 
