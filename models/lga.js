@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
    
     Lga.belongsTo(models.State);
     Lga.belongsTo(models.District);
+
+    Lga.hasMany(models.Profile, {
+      foreignKey: 'lga'
+    });
    
   };
   return Lga;

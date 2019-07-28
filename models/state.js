@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     State.hasMany(models.District, {
       foreignKey: 'stateId'
     });
+    State.hasMany(models.Profile, {
+      foreignKey: 'state'
+    });
   };
   return State;
 };

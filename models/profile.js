@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
   Profile.associate = function(models) { 
     
     Profile.belongsTo(models.User);
+    Profile.belongsTo(models.State);
+    Profile.belongsTo(models.District);
+    Profile.belongsTo(models.FedRep);
+    Profile.belongsTo(models.Lga);
     
   };
   return Profile;

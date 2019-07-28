@@ -23,10 +23,11 @@ module.exports = (sequelize, DataTypes) => {
     User.hasOne(models.Token, {
       foreignKey: 'userId'
     });
+    
     User.hasOne(models.Profile, {
       foreignKey: 'userId'
     });
-    
+
   };
   return User;
 };
