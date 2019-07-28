@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   State.associate = function(models) {
     // associations can be defined here
+    State.hasMany(models.Lga, {
+      foreignKey: 'stateId'
+    });
+    State.hasMany(models.District, {
+      foreignKey: 'stateId'
+    });
   };
   return State;
 };

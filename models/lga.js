@@ -7,13 +7,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Lga.associate = function(models) {
     // associations can be defined here
-    Lga.belongTo(models.State, {
-      foreignKey: 'stateId'
-    });
-    
-    District.belongTo(models.District, {
-      foreignKey: 'districtId'
-    });
+   
+    Lga.belongsTo(models.State);
+    Lga.belongsTo(models.District);
+   
   };
   return Lga;
 };
