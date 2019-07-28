@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     District.hasMany(models.Lga, {
       foreignKey: 'districtId'
     });
+
+    District.hasMany(models.Fedrep, {
+      foreignKey: 'districtId'
+    });
     
     District.belongsTo(models.State);
   };

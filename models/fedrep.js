@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   FedRep.associate = function(models) {
     // associations can be defined here
+    District.belongsTo(models.District);
   };
   return FedRep;
 };

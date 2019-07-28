@@ -121,24 +121,23 @@ districts.get = (data,callback)=>{
                 }			
             })
             .then(()=>{
-                    if(state){
+                if(state){
 
-                        models.District
-                        .findAndCountAll({ where: {stateId:state}, offset: page, limit: limit, order: [['name', sort]]})
-                        .then((districts)=>callback(200,{districts})).catch((err)=>{
-                            console.log(err);
-                            callback(500,{err});
-                        });
+                    models.District
+                    .findAndCountAll({ where: {stateId:state}, offset: page, limit: limit, order: [['name', sort]]})
+                    .then((districts)=>callback(200,{districts})).catch((err)=>{
+                        console.log(err);
+                        callback(500,{err});
+                    });
 
-                    }else{
-                        models.District
-                        .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]]})
-                        .then((districts)=>callback(200,{districts})).catch((err)=>{
-                            console.log(err);
-                            callback(500,{err});
-                        });
-                    }
-                   
+                }else{
+                    models.District
+                    .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]]})
+                    .then((districts)=>callback(200,{districts})).catch((err)=>{
+                        console.log(err);
+                        callback(500,{err});
+                    });
+                }                   
 
             }).catch((err)=>{
                     //TODO: This should be optimzed
