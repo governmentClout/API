@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'districtId'
     });
 
-    District.hasMany(models.Fedrep, {
+    District.hasMany(models.FedRep, {
       foreignKey: 'districtId'
     });
     
