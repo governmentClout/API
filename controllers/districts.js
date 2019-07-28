@@ -1,5 +1,7 @@
+'use strict'
 
-const config = require('./../lib/config');
+const models = require('./../models/index');
+const token = require('./../controllers/tokens');
 
 
 
@@ -72,7 +74,7 @@ districts.options = (data,callback)=>{
  * @apiParam {String} limit result count per page you wish to get (pagination)
  * @apiParam {String} sort result sort [ASC | DESC] (pagination)
  *@apiSuccessExample Success-Response:
- *HTTP/1.1 200 OK
+ *HTTP/1.1 200 OK 
 {
     "districts": [
         {
@@ -105,8 +107,8 @@ districts.options = (data,callback)=>{
 
 districts.get = (data,callback)=>{
 
-    let user = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
-	let token = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
+    let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
+	let tokenHeader = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 
     let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
 	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
@@ -119,55 +121,37 @@ districts.get = (data,callback)=>{
 
 		){
 
-            let verifyToken = "SELECT token FROM " + config.db_name + ".tokens WHERE uuid='" + user + "'";
+            token.verify(uuidHeader,tokenHeader).then((result)=>{
+			
+                if(!result){
+                        callback(400,{'Error':'Token Mismatch or expired'});
+                }			
+            })
+            .then(()=>{
+                    if(state){
 
-			con.query(verifyToken, (err,result)=>{
-				
-				if(
-
-                            !err && 
-                            result[0] && 
-                            result[0].token == token 
-
-                            ){
-                                    let sql = "SELECT * FROM districts";
-                                    
-                                    if(state){
-                                        sql += " WHERE state_id = " + state;
-                                    }
-                                    if(sort){
-                                            sql += " ORDER BY id " + sort;
-                                    }
-
-                                    if(limit){
-                                            sql += " LIMIT " + limit;
-                                    }
-
-                                    if(page){
-                                            
-                                            let skip = page == '1' ? 0 : page * limit;
-                                            sql += " OFFSET " + skip;
-
-                                    }
-
-                                    con.query(sql,(err,result)=>{
-                                        
-                                            if(!err && result.length > 0){
-
-                                                    callback(200,{'districts':result});
-
-                                            }else{
-                                                    console.log(err);
-                                                    callback(500,{'Error':err});
-                                            }
-
-                                    });
-
-                            }else{
-                                    console.log(err);
-                                    callback(400,{'Error':'Token Mismatch or expired'});
-                            }
+                        models.District
+                        .findAndCountAll({ where: {stateId:state}, offset: page, limit: limit, order: [['name', sort]]})
+                        .then((districts)=>callback(200,{districts})).catch((err)=>{
+                            console.log(err);
+                            callback(500,{err});
                         });
+
+                    }else{
+                        models.District
+                        .findAndCountAll({ offset: page, limit: limit, order: [['name', sort]]})
+                        .then((districts)=>callback(200,{districts})).catch((err)=>{
+                            console.log(err);
+                            callback(500,{err});
+                        });
+                    }
+                   
+
+            }).catch((err)=>{
+                    //TODO: This should be optimzed
+                    console.log(err);
+                    callback(500,err);
+            })	;	
                         
 
                 }else{

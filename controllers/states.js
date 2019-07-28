@@ -1,5 +1,5 @@
+'use strict'
 
-const config = require('./../lib/config');
 const models = require('./../models/index');
 const token = require('./../controllers/tokens');
 
