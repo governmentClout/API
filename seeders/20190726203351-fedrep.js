@@ -12,7 +12,7 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
-    return queryInterface.bulkInsert('districts', [
+    return queryInterface.bulkInsert('fedreps', [
       { name: 'FedRep 1', districtId: 1, createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
       { name: 'FedRep 2', districtId: 2, createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
       { name: 'FedRep 3', districtId: 1, createdAt: '2019-07-26 14:12:14', updatedAt: '2019-07-26 14:12:14'},
@@ -30,5 +30,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('People', null, {});
     */
+   return queryInterface.bulkDelete('fedreps', null, {});
   }
 };
