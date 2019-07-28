@@ -19,8 +19,7 @@ login.post = (data,callback)=>{
 	if(provider && provider == 'email' && password && email){	
 		
 		let hashedPassword = helpers.hash(password);
-		console.log(hashedPassword);
-
+		
 		models.User
 		.findAll({where: {email:email,password:hashedPassword}, include: [{model:models.Token},{model:models.Profile}]})
 		.then((user) => {	
