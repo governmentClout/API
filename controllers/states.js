@@ -3,7 +3,7 @@
 const models = require('./../models/index');
 const token = require('./../controllers/tokens');
 
-states = {};
+let states = {};
 
 states.options = (data,callback)=>{
 

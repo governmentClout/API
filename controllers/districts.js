@@ -3,19 +3,13 @@
 const models = require('./../models/index');
 const token = require('./../controllers/tokens');
 
-
-
-districts = {};
+let districts = {};
 
 districts.options = (data,callback)=>{
 
 	callback(200,data.headers);
 	
 }
-
-//get all districts
-//get all districts inside a state
-
 
 /**
  * @api {get} /districts/:id?sort=:sort&limi=:limit&page=:page get Single Party 
@@ -110,15 +104,14 @@ districts.get = (data,callback)=>{
     let uuidHeader = typeof(data.headers.uuid) == 'string' && data.headers.uuid.trim().length > 0 ? data.headers.uuid.trim() : false;
 	let tokenHeader = typeof(data.headers.token) == 'string' && data.headers.token.trim().length > 0 ? data.headers.token.trim() : false;
 
-    let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : '1'; 
-	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : '10';
+    let page = typeof(data.queryStringObject.page) == 'string'  ? data.queryStringObject.page : 1; 
+	let limit = typeof(data.queryStringObject.limit) == 'string' ? data.queryStringObject.limit : 10;
     let sort = typeof(data.queryStringObject.sort) == 'string' && data.queryStringObject.sort.trim().length > 0 && (data.queryStringObject.sort.trim() == 'ASC' || 'DESC') ? data.queryStringObject.sort.trim() : 'DESC';
 	let state = typeof(data.param) == 'string' && data.param.trim().length > 0 ? data.param.trim() : false;
         
         if( 
-		token && 
-		user 
-
+            tokenHeader && 
+            uuidHeader
 		){
 
             token.verify(uuidHeader,tokenHeader).then((result)=>{
