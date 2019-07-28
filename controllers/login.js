@@ -17,18 +17,22 @@ login.post = (data,callback)=>{
 	let provider = typeof(data.payload.provider) == 'string' && data.payload.provider.trim().length > 0 ? data.payload.provider.trim() : false;
 	
 	if(provider && provider == 'email' && password && email){	
-
+		
 		let hashedPassword = helpers.hash(password);
+		console.log(hashedPassword);
 
 		models.User
-		.findOne({where: {password: hashedPassword,email:email}, include:[{model:models.Token},{model:models.Profile}] })
-		.then(([user]) => {	
-			console.log(user);
-			callback(200,{user});
+		.findAll({where: {email:email,password:hashedPassword}, include: [{model:models.Token},{model:models.Profile}]})
+		.then((user) => {	
+			
+			if(user.length > 0){			
+				callback(200,{user});							
+			}
+			callback(404,{'Error':'User Not Found'});
 		})
-		.catch(err=>{
+		.catch(err=>{			
 			console.log(err);
-			callback(500,{'Error':err});
+			callback(500,{'Errors':err});
 		});		
 
 	}else{
