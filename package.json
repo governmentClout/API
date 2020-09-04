@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "async": "^2.6.1",
-    "handlebars": "^4.1.2",   
+    "handlebars": "^4.4.5",   
     "mysql2": "^1.6.5",
     "nodemailer": "^4.6.8",
     "randomstring": "^1.1.5",
