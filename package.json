@@ -14,7 +14,7 @@
     "async": "^2.6.1",
     "handlebars": "^4.1.2",   
     "mysql2": "^1.6.5",
-    "nodemailer": "^4.6.8",
+    "nodemailer": "^6.4.16",
     "randomstring": "^1.1.5",
     "sequelize": "^5.10.1",
     "sequelize-cli": "^5.5.0",
